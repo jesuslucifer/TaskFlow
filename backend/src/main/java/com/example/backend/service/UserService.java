@@ -4,12 +4,14 @@ import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
 
     public User save(User user) {
@@ -45,5 +47,16 @@ public class UserService {
     public User getCurrentUser() {
         var username  = SecurityContextHolder.getContext().getAuthentication().getName();
         return getByUsername(username);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+        if (usernameOrEmail.contains("@")) {
+            return userRepository.findByEmail(usernameOrEmail)
+                    .orElseThrow(() -> new UsernameNotFoundException(usernameOrEmail));
+        } else {
+            return userRepository.findByUsername(usernameOrEmail)
+                    .orElseThrow(() -> new UsernameNotFoundException(usernameOrEmail));
+        }
     }
 }

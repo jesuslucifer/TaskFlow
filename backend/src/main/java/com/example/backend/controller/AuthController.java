@@ -13,7 +13,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,8 +28,10 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@RequestBody SignInRequest signInRequest) throws Exception {
 
+        User user = userService.getByUsernameOrEmail(signInRequest.getUsernameOrEmail(), signInRequest.getUsernameOrEmail());
+
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword()));
+                new UsernamePasswordAuthenticationToken(user.getUsername(), signInRequest.getPassword()));
 
 
         if (!authentication.isAuthenticated()) {
@@ -39,9 +40,7 @@ public class AuthController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        UserDetails userDetails = userService.getByUsername(signInRequest.getUsername());
-
-        String token = jwtService.generateToken(userDetails);
+        String token = jwtService.generateToken(user);
 
         return ResponseEntity.ok(new JwtResponse(token));
     }
