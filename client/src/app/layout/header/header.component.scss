@@ -1,0 +1,35 @@
+.header {
+  padding: 20px 30px;
+  background-color: #fff;
+  &__top {
+    display: flex;
+    justify-content: space-between;
+
+    > .head-top {
+      &__search {
+      }
+      &__item {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      &__ava {
+      }
+      &__notification {
+      }
+    }
+  }
+}
+.head__search {
+  padding: 10px 20px;
+  border-radius: 15px;
+  outline: none;
+  border: 1px solid rgb(129, 129, 129);
+  background-color: rgba(247, 246, 244, 1);
+}
+.circle {
+  width: 20px;
+  height: 20px;
+  border: 1px solid black;
+  border-radius: 10px;
+}

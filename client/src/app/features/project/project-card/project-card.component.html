@@ -1,0 +1,61 @@
+@if(project) {
+<div class="project-card">
+
+  <div class="project-card__header">
+    <div class="project-card__info">
+      <h3 class="project-card__title">{{ project.name }}</h3>
+      <p class="project-card__owner">Автор: {{ project.owner }}</p>
+    </div>
+    <button class="project-card__menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+  </div>
+
+  <p class="project-card__description">{{ project.description }}</p>
+
+  <div class="project-card__meta">
+    <span class="project-card__date">Создан: {{ project.createdAt }}</span>
+    <span class="project-card__tasks">Задач: {{ project.tasksCompleted }}/{{ project.tasksCount }}</span>
+  </div>
+
+  <!-- 📊 Прогресс по задачам -->
+  <div class="project-card__progress">
+    <div class="project-card__progress-bar">
+      <div class="project-card__progress-fill" [style.width.%]="projectProgressPercent()"></div>
+    </div>
+    <span class="project-card__progress-text">{{ projectProgressPercent() }}%</span>
+  </div>
+
+  <!-- 🎛️ Селекты -->
+  <div class="project-card__selects">
+    <label class="project-card__select">
+      Статус:
+      <select name="progress">
+        <option value="complete">Выполнено</option>
+        <option value="development">Разрабатывается</option>
+        <option value="abandoned">Брошено</option>
+      </select>
+    </label>
+
+    <label class="project-card__select">
+      Приоритет:
+      <select name="priority">
+        <option value="high">Высокий</option>
+        <option value="medium">Средний</option>
+        <option value="low">Низкий</option>
+      </select>
+    </label>
+  </div>
+
+  <!-- 🏷️ Теги -->
+  <div class="project-card__tags">
+    @for(tag of project.tags; track tag) {
+    <span class="project-card__tag">{{ tag.tag }}</span>
+    }
+  </div>
+
+  <div class="project-card__footer">
+    <button class="project-card__open-btn">Открыть проект</button>
+  </div>
+</div>
+}

@@ -1,0 +1,23 @@
+<form class="auth__form" [formGroup]="form" (ngSubmit)="onSubmit()">
+  @if(isReg){
+  <label class="auth-control__label">
+    Имя пользователя
+    <input class="auth__input" formControlName="username" placeholder="Ivan" type="text">
+  </label>
+  }
+  <label class="auth-control__label">
+    Email
+    <input class="auth__input" formControlName="email" placeholder="example@mail.ru" type="text">
+  </label>
+  <label class="auth-control__label">
+    Пароль
+    <input class="auth__input" formControlName="password" type="text" placeholder="******">
+  </label>
+  <button class="auth__btn" type="submit"> Продолжить</button>
+
+  @if(isReg){
+  <h4>Уже есть аккаунт? <a [routerLink]="['/login']"> Войти </a> </h4>
+  }@else if(!isReg) {
+  <h4>Еще нет аккаунта? <a [routerLink]="['/sign-up']"> Зарегистрироваться </a> </h4>
+  }
+</form>
