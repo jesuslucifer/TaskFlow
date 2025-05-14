@@ -1,0 +1,68 @@
+<div class="dashboard">
+  <div class="dashboard__main">
+    <section class="dashboard__section dashboard__section--user">
+      <div class="user-card">
+        <div class="user-card__info">
+          <img [src]="user.avatarUrl" alt="Аватар" class="user-card__avatar" />
+          <div class="user-card__text">
+            <div class="user-card__name">{{ user.name }}</div>
+            <div class="user-card__email">{{ user.email }}</div>
+          </div>
+        </div>
+
+        <div class="user-card__stats">
+          <div class="user-card__stat">
+            <div class="user-card__stat-value">{{ userStats.activeProjects }}</div>
+            <div class="user-card__stat-label">Активные проекты</div>
+          </div>
+          <div class="user-card__stat">
+            <div class="user-card__stat-value">{{ userStats.completedProjects }}</div>
+            <div class="user-card__stat-label">Завершённые</div>
+          </div>
+          <div class="user-card__stat">
+            <div class="user-card__stat-value">{{ userStats.overdueTasks }}</div>
+            <div class="user-card__stat-label">Просрочено</div>
+          </div>
+          <div class="user-card__stat">
+            <div class="user-card__stat-value">{{ userStats.completedTasks }}</div>
+            <div class="user-card__stat-label">Задач выполнено</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dashboard__section dashboard__section--activity">
+      <h2 class="dashboard__title">Активность</h2>
+      <div class="activity">
+        <div class="activity__header">
+          <span>Эта неделя</span>
+          <span class="activity__tasks">{{ activity.tasksThisWeek }} задач</span>
+        </div>
+        <div class="activity__chart line-chart">[График активности]</div>
+      </div>
+    </section>
+
+    <section class="dashboard__section dashboard__section--projects">
+      <h2 class="dashboard__title">Предстоящие проекты</h2>
+      <app-project-list></app-project-list>
+    </section>
+  </div>
+
+  <aside class="dashboard__sidebar">
+    <section class="dashboard__section dashboard__section--today-tasks">
+      <h2 class="dashboard__title">Задачи на сегодня</h2>
+      <div class="task-today">
+        <ul class="task-today__list">
+          <li class="task-today__item">Созвон с заказчиком</li>
+          <li class="task-today__item">Финализировать макет</li>
+          <li class="task-today__item">Обновить документацию</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="dashboard__section dashboard__section--calendar">
+      <h2 class="dashboard__title">Календарь</h2>
+      <div class="calendar-placeholder">[Календарь]</div>
+    </section>
+  </aside>
+</div>
