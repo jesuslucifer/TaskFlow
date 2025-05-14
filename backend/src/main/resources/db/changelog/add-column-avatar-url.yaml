@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: jesuslucifer
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: avatar_url
+                  type: NVARCHAR(100)
+                  constraints:
+                    nullable: true
