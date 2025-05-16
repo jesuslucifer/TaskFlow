@@ -4,7 +4,6 @@ import com.example.backend.model.Token;
 import com.example.backend.model.User;
 import com.example.backend.repository.TokenRepository;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,5 +26,14 @@ public class TokenService {
         token.setUser(user);
 
         tokenRepository.save(token);
+    }
+
+    public void removeToken(User user) {
+
+        List<Token> tokens = tokenRepository.findAllByUserId(user.getId());
+
+        tokens.forEach(token -> token.setAvailable(false));
+
+        tokenRepository.saveAll(tokens);
     }
 }

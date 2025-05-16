@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/changelog/add-column-avatar-url.yaml
   - include:
       file: db/changelog/add-table-token.yaml
+  - include:
+      file: db/changelog/add-column-available-in-tokens.yaml

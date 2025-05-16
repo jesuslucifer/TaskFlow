@@ -6,7 +6,6 @@ import com.example.backend.dto.request.SignUpRequest;
 import com.example.backend.dto.response.JwtResponse;
 import com.example.backend.model.Role;
 import com.example.backend.model.User;
-import com.example.backend.repository.UserRepository;
 import com.example.backend.service.JwtService;
 import com.example.backend.service.TokenService;
 import com.example.backend.service.UserService;
@@ -28,7 +27,6 @@ public class AuthController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
-    private final UserRepository userRepository;
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@RequestBody SignInRequest signInRequest) throws Exception {

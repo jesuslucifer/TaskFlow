@@ -1,9 +1,7 @@
 package com.example.backend.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Data
@@ -20,6 +18,9 @@ public class Token {
 
     @Column(name = "refresh_token")
     private String refreshToken;
+
+    @Column(name = "available")
+    private Boolean available = true;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

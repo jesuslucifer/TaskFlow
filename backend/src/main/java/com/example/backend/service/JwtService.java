@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import com.example.backend.model.Token;
 import com.example.backend.model.User;
 import com.example.backend.repository.TokenRepository;
 import io.jsonwebtoken.*;
