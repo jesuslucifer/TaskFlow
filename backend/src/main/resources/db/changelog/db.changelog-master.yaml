@@ -3,3 +3,5 @@ databaseChangeLog:
       file: db/changelog/v1-initial-schema.yaml
   - include:
       file: db/changelog/add-column-avatar-url.yaml
+  - include:
+      file: db/changelog/add-table-token.yaml
