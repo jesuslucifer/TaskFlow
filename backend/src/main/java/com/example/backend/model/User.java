@@ -3,7 +3,6 @@ package com.example.backend.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -32,6 +31,12 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<Token> tokens;
+
+    @Column(name = "avatar_url")
+    private String avatarUrl = "uploads/avatars/default.jpg";
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

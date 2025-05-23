@@ -1,11 +1,13 @@
 package com.example.backend.controller;
 
+import com.example.backend.dto.request.RefreshTokenRequest;
 import com.example.backend.dto.request.SignInRequest;
 import com.example.backend.dto.request.SignUpRequest;
 import com.example.backend.dto.response.JwtResponse;
 import com.example.backend.model.Role;
 import com.example.backend.model.User;
 import com.example.backend.service.JwtService;
+import com.example.backend.service.TokenService;
 import com.example.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,7 @@ public class AuthController {
     private final JwtService jwtService;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final TokenService tokenService;
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@RequestBody SignInRequest signInRequest) throws Exception {
@@ -40,23 +43,60 @@ public class AuthController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String token = jwtService.generateToken(user);
+        String accessToken = jwtService.generateAccessToken(user);
 
-        return ResponseEntity.ok(new JwtResponse(token));
+        String refreshToken = jwtService.generateRefreshToken(user);
+
+        tokenService.saveToken(refreshToken, user);
+
+        return ResponseEntity.ok(new JwtResponse(accessToken, refreshToken));
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<JwtResponse> signUp(@RequestBody SignUpRequest signUpRequest) throws Exception {
+    public ResponseEntity<String> signUp(@RequestBody SignUpRequest signUpRequest) throws Exception {
         var user = User.builder()
                 .username(signUpRequest.getUsername())
                 .email(signUpRequest.getEmail())
                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
                 .role(Role.USER)
+                .avatarUrl("uploads/avatars/default.jpg")
                 .build();
 
         userService.create(user);
 
-        var token = jwtService.generateToken(user);
-        return ResponseEntity.ok(new JwtResponse(token));
+        return ResponseEntity.ok("Success registered");
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest request) throws Exception {
+        String requestRefreshTokenRefreshToken = request.getRefreshToken();
+
+        String username = jwtService.extractUsername(requestRefreshTokenRefreshToken);
+
+        User user = userService.getByUsername(username);
+
+        if (!jwtService.validateRefreshToken(requestRefreshTokenRefreshToken, user)) {
+            return ResponseEntity.badRequest().body("Invalid refresh token");
+        }
+
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+
+        tokenService.removeToken(user);
+
+        tokenService.saveToken(refreshToken, user);
+
+        return ResponseEntity.ok(new JwtResponse(accessToken, refreshToken));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        User user = (User) authentication.getPrincipal();
+
+        tokenService.removeToken(user);
+
+        return ResponseEntity.ok("Successfully logged out");
     }
 }

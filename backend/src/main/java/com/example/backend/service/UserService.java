@@ -3,7 +3,6 @@ package com.example.backend.service;
 import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -42,11 +41,6 @@ public class UserService implements UserDetailsService {
 
     public UserDetailsService userDetailsService() {
         return this::getByUsername;
-    }
-
-    public User getCurrentUser() {
-        var username  = SecurityContextHolder.getContext().getAuthentication().getName();
-        return getByUsername(username);
     }
 
     @Override
