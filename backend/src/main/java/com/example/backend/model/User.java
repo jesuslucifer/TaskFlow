@@ -35,6 +35,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<Token> tokens;
 
+    @Column(name = "avatar_url")
+    private String avatarUrl = "uploads/avatars/default.jpg";
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

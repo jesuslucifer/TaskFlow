@@ -47,7 +47,7 @@ public class AuthController {
 
         String refreshToken = jwtService.generateRefreshToken(user);
 
-        tokenService.saveToken(accessToken, refreshToken, user);
+        tokenService.saveToken(refreshToken, user);
 
         return ResponseEntity.ok(new JwtResponse(accessToken, refreshToken));
     }
@@ -59,6 +59,7 @@ public class AuthController {
                 .email(signUpRequest.getEmail())
                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
                 .role(Role.USER)
+                .avatarUrl("uploads/avatars/default.jpg")
                 .build();
 
         userService.create(user);
@@ -81,7 +82,9 @@ public class AuthController {
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
 
-        tokenService.saveToken(accessToken, refreshToken, user);
+        tokenService.removeToken(user);
+
+        tokenService.saveToken(refreshToken, user);
 
         return ResponseEntity.ok(new JwtResponse(accessToken, refreshToken));
     }

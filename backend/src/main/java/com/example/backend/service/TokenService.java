@@ -16,12 +16,10 @@ public class TokenService {
 
     private final TokenRepository tokenRepository;
 
-    public void saveToken(String accessToken, String refreshToken, User user) {
+    public void saveToken(String refreshToken, User user) {
         Token token = new Token();
 
         token.setRefreshToken(refreshToken);
-
-        token.setAccessToken(accessToken);
 
         token.setUser(user);
 

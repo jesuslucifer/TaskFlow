@@ -7,3 +7,5 @@ databaseChangeLog:
       file: db/changelog/add-table-token.yaml
   - include:
       file: db/changelog/add-column-available-in-tokens.yaml
+  - include:
+      file: db/changelog/change-column-in-users.yaml
