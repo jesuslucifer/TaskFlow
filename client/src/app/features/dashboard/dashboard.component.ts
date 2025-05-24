@@ -1,8 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ProjectListComponent } from '../project/project-list/project-list.component';
 import { IUser, IUserStats } from '../../core/interface/user.interface';
+import { AuthService } from '../../core/services/auth.service';
+import { IProfile, ProfileService } from '../../core/services/profile.service';
+import { Observable } from 'rxjs';
 @Component({
   selector: 'app-dashboard',
   imports: [CommonModule, RouterModule, ProjectListComponent],
@@ -10,6 +13,19 @@ import { IUser, IUserStats } from '../../core/interface/user.interface';
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent {
+  authService = inject(AuthService);
+  profileService = inject(ProfileService);
+  router = inject(Router);
+  logout() {
+    this.authService.logout().subscribe(() => {
+      this.router.navigate(['/login']);
+    });
+
+    // tap(() => {
+    // })
+  }
+  // users: IProfile = {};
+
   user: IUser = {
     name: 'Алексей Иванов',
     email: 'ivanov@example.com',

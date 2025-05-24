@@ -5,10 +5,18 @@
     <input class="auth__input" formControlName="username" placeholder="Ivan" type="text">
   </label>
   }
+  @if(isReg){
   <label class="auth-control__label">
     Email
     <input class="auth__input" formControlName="email" placeholder="example@mail.ru" type="text">
   </label>
+  } @else {
+  <label class="auth-control__label">
+    Email или Имя пользователя
+    <input class="auth__input" formControlName="usernameOrEmail" placeholder="example@mail.ru" type="text">
+  </label>
+  }
+
   <label class="auth-control__label">
     Пароль
     <input class="auth__input" formControlName="password" type="text" placeholder="******">

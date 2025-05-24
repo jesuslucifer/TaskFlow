@@ -4,6 +4,7 @@ import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { RegisterPageComponent } from './pages/authPages/register-page/register-page.component';
 import { LoginPageComponent } from './pages/authPages/login-page/login-page.component';
 import { ProjectsPageComponent } from './pages/projects-page/projects-page.component';
+import { canActivateAuth } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -13,6 +14,7 @@ export const routes: Routes = [
       { path: 'profile', component: DashboardComponent },
       { path: 'projects', component: ProjectsPageComponent },
     ],
+    canActivate: [canActivateAuth],
   },
   {
     path: 'sign-up',
