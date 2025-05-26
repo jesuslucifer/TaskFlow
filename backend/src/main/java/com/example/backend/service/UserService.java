@@ -7,11 +7,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+    private final LocalStorageService localStorageService;
 
     public User save(User user) {
         return userRepository.save(user);
@@ -52,5 +54,27 @@ public class UserService implements UserDetailsService {
             return userRepository.findByUsername(usernameOrEmail)
                     .orElseThrow(() -> new UsernameNotFoundException(usernameOrEmail));
         }
+    }
+
+    public void updateAvatar(Long userId, MultipartFile file) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        System.out.println(file.getOriginalFilename());
+
+        if (file.isEmpty()) {
+            throw new RuntimeException("Empty avatar");
+        }
+
+        if (!file.getContentType().startsWith("image")) {
+            throw new RuntimeException("Invalid image type");
+        }
+
+        String filename = "avatar_user_" + user.getId() + "_" + System.currentTimeMillis();
+        String fileUrl = localStorageService.uploadFile(file, filename);
+
+        user.setAvatarUrl(fileUrl);
+        userRepository.save(user);
+
     }
 }
