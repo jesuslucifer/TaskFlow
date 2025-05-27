@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 export interface IProfile {
-  username: string;
-  email: string;
-  avatarUrl: string;
+  username: string | null;
+  email: string | null;
+  avatarUrl: string | null;
 }
 @Injectable({
   providedIn: 'root',
@@ -12,10 +12,24 @@ export interface IProfile {
 export class ProfileService {
   http = inject(HttpClient);
   baseApiUrl = 'http://localhost:8080/api/';
-  // me = signal<IProfile | null>(null);
-  getMe(): Observable<IProfile> {
-    return this.http.get<IProfile>(`${this.baseApiUrl}user/me`);
-    // .pipe(tap((res: IProfile) => this.me.set(res)));
+  me = signal<IProfile | null>(null);
+  getMe() {
+    return this.http.get<IProfile>(`${this.baseApiUrl}users/me`).pipe(
+      tap({
+        next: (res: IProfile) => this.me.set(res),
+        error: (err) => console.error('Ошибка при получении профиля', err),
+      })
+    );
+  }
+  getProfile(id: string) {
+    return this.http.get<IProfile>(`${this.baseApiUrl}users/${id}`);
+  }
+
+  getImage() {
+    return this.http.get(
+      'http://localhost:8080/api/uploads/avatars/default.jpg',
+      { responseType: 'text' }
+    );
   }
   constructor() {}
 }

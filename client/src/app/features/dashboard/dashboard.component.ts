@@ -1,11 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ProjectListComponent } from '../project/project-list/project-list.component';
 import { IUser, IUserStats } from '../../core/interface/user.interface';
 import { AuthService } from '../../core/services/auth.service';
 import { IProfile, ProfileService } from '../../core/services/profile.service';
-import { Observable } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
+import { toObservable } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'app-dashboard',
   imports: [CommonModule, RouterModule, ProjectListComponent],
@@ -16,21 +17,20 @@ export class DashboardComponent {
   authService = inject(AuthService);
   profileService = inject(ProfileService);
   router = inject(Router);
+  route = inject(ActivatedRoute);
+  avatar = this.profileService.getImage();
+  me$ = toObservable(this.profileService.me);
+  profile$ = this.route.params.pipe(
+    switchMap(({ id }) => {
+      if (id === 'me') return this.me$;
+      return this.profileService.getProfile(id);
+    })
+  );
   logout() {
     this.authService.logout().subscribe(() => {
       this.router.navigate(['/login']);
     });
-
-    // tap(() => {
-    // })
   }
-  // users: IProfile = {};
-
-  user: IUser = {
-    name: 'Алексей Иванов',
-    email: 'ivanov@example.com',
-    avatarUrl: 'assets/avatar.jpg',
-  };
 
   userStats: IUserStats = {
     activeProjects: 5,

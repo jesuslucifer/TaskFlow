@@ -47,63 +47,14 @@ body {
   flex-direction: column;
   justify-content: center;
   height: 100%;
-
-  &__form {
-    width: 100%;
-    justify-content: center;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    > h4 {
-      color: #98a2b3;
-      font-size: 16px;
-      font-weight: normal;
-      > a {
-        color: #1570ef;
-      }
-    }
-  }
-
-  &__input {
-    padding: 14px 16px;
-    margin: 10px 0;
-    border-radius: 15px;
-    outline: none;
-    border: 1px solid #d0d5dd;
-    &::placeholder {
-    }
-    &:focus {
-      outline: #d1e9ff;
-      border-color: #d1e9ff;
-    }
-  }
-
-  &__btn {
-    padding: 18px 0;
-    text-align: center;
-    background-color: #1570ef;
-    color: #fcfcfd;
-    cursor: pointer;
-    border-radius: 15px;
-    border: none;
-    &:hover {
-      opacity: 0.8;
-    }
-  }
 }
-.auth-control {
-  &__label {
-    display: flex;
-    flex-direction: column;
-    color: #344054;
-  }
-}
+
 .form {
   &__auth {
     border-radius: 20px;
     background-color: #fff;
     padding: 48px 64px;
-    width: 20%;
+    max-width: 378px;
     margin: 0 auto;
     > h1 {
       font-size: 28px;

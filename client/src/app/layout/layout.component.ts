@@ -3,6 +3,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { HeaderComponent } from './header/header.component';
 import { RouterOutlet } from '@angular/router';
 import { ProfileService } from '../core/services/profile.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-layout',
@@ -15,8 +16,6 @@ export class LayoutComponent {
 
   ngOnInit() {
     console.log('init');
-    this.profileService.getMe().subscribe((val) => {
-      console.log(val);
-    });
+    this.profileService.getMe().subscribe();
   }
 }
