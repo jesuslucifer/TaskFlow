@@ -41,6 +41,11 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new RuntimeException("Username not found"));
     }
 
+    public User getById(Long id) {
+        return userRepository.findById(id)
+                .orElse(null);
+    }
+
     public UserDetailsService userDetailsService() {
         return this::getByUsername;
     }
