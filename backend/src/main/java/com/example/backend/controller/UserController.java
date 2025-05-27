@@ -1,5 +1,6 @@
 package com.example.backend.controller;
 
+import com.example.backend.dto.UserDto;
 import com.example.backend.model.User;
 import com.example.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -69,6 +71,19 @@ public class UserController {
                 ("username", user.getUsername(),
                         "email", user.getEmail(),
                         "avatarUrl", user.getAvatarUrl()));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getUsers() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body("You are not authenticated");
+        }
+
+        List<UserDto> userDto = userService.getAll();
+
+        return ResponseEntity.ok(userDto);
     }
     
 }
