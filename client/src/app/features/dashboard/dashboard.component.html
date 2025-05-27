@@ -1,12 +1,16 @@
+@if(profile$ | async; as profile){
 <div class="dashboard">
   <div class="dashboard__main">
     <section class="dashboard__section dashboard__section--user">
       <div class="user-card">
         <div class="user-card__info">
-          <img [src]="" alt="Аватар" class="user-card__avatar" />
+          <div class="user-avatar">
+            <img src='' alt="Аватар" class="user-card__avatar" />
+
+          </div>
           <div class="user-card__text">
-            <div class="user-card__name">{{ user.name }}</div>
-            <div class="user-card__email">{{ user.email }}</div>
+            <div class="user-card__name">{{ profile.username}}</div>
+            <div class="user-card__email">{{profile.email }}</div>
             <h1 (click)="logout()">Выйти</h1>
           </div>
         </div>
@@ -67,3 +71,4 @@
     </section>
   </aside>
 </div>
+}
