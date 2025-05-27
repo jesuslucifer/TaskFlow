@@ -64,7 +64,7 @@ public class UserController {
         User user = userService.getById(id);
 
         if (user == null) {
-            return ResponseEntity.status(401).body("User not found");
+            return ResponseEntity.status(404).body("User not found");
         }
 
         return ResponseEntity.ok(Map.of
@@ -84,6 +84,26 @@ public class UserController {
         List<UserDto> userDto = userService.getAll();
 
         return ResponseEntity.ok(userDto);
+    }
+
+    @GetMapping("/username/{username}")
+    public ResponseEntity<?> getByUsername(@PathVariable String username) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body("You are not authenticated");
+        }
+
+        User user = userService.getByUsername(username);
+
+        if (user == null) {
+            return ResponseEntity.status(404).body("User not found");
+        }
+
+        return ResponseEntity.ok(Map.of
+                ("username", user.getUsername(),
+                        "email", user.getEmail(),
+                        "avatarUrl", user.getAvatarUrl()));
     }
     
 }
