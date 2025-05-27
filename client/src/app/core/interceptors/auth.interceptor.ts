@@ -1,5 +1,4 @@
 import {
-  HttpErrorResponse,
   HttpHandlerFn,
   HttpInterceptorFn,
   HttpRequest,
@@ -19,12 +18,11 @@ export const AuthTokenInterceptor: HttpInterceptorFn = (req, next) => {
     return refreshAndProceed(authService, req, next);
   }
   return next(addToken(req, accessToken)).pipe(
-    catchError((error: HttpErrorResponse) => {
+    catchError((error) => {
       if (error.status === 403) {
         return refreshAndProceed(authService, req, next);
       }
-      console.error('HTTP Error:', error);
-      return throwError(() => error);
+      return throwError(error);
     })
   );
 };

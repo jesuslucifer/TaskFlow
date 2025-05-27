@@ -11,8 +11,8 @@ export const routes: Routes = [
     path: '',
     component: LayoutComponent,
     children: [
+      { path: 'profile', component: DashboardComponent },
       { path: 'projects', component: ProjectsPageComponent },
-      { path: 'profile/:id', component: DashboardComponent },
     ],
     canActivate: [canActivateAuth],
   },

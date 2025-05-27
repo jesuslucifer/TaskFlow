@@ -33,7 +33,7 @@ export class LoginComponent {
     if (this.form.valid) {
       //@ts-ignore
       this.authService.login(this.form.value).subscribe((res) => {
-        this.router.navigate(['/profile/me']);
+        this.router.navigate(['/profile']);
       });
     } else {
       console.log('Не валидный логин или пароль');

@@ -43,9 +43,9 @@ export class AuthService {
         tap((val) => {
           this.saveTokens(val);
         }),
-        catchError((err: any) => {
+        catchError((err) => {
           this.logout();
-          return throwError(() => err);
+          return throwError(err);
         })
       );
   }

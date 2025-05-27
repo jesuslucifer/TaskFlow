@@ -19,22 +19,9 @@
 
   <label class="auth-control__label">
     Пароль
-    <div class="password-input">
-      <input class="auth__input" formControlName="password" [type]="isEyeVisible() ?  'text' : 'password'"
-        placeholder="******">
-      <div class="password__eye" (click)="isEyeVisible.set(!isEyeVisible())">
-        @if(isEyeVisible()){
-        <mat-icon>visibility_on</mat-icon>
-        }@else {
-        <mat-icon>visibility_off</mat-icon>
-        }
-      </div>
-
-    </div>
-
+    <input class="auth__input" formControlName="password" type="text" placeholder="******">
   </label>
-
-  <button class="auth__btn" type="submit">Продолжить</button>
+  <button class="auth__btn" type="submit"> Продолжить</button>
 
   @if(isReg){
   <h4>Уже есть аккаунт? <a [routerLink]="['/login']"> Войти </a> </h4>
