@@ -1,12 +1,12 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.UserDto;
+import com.example.backend.dto.response.UserDto;
+import com.example.backend.exception.*;
 import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,29 +25,34 @@ public class UserService implements UserDetailsService {
 
     public User create(User user) {
         if (userRepository.existsByUsername(user.getUsername())) {
-            throw new RuntimeException("Username already exists");
+            throw new UsernameAlreadyExistsException();
         }
 
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("Email already exists");
+            throw new EmailAlreadyExistsException();
         }
 
         return save(user);
     }
 
-    public User getByUsernameOrEmail(String username, String email) {
-        return userRepository.findByUsernameOrEmail(username, email)
-                .orElseThrow(() -> new RuntimeException("Username or email not found"));
+    public User getByUsernameOrEmail(String usernameOrEmail) {
+        if (usernameOrEmail.contains("@")) {
+            return userRepository.findByEmail(usernameOrEmail)
+                    .orElseThrow(AuthenticationFailedException::new);
+        } else {
+            return userRepository.findByUsername(usernameOrEmail)
+                    .orElseThrow(AuthenticationFailedException::new);
+        }
     }
 
     public User getByUsername(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Username not found"));
+                .orElseThrow(UsernameNotFoundException::new);
     }
 
     public User getById(Long id) {
         return userRepository.findById(id)
-                .orElse(null);
+                .orElseThrow(IdNotFoundException::new);
     }
 
     public List<UserDto> getAll() {
@@ -65,25 +70,23 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
         if (usernameOrEmail.contains("@")) {
             return userRepository.findByEmail(usernameOrEmail)
-                    .orElseThrow(() -> new UsernameNotFoundException(usernameOrEmail));
+                    .orElseThrow(EmailNotFoundException::new);
         } else {
             return userRepository.findByUsername(usernameOrEmail)
-                    .orElseThrow(() -> new UsernameNotFoundException(usernameOrEmail));
+                    .orElseThrow(UsernameNotFoundException::new);
         }
     }
 
     public void updateAvatar(Long userId, MultipartFile file) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        System.out.println(file.getOriginalFilename());
+                .orElseThrow(IdNotFoundException::new);
 
         if (file.isEmpty()) {
-            throw new RuntimeException("Empty avatar");
+            throw new UploadFileIsEmptyException();
         }
 
         if (!file.getContentType().startsWith("image")) {
-            throw new RuntimeException("Invalid image type");
+            throw new InvalidFileTypeException();
         }
 
         String filename = "avatar_user_" + user.getId() + "_" + System.currentTimeMillis();

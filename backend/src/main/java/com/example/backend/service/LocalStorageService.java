@@ -1,6 +1,6 @@
 package com.example.backend.service;
 
-import org.apache.tomcat.util.http.fileupload.FileUploadException;
+import com.example.backend.exception.UploadFileException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,7 +30,7 @@ public class LocalStorageService {
 
             return "/uploads/" + fileName;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UploadFileException();
         }
     }
 
