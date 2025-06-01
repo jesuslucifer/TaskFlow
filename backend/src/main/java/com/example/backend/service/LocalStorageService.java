@@ -17,6 +17,12 @@ public class LocalStorageService {
     @Value("${backend.upload.dir}")
     private String uploadDir;
 
+    @Value("${server.address:localhost}")
+    private String serverAddress;
+
+    @Value("${server.port:8080}")
+    private String serverPort;
+
     public String uploadFile(MultipartFile file, String fileName) {
         try {
             Path path = Paths.get(uploadDir);
@@ -28,7 +34,7 @@ public class LocalStorageService {
             Path filePath = path.resolve(fileName);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            return "/uploads/" + fileName;
+            return "http://" + serverAddress + ":" + serverPort + "/uploads/avatars/" + fileName;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -40,6 +40,7 @@ public class SecurityConfig {
                 }))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/uploads/avatars/**").permitAll()
                         .anyRequest().authenticated()
                         )
                 .sessionManagement(sessionManagement -> sessionManagement
