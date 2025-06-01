@@ -13,6 +13,8 @@ export class ProfileService {
   http = inject(HttpClient);
   baseApiUrl = 'http://localhost:8080/api/';
   me = signal<IProfile | null>(null);
+  users = signal<IProfile[] | null>(null);
+
   getMe() {
     return this.http.get<IProfile>(`${this.baseApiUrl}users/me`).pipe(
       tap({
@@ -24,12 +26,11 @@ export class ProfileService {
   getProfile(id: string) {
     return this.http.get<IProfile>(`${this.baseApiUrl}users/${id}`);
   }
-
-  getImage() {
-    return this.http.get(
-      'http://localhost:8080/api/uploads/avatars/default.jpg',
-      { responseType: 'text' }
-    );
+  uploadImage(file: File): Observable<string> {
+    const fd = new FormData();
+    fd.append('file', file);
+    return this.http.post(`${this.baseApiUrl}users/avatar`, fd, {
+      responseType: 'text',
+    });
   }
-  constructor() {}
 }

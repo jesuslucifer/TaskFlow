@@ -13,12 +13,16 @@
         justify-content: space-between;
         gap: 10px;
       }
-      &__ava {
-      }
+
       &__notification {
       }
     }
   }
+}
+.head-top__ava img {
+  width: 30px;
+  height: 30px;
+  border-radius: 20px;
 }
 .head__search {
   padding: 10px 20px;

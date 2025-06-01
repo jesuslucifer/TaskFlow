@@ -69,11 +69,4 @@ export class AuthService {
         })
       );
   }
-  // logout() {
-  //   this.cookieService.delete('token');
-  //   this.cookieService.delete('refreshToken');
-  //   this.refreshToken = null;
-  //   this.accessToken = null;
-  //   this.router.navigate(['/login']);
-  // }
 }
