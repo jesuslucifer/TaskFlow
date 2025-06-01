@@ -58,7 +58,7 @@ public class AuthController {
                 .email(signUpRequest.getEmail())
                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
                 .role(Role.USER)
-                .avatarUrl("http:/localhost:8080/uploads/avatars/default.jpg")
+                .avatarUrl("http://localhost:8080/uploads/avatars/default.jpg")
                 .build();
 
         userService.create(user);
