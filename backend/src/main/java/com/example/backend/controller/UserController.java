@@ -1,6 +1,6 @@
 package com.example.backend.controller;
 
-import com.example.backend.dto.UserDto;
+import com.example.backend.dto.response.UserDto;
 import com.example.backend.model.User;
 import com.example.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +24,7 @@ public class UserController {
     public ResponseEntity<?> getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("You are not authenticated");
-        }
-
         User user = (User) authentication.getPrincipal();
-
 
         return ResponseEntity.ok(Map.of
                 ("username", user.getUsername(),
@@ -39,12 +34,7 @@ public class UserController {
 
     @PostMapping("/avatar")
     public ResponseEntity<String> updateAvatarUrl(@RequestParam("file") MultipartFile avatarUrlRequest) {
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("You are not authenticated");
-        }
 
         User user = (User) authentication.getPrincipal();
 
@@ -55,17 +45,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUser(@PathVariable Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("You are not authenticated");
-        }
-
         User user = userService.getById(id);
-
-        if (user == null) {
-            return ResponseEntity.status(404).body("User not found");
-        }
 
         return ResponseEntity.ok(Map.of
                 ("username", user.getUsername(),
@@ -75,12 +55,6 @@ public class UserController {
 
     @GetMapping("/all")
     public ResponseEntity<?> getUsers() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("You are not authenticated");
-        }
-
         List<UserDto> userDto = userService.getAll();
 
         return ResponseEntity.ok(userDto);
@@ -88,17 +62,7 @@ public class UserController {
 
     @GetMapping("/username/{username}")
     public ResponseEntity<?> getByUsername(@PathVariable String username) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).body("You are not authenticated");
-        }
-
         User user = userService.getByUsername(username);
-
-        if (user == null) {
-            return ResponseEntity.status(404).body("User not found");
-        }
 
         return ResponseEntity.ok(Map.of
                 ("username", user.getUsername(),

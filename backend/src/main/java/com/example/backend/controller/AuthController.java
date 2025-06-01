@@ -4,6 +4,7 @@ import com.example.backend.dto.request.RefreshTokenRequest;
 import com.example.backend.dto.request.SignInRequest;
 import com.example.backend.dto.request.SignUpRequest;
 import com.example.backend.dto.response.JwtResponse;
+import com.example.backend.exception.AuthenticationFailedException;
 import com.example.backend.model.Role;
 import com.example.backend.model.User;
 import com.example.backend.service.JwtService;
@@ -30,26 +31,24 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@RequestBody SignInRequest signInRequest) throws Exception {
+        try {
+            User user = userService.getByUsernameOrEmail(signInRequest.getUsernameOrEmail());
 
-        User user = userService.getByUsernameOrEmail(signInRequest.getUsernameOrEmail(), signInRequest.getUsernameOrEmail());
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getUsername(), signInRequest.getPassword()));
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getUsername(), signInRequest.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
+            String accessToken = jwtService.generateAccessToken(user);
 
-        if (!authentication.isAuthenticated()) {
-            throw new RuntimeException("Authentication failed");
+            String refreshToken = jwtService.generateRefreshToken(user);
+
+            tokenService.saveToken(refreshToken, user);
+
+            return ResponseEntity.ok(new JwtResponse(accessToken, refreshToken));
+        } catch (Exception e) {
+            throw new AuthenticationFailedException();
         }
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        String accessToken = jwtService.generateAccessToken(user);
-
-        String refreshToken = jwtService.generateRefreshToken(user);
-
-        tokenService.saveToken(refreshToken, user);
-
-        return ResponseEntity.ok(new JwtResponse(accessToken, refreshToken));
     }
 
     @PostMapping("/sign-up")
