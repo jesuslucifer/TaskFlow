@@ -4,6 +4,7 @@ import com.example.backend.dto.request.RefreshTokenRequest;
 import com.example.backend.dto.request.SignInRequest;
 import com.example.backend.dto.request.SignUpRequest;
 import com.example.backend.dto.response.JwtResponse;
+import com.example.backend.dto.response.SuccessResponse;
 import com.example.backend.exception.AuthenticationFailedException;
 import com.example.backend.model.Role;
 import com.example.backend.model.User;
@@ -11,6 +12,7 @@ import com.example.backend.service.JwtService;
 import com.example.backend.service.TokenService;
 import com.example.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -52,7 +54,7 @@ public class AuthController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<String> signUp(@RequestBody SignUpRequest signUpRequest) throws Exception {
+    public ResponseEntity<?> signUp(@RequestBody SignUpRequest signUpRequest) throws Exception {
         var user = User.builder()
                 .username(signUpRequest.getUsername())
                 .email(signUpRequest.getEmail())
@@ -63,7 +65,10 @@ public class AuthController {
 
         userService.create(user);
 
-        return ResponseEntity.ok("Success registered");
+        return ResponseEntity.ok(new SuccessResponse(
+                "Успешная регистрация",
+                HttpStatus.OK
+        ));
     }
 
     @PostMapping("/refresh")
@@ -96,6 +101,9 @@ public class AuthController {
 
         tokenService.removeToken(user);
 
-        return ResponseEntity.ok("Successfully logged out");
+        return ResponseEntity.ok(new SuccessResponse(
+                "Успешный выход",
+                HttpStatus.OK
+        ));
     }
 }

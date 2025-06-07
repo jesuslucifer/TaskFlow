@@ -1,9 +1,11 @@
 package com.example.backend.controller;
 
+import com.example.backend.dto.response.SuccessResponse;
 import com.example.backend.dto.response.UserDto;
 import com.example.backend.model.User;
 import com.example.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,14 +35,17 @@ public class UserController {
     }
 
     @PostMapping("/avatar")
-    public ResponseEntity<String> updateAvatarUrl(@RequestParam("file") MultipartFile avatarUrlRequest) {
+    public ResponseEntity<?> updateAvatarUrl(@RequestParam("file") MultipartFile avatarUrlRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         User user = (User) authentication.getPrincipal();
 
         userService.updateAvatar(user.getId(), avatarUrlRequest);
 
-        return ResponseEntity.ok("Successfully updated avatar url");
+        return ResponseEntity.ok(new SuccessResponse(
+                "Аватар обновлен",
+                HttpStatus.OK
+        ));
     }
 
     @GetMapping("/{id}")
