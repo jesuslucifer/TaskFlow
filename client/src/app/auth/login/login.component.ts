@@ -8,6 +8,10 @@ import {
 import { Router } from '@angular/router';
 import { AuthFormComponent } from '../auth-form/auth-form.component';
 import { AuthService } from '../../core/services/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { catchError, throwError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +21,7 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrl: './login.component.scss',
 })
 export class LoginComponent {
+  toastr = inject(ToastrService);
   router = inject(Router);
   isReg: boolean = false;
   authService = inject(AuthService);
@@ -32,11 +37,17 @@ export class LoginComponent {
   onSubmit = () => {
     if (this.form.valid) {
       //@ts-ignore
-      this.authService.login(this.form.value).subscribe((res) => {
-        this.router.navigate(['/profile/me']);
+      this.authService.login(this.form.value).subscribe({
+        next: (res) => {
+          this.router.navigate(['/profile/me']);
+          this.toastr.success('Вы успешно авторизовались');
+        },
+        error: (err) => {
+          this.toastr.error(err.error.message);
+        },
       });
     } else {
-      console.log('Не валидный логин или пароль');
+      this.toastr.warning('Введите корректные данные');
     }
   };
 }

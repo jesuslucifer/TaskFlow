@@ -1,6 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Router } from '@angular/router';
+import { catchError, Observable, tap, throwError } from 'rxjs';
 export interface IProfile {
   username: string | null;
   email: string | null;
@@ -14,12 +15,12 @@ export class ProfileService {
   baseApiUrl = 'http://localhost:8080/api/';
   me = signal<IProfile | null>(null);
   users = signal<IProfile[] | null>(null);
-
+  router = inject(Router);
   getMe() {
     return this.http.get<IProfile>(`${this.baseApiUrl}users/me`).pipe(
-      tap({
-        next: (res: IProfile) => this.me.set(res),
-        error: (err) => console.error('Ошибка при получении профиля', err),
+      tap((res: IProfile) => this.me.set(res)),
+      catchError((err: HttpErrorResponse) => {
+        return throwError(() => err);
       })
     );
   }
@@ -29,8 +30,14 @@ export class ProfileService {
   uploadImage(file: File): Observable<string> {
     const fd = new FormData();
     fd.append('file', file);
-    return this.http.post(`${this.baseApiUrl}users/avatar`, fd, {
-      responseType: 'text',
-    });
+    return this.http
+      .post(`${this.baseApiUrl}users/avatar`, fd, {
+        responseType: 'text',
+      })
+      .pipe(
+        catchError((err: HttpErrorResponse) => {
+          return throwError(() => err);
+        })
+      );
   }
 }

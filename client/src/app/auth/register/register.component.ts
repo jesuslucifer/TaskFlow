@@ -8,6 +8,9 @@ import {
 import { Router } from '@angular/router';
 import { AuthFormComponent } from '../auth-form/auth-form.component';
 import { AuthService } from '../../core/services/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-register',
@@ -16,6 +19,7 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrl: './register.component.scss',
 })
 export class RegisterComponent {
+  toastr = inject(ToastrService);
   router = inject(Router);
   authService = inject(AuthService);
   isReg: boolean = true;
@@ -34,9 +38,17 @@ export class RegisterComponent {
   onSubmit = () => {
     if (this.form.valid) {
       //@ts-ignore
-      this.authService.signUp(this.form.value).subscribe(() => {
-        this.router.navigate(['/login']);
+      this.authService.signUp(this.form.value).subscribe({
+        next: () => {
+          this.router.navigate(['/login']);
+          this.toastr.success('Вы успешно зарегистрировались');
+        },
+        error: (err: HttpErrorResponse) => {
+          this.toastr.error(err.error.message);
+        },
       });
+    } else {
+      this.toastr.error('Введите корректные данные');
     }
   };
 }

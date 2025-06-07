@@ -3,14 +3,15 @@
   <div class="user-card__info">
     <div class="user-card__avatar-container">
       <img [src]="profile.avatarUrl   " alt="Аватар" class="user-card__avatar" />
+      @if(profile == (me$ | async)){
       <input tabindex="-1" type="file" class="user-card__avatar-input" (change)="fileBrowserHandler($event)"
         aria-label="Загрузить аватар" />
+      }
     </div>
     <div class="user-card__text">
       <div class="user__info">
         <h3 class="user__name">{{ profile.username }}</h3>
         <p class="user__email">{{ profile.email }}</p>
-        <button (click)="consoleAva(profile.avatarUrl)">ava</button>
       </div>
 
     </div>

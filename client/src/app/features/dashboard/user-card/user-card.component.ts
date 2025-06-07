@@ -2,13 +2,15 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { Observable, switchMap } from 'rxjs';
+import { catchError, Observable, switchMap, throwError } from 'rxjs';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../../core/services/auth.service';
 import {
   IProfile,
   ProfileService,
 } from '../../../core/services/profile.service';
+import { ToastrService } from 'ngx-toastr';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-user-card',
@@ -21,36 +23,39 @@ export class UserCardComponent {
   authService = inject(AuthService);
   profileService = inject(ProfileService);
   router = inject(Router);
+  toastr = inject(ToastrService);
+
   route = inject(ActivatedRoute);
 
   me$ = toObservable(this.profileService.me);
   profile$: Observable<IProfile | null> = this.route.params.pipe(
     switchMap(({ id }) =>
       id === 'me' ? this.me$ : this.profileService.getProfile(id)
-    )
+    ),
+    catchError((err: HttpErrorResponse) => {
+      this.toastr.error(err.error.message);
+      this.router.navigate(['/profile/me']);
+      return throwError(() => err);
+    })
   );
 
   avatar: File | null = null;
   preview = signal<string | null>(null);
-  //'assets/default.jpg'
   userStats = {
     activeProjects: 5,
     completedProjects: 12,
     overdueTasks: 3,
     completedTasks: 87,
   };
-  consoleAva(avatarUrl: string | null) {
-    console.log(`Preview: ${this.preview}`);
-    console.log(`Avatar url:${avatarUrl}`);
-  }
 
   uploadImage(file: File) {
     this.profileService.uploadImage(file).subscribe({
       next: (fileUrl) => {
         this.profileService.getMe().subscribe();
         this.preview.set(fileUrl);
+        this.toastr.success('Аватарка успешно загружена!');
       },
-      error: (err) => console.error('Ошибка при загрузке аватарки', err),
+      error: (err) => this.toastr.error(err.error.message),
     });
   }
 

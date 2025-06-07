@@ -1,14 +1,17 @@
 import { CookieService } from 'ngx-cookie-service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { IToken } from '../interface/auth.interface';
 import { catchError, tap, throwError } from 'rxjs';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  constructor(private snackBar: MatSnackBar) {}
+
   http = inject(HttpClient);
   accessToken: string | null = null;
   refreshToken: string | null = null;
@@ -23,14 +26,19 @@ export class AuthService {
     return !!this.accessToken;
   }
   signUp(payload: { username: string; password: string; email: string }) {
-    return this.http.post(`${this.baseApiUrl}/sign-up`, payload, {
-      responseType: 'text',
-    });
+    return this.http.post(`${this.baseApiUrl}/sign-up`, payload).pipe(
+      catchError((err: HttpErrorResponse) => {
+        return throwError(() => err);
+      })
+    );
   }
   login(payload: { usernameOrEmail: string; password: string }) {
     return this.http.post<IToken>(`${this.baseApiUrl}/login`, payload).pipe(
       tap((val) => {
         this.saveTokens(val);
+      }),
+      catchError((err: HttpErrorResponse) => {
+        return throwError(() => err);
       })
     );
   }
@@ -43,7 +51,7 @@ export class AuthService {
         tap((val) => {
           this.saveTokens(val);
         }),
-        catchError((err: any) => {
+        catchError((err: HttpErrorResponse) => {
           this.logout();
           return throwError(() => err);
         })
