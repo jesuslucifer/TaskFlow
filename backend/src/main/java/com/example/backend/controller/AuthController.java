@@ -4,12 +4,15 @@ import com.example.backend.dto.request.RefreshTokenRequest;
 import com.example.backend.dto.request.SignInRequest;
 import com.example.backend.dto.request.SignUpRequest;
 import com.example.backend.dto.response.JwtResponse;
+import com.example.backend.dto.response.SuccessResponse;
+import com.example.backend.exception.AuthenticationFailedException;
 import com.example.backend.model.Role;
 import com.example.backend.model.User;
 import com.example.backend.service.JwtService;
 import com.example.backend.service.TokenService;
 import com.example.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,41 +33,42 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@RequestBody SignInRequest signInRequest) throws Exception {
+        try {
+            User user = userService.getByUsernameOrEmail(signInRequest.getUsernameOrEmail());
 
-        User user = userService.getByUsernameOrEmail(signInRequest.getUsernameOrEmail(), signInRequest.getUsernameOrEmail());
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getUsername(), signInRequest.getPassword()));
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getUsername(), signInRequest.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
+            String accessToken = jwtService.generateAccessToken(user);
 
-        if (!authentication.isAuthenticated()) {
-            throw new RuntimeException("Authentication failed");
+            String refreshToken = jwtService.generateRefreshToken(user);
+
+            tokenService.saveToken(refreshToken, user);
+
+            return ResponseEntity.ok(new JwtResponse(accessToken, refreshToken));
+        } catch (Exception e) {
+            throw new AuthenticationFailedException();
         }
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        String accessToken = jwtService.generateAccessToken(user);
-
-        String refreshToken = jwtService.generateRefreshToken(user);
-
-        tokenService.saveToken(refreshToken, user);
-
-        return ResponseEntity.ok(new JwtResponse(accessToken, refreshToken));
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<String> signUp(@RequestBody SignUpRequest signUpRequest) throws Exception {
+    public ResponseEntity<?> signUp(@RequestBody SignUpRequest signUpRequest) throws Exception {
         var user = User.builder()
                 .username(signUpRequest.getUsername())
                 .email(signUpRequest.getEmail())
                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
                 .role(Role.USER)
-                .avatarUrl("uploads/avatars/default.jpg")
+                .avatarUrl("http://localhost:8080/uploads/avatars/default.jpg")
                 .build();
 
         userService.create(user);
 
-        return ResponseEntity.ok("Success registered");
+        return ResponseEntity.ok(new SuccessResponse(
+                "Успешная регистрация",
+                HttpStatus.OK
+        ));
     }
 
     @PostMapping("/refresh")
@@ -97,6 +101,9 @@ public class AuthController {
 
         tokenService.removeToken(user);
 
-        return ResponseEntity.ok("Successfully logged out");
+        return ResponseEntity.ok(new SuccessResponse(
+                "Успешный выход",
+                HttpStatus.OK
+        ));
     }
 }
