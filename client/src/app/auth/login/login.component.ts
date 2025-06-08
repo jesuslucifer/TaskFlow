@@ -8,9 +8,6 @@ import {
 import { Router } from '@angular/router';
 import { AuthFormComponent } from '../auth-form/auth-form.component';
 import { AuthService } from '../../core/services/auth.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { catchError, throwError } from 'rxjs';
-import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -38,7 +35,7 @@ export class LoginComponent {
     if (this.form.valid) {
       //@ts-ignore
       this.authService.login(this.form.value).subscribe({
-        next: (res) => {
+        next: () => {
           this.router.navigate(['/profile/me']);
           this.toastr.success('Вы успешно авторизовались');
         },

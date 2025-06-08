@@ -8,7 +8,6 @@ import {
 import { Router } from '@angular/router';
 import { AuthFormComponent } from '../auth-form/auth-form.component';
 import { AuthService } from '../../core/services/auth.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 

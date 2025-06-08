@@ -1,16 +1,11 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, Input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { catchError, Observable, switchMap, throwError } from 'rxjs';
-import { toObservable } from '@angular/core/rxjs-interop';
-import { AuthService } from '../../../core/services/auth.service';
 import {
   IProfile,
   ProfileService,
 } from '../../../core/services/profile.service';
 import { ToastrService } from 'ngx-toastr';
-import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-user-card',
@@ -20,24 +15,10 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrl: './user-card.component.scss',
 })
 export class UserCardComponent {
-  authService = inject(AuthService);
   profileService = inject(ProfileService);
-  router = inject(Router);
   toastr = inject(ToastrService);
-
-  route = inject(ActivatedRoute);
-
-  me$ = toObservable(this.profileService.me);
-  profile$: Observable<IProfile | null> = this.route.params.pipe(
-    switchMap(({ id }) =>
-      id === 'me' ? this.me$ : this.profileService.getProfile(id)
-    ),
-    catchError((err: HttpErrorResponse) => {
-      this.toastr.error(err.error.message);
-      this.router.navigate(['/profile/me']);
-      return throwError(() => err);
-    })
-  );
+  @Input() profile!: IProfile;
+  @Input() me!: IProfile | null;
 
   avatar: File | null = null;
   preview = signal<string | null>(null);

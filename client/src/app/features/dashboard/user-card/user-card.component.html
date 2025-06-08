@@ -1,12 +1,13 @@
-@if (profile$ | async; as profile) {
+@if (profile ) {
 <div class="user-card">
   <div class="user-card__info">
     <div class="user-card__avatar-container">
       <img [src]="profile.avatarUrl   " alt="Аватар" class="user-card__avatar" />
-      @if(profile == (me$ | async)){
+      @if(profile == (me)){
       <input tabindex="-1" type="file" class="user-card__avatar-input" (change)="fileBrowserHandler($event)"
-        aria-label="Загрузить аватар" />
+        aria-label="Загрузить аватар" accept=".png,.jpg,.jpeg" />
       }
+
     </div>
     <div class="user-card__text">
       <div class="user__info">
