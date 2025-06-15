@@ -11,3 +11,5 @@ databaseChangeLog:
       file: db/changelog/change-column-in-users.yaml
   - include:
       file: db/changelog/create-projects-table.yaml
+  - include:
+      file: db/changelog/create-tasks-table.yaml

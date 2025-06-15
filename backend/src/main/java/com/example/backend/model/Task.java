@@ -14,13 +14,13 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "projects")
-public class Project {
+@Table(name = "tasks")
+public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "project_name", unique = true, nullable = false)
+    @Column(name = "task_name", unique = true, nullable = false)
     private String name;
 
     @Column(name = "description")
@@ -39,8 +39,4 @@ public class Project {
 
     @Column(name = "time_left", nullable = false)
     private LocalTime timeLeft;
-
-    @Column(name = "create_user_id", nullable = false)
-    private Integer createUserId;
 }
-
