@@ -1,0 +1,28 @@
+@if(profile$ | async; as profile){
+<div class="dashboard">
+
+  <div class="dashboard__main">
+    <app-user-card [profile]="profile" [me]="me$ | async"></app-user-card>
+    <app-activity></app-activity>
+    <section class="dashboard__section dashboard__section-projects">
+      <h2 class="dashboard__title">Предстоящие проекты</h2>
+      <app-project-list></app-project-list>
+    </section>
+  </div>
+  <aside class="dashboard__sidebar">
+    <section class="task-today">
+      <h2 class="task-today__title">Задачи на сегодня</h2>
+      <ul class="task-today__list">
+        @for(task of tasks; track task) {
+        <li class="task-today__item">{{ task }}</li>
+        }
+      </ul>
+    </section>
+    <section class="calendar">
+      <h2 class="calendar__title">Календарь</h2>
+      <div class="calendar__placeholder">[Календарь]</div>
+
+    </section>
+  </aside>
+</div>
+}

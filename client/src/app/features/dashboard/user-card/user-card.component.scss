@@ -1,0 +1,113 @@
+.user-card__text {
+  display: flex;
+  align-items: center;
+  text-align: center;
+
+  @media (min-width: 640px) {
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+.user {
+  &__info {
+    &__name {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #1f2937;
+    }
+
+    &__email {
+      font-size: 0.875rem;
+      color: #6b7280;
+      margin-top: 0.25rem;
+    }
+  }
+
+  &__logout {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: #ef4444;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #dc2626;
+    }
+  }
+}
+.user-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+
+    @media (min-width: 640px) {
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+
+  &__avatar-container {
+    position: relative;
+    width: 64px;
+    height: 64px;
+  }
+
+  &__avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: inherit;
+    border: 2px solid #e5e7eb;
+    transition: border-color 0.3s ease;
+  }
+
+  &__avatar-input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  &__stat {
+    background: #f9fafb;
+    padding: 1rem;
+    border-radius: 12px;
+    text-align: center;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+  }
+
+  &__stat-value {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #3b82f6;
+  }
+
+  &__stat-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+  }
+}

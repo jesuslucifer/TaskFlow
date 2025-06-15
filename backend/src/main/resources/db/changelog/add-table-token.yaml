@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3
+      author: jesuslucifer
+      changes:
+        - createTable:
+            tableName: tokens
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: access_token
+                  type: NVARCHAR(255)
+              - column:
+                  name: refresh_token
+                  type: NVARCHAR(255)

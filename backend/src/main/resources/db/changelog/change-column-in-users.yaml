@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: 5
+      author: jesuslucifer
+      changes:
+        - dropColumn:
+            tableName: tokens
+            columns:
+              - column:
+                  name: access_token
+        - dropColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: avatar_url
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: avatar_url
+                  type: NVARCHAR(255)
+                  defaultValue: "uploads/avatars/default.jpg"
+                  constraints:
+                    nullable: false

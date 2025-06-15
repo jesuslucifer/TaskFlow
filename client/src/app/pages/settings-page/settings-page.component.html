@@ -1,0 +1,16 @@
+<section class="settings">
+  <h1 class="settings__title">Настройки</h1>
+
+  <form class="settings__form">
+    <div class="settings__field">
+      <label for="username" class="settings__label">Изменить имя пользователя</label>
+      <input type="text" id="username" class="settings__input" placeholder="Введите имя пользователя"
+        aria-label="Имя пользователя" />
+    </div>
+
+
+    <button type="submit" class="settings__save">Сохранить изменения</button>
+  </form>
+
+  <button (click)="logout()" class="settings__logout">Выйти из системы</button>
+</section>

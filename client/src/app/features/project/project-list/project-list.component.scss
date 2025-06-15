@@ -1,0 +1,15 @@
+.projects {
+  // .projects__header
+  margin: 20px 20px;
+  &__header {
+    display: flex;
+  }
+
+  // .projects__main
+
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 70px;
+  }
+}

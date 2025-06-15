@@ -1,0 +1,40 @@
+@if (profile ) {
+<div class="user-card">
+  <div class="user-card__info">
+    <div class="user-card__avatar-container">
+      <img [src]="profile.avatarUrl   " alt="Аватар" class="user-card__avatar" />
+      @if(profile == (me)){
+      <input tabindex="-1" type="file" class="user-card__avatar-input" (change)="fileBrowserHandler($event)"
+        aria-label="Загрузить аватар" accept=".png,.jpg,.jpeg" />
+      }
+
+    </div>
+    <div class="user-card__text">
+      <div class="user__info">
+        <h3 class="user__name">{{ profile.username }}</h3>
+        <p class="user__email">{{ profile.email }}</p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="user-card__stats">
+    <div class="user-card__stat">
+      <div class="user-card__stat-value">{{ userStats.activeProjects }}</div>
+      <div class="user-card__stat-label">Активные проекты</div>
+    </div>
+    <div class="user-card__stat">
+      <div class="user-card__stat-value">{{ userStats.completedProjects }}</div>
+      <div class="user-card__stat-label">Завершённые</div>
+    </div>
+    <div class="user-card__stat">
+      <div class="user-card__stat-value">{{ userStats.overdueTasks }}</div>
+      <div class="user-card__stat-label">Просрочено</div>
+    </div>
+    <div class="user-card__stat">
+      <div class="user-card__stat-value">{{ userStats.completedTasks }}</div>
+      <div class="user-card__stat-label">Задач выполнено</div>
+    </div>
+  </div>
+</div>
+}

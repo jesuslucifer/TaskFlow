@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 4
+      author: jesuslucifer
+      changes:
+        - addColumn:
+            tableName: tokens
+            columns:
+              - column:
+                  name: available
+                  type: boolean
+                  defaultValue: "true"

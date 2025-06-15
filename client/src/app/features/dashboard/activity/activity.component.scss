@@ -1,0 +1,42 @@
+.activity {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  &__title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 1rem;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  &__label {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+
+  &__tasks {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #3b82f6;
+  }
+
+  &__chart {
+    height: 128px;
+    background: #f3f4f6;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+}
