@@ -3,7 +3,6 @@ package com.example.backend.dto.response;
 import com.example.backend.model.Priority;
 import com.example.backend.model.Project;
 import com.example.backend.model.Status;
-import com.example.backend.model.User;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -20,6 +19,8 @@ public class ProjectDto {
     private LocalDate dateTo;
     private LocalTime timeLeft;
     private Integer userId;
+
+    public ProjectDto() {}
 
     public ProjectDto(Project project) {
         this.id = project.getId();

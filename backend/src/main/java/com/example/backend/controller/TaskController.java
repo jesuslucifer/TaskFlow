@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.dto.request.CreateTaskRequest;
+import com.example.backend.dto.response.ProjectDto;
 import com.example.backend.dto.response.TaskDto;
 import com.example.backend.model.*;
 import com.example.backend.service.TaskService;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -55,6 +57,13 @@ public class TaskController {
                         //"date_to", task.getDateTo(),
                         "time_left", task.getTimeLeft()
                 ));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getTasks() {
+        List<TaskDto> taskDto = taskService.getAll();
+
+        return ResponseEntity.ok(taskDto);
     }
 
     @PutMapping("/update/id/{id}")

@@ -18,7 +18,6 @@ public class CreateTaskRequest {
     private Status status;
     private Priority priority;
 
-    @JsonProperty("dateTo")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate dateTo;
     private LocalTime timeLeft;

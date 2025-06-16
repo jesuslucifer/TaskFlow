@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import com.example.backend.dto.response.ProjectDto;
 import com.example.backend.dto.response.TaskDto;
 import com.example.backend.exception.ProjectAlreadyExist;
 import com.example.backend.exception.ProjectGetFailedException;
@@ -9,6 +10,9 @@ import com.example.backend.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -61,6 +65,13 @@ public class TaskService {
         task.setDateTo(taskUpdateDto.getDateTo());
         task.setTimeLeft(taskUpdateDto.getTimeLeft());
         return taskRepository.save(task);
+    }
+
+    public List<TaskDto> getAll() {
+        return taskRepository.findAll()
+                .stream()
+                .map(TaskDto::new)
+                .collect(Collectors.toList());
     }
 
     public void deleteTaskById(Long id) {
