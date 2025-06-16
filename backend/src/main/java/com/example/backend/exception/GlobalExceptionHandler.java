@@ -94,7 +94,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ProjectAlreadyExist.class)
     public ResponseEntity<ErrorResponse> handleProjectAlreadyExist(ProjectAlreadyExist ex) {
         ErrorResponse errorResponse = new ErrorResponse(
-                "Данный проект уже сушествует",
+                "Данный проект уже существует",
                 HttpStatus.BAD_REQUEST
         );
         return new ResponseEntity<>(errorResponse, errorResponse.getStatus());

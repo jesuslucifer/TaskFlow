@@ -2,10 +2,15 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.request.CreateProjectRequest;
 import com.example.backend.dto.response.ProjectDto;
+import com.example.backend.dto.response.SuccessResponse;
+import com.example.backend.dto.response.UserDto;
 import com.example.backend.model.*;
 import com.example.backend.service.ProjectService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,21 +25,29 @@ public class ProjectController {
 
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody CreateProjectRequest projectRequest) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
         var project = Project.builder()
                 .name(projectRequest.getName())
                 .description(projectRequest.getDescription())
                 .status(Status.ACTIVE)
-                .priority(Priority.LOW)
+                .priority(projectRequest.getPriority())
                 .dateTo(projectRequest.getDateTo())
                 .timeLeft(projectRequest.getTimeLeft())
-                .createUserId(projectRequest.getUserId())
                 .category(ProjectCategories.IOS_APP)
+                .createUser(user)
                 .build();
+
         projectService.createProject(project);
-        return ResponseEntity.ok("Project created!");
+
+        return ResponseEntity.ok(new SuccessResponse(
+                "Проект создан",
+                HttpStatus.OK
+        ));
     }
 
-    @GetMapping("/get/id/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getProjectByID(@PathVariable Long id) {
         Project project = projectService.getById(id);
         return ResponseEntity.ok(Map.of
@@ -44,14 +57,16 @@ public class ProjectController {
                         "priority", project.getPriority(),
                         "date_to", project.getDateTo(),
                         "time_left", project.getTimeLeft(),
-                        "create_user_id", project.getCreateUserId(),
+                        "create_user_id", project.getCreateUser().getId(),
                         "category", project.getCategory()
                         ));
     }
 
-    @GetMapping("/get/name/{name}")
-    public ResponseEntity<?> getProjectByName(@PathVariable String name) {
-        Project project = projectService.getByName(name);
+    @GetMapping("/{username}/{name}")
+    public ResponseEntity<?> getProjectByName(@PathVariable String name,
+                                              @PathVariable String username) {
+        Project project = projectService.getProjectByNameForUsername(username, name);
+
         return ResponseEntity.ok(Map.of
                 ("project_name", project.getName() ,
                         "description", project.getDescription(),
@@ -59,37 +74,40 @@ public class ProjectController {
                         "priority", project.getPriority(),
                         "date_to", project.getDateTo(),
                         "time_left", project.getTimeLeft(),
-                        "create_user_id", project.getCreateUserId(),
+                        "create_user_id", project.getCreateUser().getId(),
                         "category", project.getCategory()
                 ));
     }
 
-    @PutMapping("/update/id/{id}")
-    public ResponseEntity<Project> updateProjectByid(
-            @PathVariable Long id,
-            @RequestBody ProjectDto updateDto) {
-        Project updatedProject = projectService.updateById(id, updateDto);
-        return ResponseEntity.ok(updatedProject);
-    }
-
-    @PutMapping("/update/name/{name}")
-    public ResponseEntity<Project> updateProjectByName(
-            @PathVariable String name,
-            @RequestBody ProjectDto updateDto){
-        Project updatedProject = projectService.updateByName(name, updateDto);
-        return ResponseEntity.ok(updatedProject);
-    }
-
-    @GetMapping("/all")
+    @GetMapping("/")
     public ResponseEntity<?> getProjects() {
         List<ProjectDto> projectDto = projectService.getAll();
 
         return ResponseEntity.ok(projectDto);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateProjectById(
+            @PathVariable Long id,
+            @RequestBody ProjectDto updateDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+        updateDto.setCreateUser(new UserDto(user));
+        projectService.updateById(id, updateDto);
+
+        return ResponseEntity.ok(new SuccessResponse(
+                "Проект обновлен",
+                HttpStatus.OK
+        ));
+    }
+
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProject(@PathVariable Long id) {
         projectService.deleteProjectById(id);
-        return ResponseEntity.ok("Project deleted!");
+
+        return ResponseEntity.ok(new SuccessResponse(
+                "Проект удален",
+                HttpStatus.OK
+        ));
     }
 }

@@ -38,6 +38,9 @@ public class User implements UserDetails {
     @Column(name = "avatar_url")
     private String avatarUrl = "uploads/avatars/default.jpg";
 
+    @OneToMany(mappedBy = "createUser", fetch = FetchType.EAGER)
+    private List<Project> createProjects;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

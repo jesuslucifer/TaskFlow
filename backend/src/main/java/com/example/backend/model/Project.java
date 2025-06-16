@@ -18,9 +18,9 @@ import java.time.LocalTime;
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    @Column(name = "project_name", unique = true, nullable = false)
+    @Column(name = "project_name", nullable = false)
     private String name;
 
     @Column(name = "description")
@@ -40,8 +40,9 @@ public class Project {
     @Column(name = "time_left", nullable = false)
     private LocalTime timeLeft;
 
-    @Column(name = "create_user_id", nullable = false)
-    private Integer createUserId;
+    @ManyToOne
+    @JoinColumn(name = "create_user_id")
+    private User createUser;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)

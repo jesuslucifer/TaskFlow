@@ -10,7 +10,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Data
-
 public class ProjectDto {
     private Long id;
     private String name;
@@ -19,7 +18,7 @@ public class ProjectDto {
     private Priority priority;
     private LocalDate dateTo;
     private LocalTime timeLeft;
-    private Integer userId;
+    private UserDto createUser;
     private ProjectCategories category;
 
     public ProjectDto() {}
@@ -32,7 +31,7 @@ public class ProjectDto {
         this.priority = project.getPriority();
         this.dateTo = project.getDateTo();
         this.timeLeft = project.getTimeLeft();
-        this.userId = project.getCreateUserId();
+        this.createUser = new UserDto(project.getCreateUser());
         this.category = project.getCategory();
     }
 }

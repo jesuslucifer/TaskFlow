@@ -1,14 +1,12 @@
 package com.example.backend.service;
 import com.example.backend.dto.response.ProjectDto;
-import com.example.backend.dto.response.TaskDto;
-import com.example.backend.dto.response.UserDto;
 import com.example.backend.exception.ProjectAlreadyExist;
 import com.example.backend.exception.ProjectGetFailedException;
 import com.example.backend.exception.ProjectNotExist;
 import com.example.backend.model.Project;
+import com.example.backend.model.User;
 import com.example.backend.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,18 +15,19 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ProjectService {
-    @Autowired
     private final ProjectRepository projectRepository;
+    private final UserService userService;
 
     public Project save(Project project) {
         return projectRepository.save(project);
     }
 
     public Project createProject(Project project) {
-        if(projectRepository.existsByName(project.getName())) {
-            throw new ProjectAlreadyExist();
-        }
-
+        getProjectsByUserId(project.getCreateUser().getId())
+                .stream()
+                .filter(p -> p.getName().equals(project.getName()))
+                .findFirst()
+                .ifPresent(p -> { throw new ProjectAlreadyExist(); });
         return save(project);
     }
 
@@ -36,11 +35,6 @@ public class ProjectService {
         return projectRepository.findById(id)
                 .orElseThrow(ProjectGetFailedException::new);
 
-    }
-
-    public Project getByName(String name) {
-        return projectRepository.findByName(name)
-                .orElseThrow(ProjectGetFailedException::new);
     }
 
     public Project updateById(Long id, ProjectDto projectUpdateDto) {
@@ -52,22 +46,9 @@ public class ProjectService {
         project.setPriority(projectUpdateDto.getPriority());
         project.setDateTo(projectUpdateDto.getDateTo());
         project.setTimeLeft(projectUpdateDto.getTimeLeft());
-        project.setCreateUserId(projectUpdateDto.getUserId());
-        project.setCategory(projectUpdateDto.getCategory());
-        return projectRepository.save(project);
-    }
-
-    public Project updateByName(String name, ProjectDto projectUpdateDto) {
-        Project project = projectRepository.findByName(name)
-                .orElseThrow(ProjectNotExist::new);
-        project.setName(projectUpdateDto.getName());
-        project.setDescription(projectUpdateDto.getDescription());
-        project.setStatus(projectUpdateDto.getStatus());
-        project.setPriority(project.getPriority());
-        project.setDateTo(projectUpdateDto.getDateTo());
-        project.setTimeLeft(projectUpdateDto.getTimeLeft());
-        project.setCreateUserId(project.getCreateUserId());
+        project.setCreateUser(project.getCreateUser());
         project.setCategory(project.getCategory());
+
         return projectRepository.save(project);
     }
 
@@ -83,5 +64,17 @@ public class ProjectService {
             throw new ProjectNotExist();
         }
         projectRepository.deleteById(id);
+    }
+
+    public List<Project> getProjectsByUserId(Long userId) {
+        return projectRepository.findAllByCreateUserId(userId);
+    }
+
+    public Project getProjectByNameForUsername(String username, String name) {
+        return getProjectsByUserId(userService.getByUsername(username).getId())
+                .stream()
+                .filter(p -> p.getName().equals(name))
+                .findFirst()
+                .orElseThrow(ProjectNotExist::new);
     }
 }
