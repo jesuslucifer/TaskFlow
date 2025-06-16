@@ -53,6 +53,7 @@ public class ProjectService {
         project.setDateTo(projectUpdateDto.getDateTo());
         project.setTimeLeft(projectUpdateDto.getTimeLeft());
         project.setCreateUserId(projectUpdateDto.getUserId());
+        project.setCategory(projectUpdateDto.getCategory());
         return projectRepository.save(project);
     }
 
@@ -66,6 +67,7 @@ public class ProjectService {
         project.setDateTo(projectUpdateDto.getDateTo());
         project.setTimeLeft(projectUpdateDto.getTimeLeft());
         project.setCreateUserId(project.getCreateUserId());
+        project.setCategory(project.getCategory());
         return projectRepository.save(project);
     }
 

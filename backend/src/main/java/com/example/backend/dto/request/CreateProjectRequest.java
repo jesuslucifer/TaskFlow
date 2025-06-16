@@ -1,5 +1,6 @@
 package com.example.backend.dto.request;
 
+import com.example.backend.model.ProjectCategories;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -18,4 +19,5 @@ public class CreateProjectRequest {
     private LocalDate dateTo;
     private LocalTime timeLeft;
     private Integer userId;
+    //private ProjectCategories category;
 }

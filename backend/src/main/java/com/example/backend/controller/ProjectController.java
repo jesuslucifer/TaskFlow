@@ -28,6 +28,7 @@ public class ProjectController {
                 .dateTo(projectRequest.getDateTo())
                 .timeLeft(projectRequest.getTimeLeft())
                 .createUserId(projectRequest.getUserId())
+                .category(ProjectCategories.IOS_APP)
                 .build();
         projectService.createProject(project);
         return ResponseEntity.ok("Project created!");
@@ -43,7 +44,8 @@ public class ProjectController {
                         "priority", project.getPriority(),
                         "date_to", project.getDateTo(),
                         "time_left", project.getTimeLeft(),
-                        "create_user_id", project.getCreateUserId()
+                        "create_user_id", project.getCreateUserId(),
+                        "category", project.getCategory()
                         ));
     }
 
@@ -57,7 +59,8 @@ public class ProjectController {
                         "priority", project.getPriority(),
                         "date_to", project.getDateTo(),
                         "time_left", project.getTimeLeft(),
-                        "create_user_id", project.getCreateUserId()
+                        "create_user_id", project.getCreateUserId(),
+                        "category", project.getCategory()
                 ));
     }
 

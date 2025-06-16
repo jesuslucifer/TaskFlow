@@ -2,6 +2,7 @@ package com.example.backend.dto.response;
 
 import com.example.backend.model.Priority;
 import com.example.backend.model.Project;
+import com.example.backend.model.ProjectCategories;
 import com.example.backend.model.Status;
 import lombok.Data;
 
@@ -19,6 +20,7 @@ public class ProjectDto {
     private LocalDate dateTo;
     private LocalTime timeLeft;
     private Integer userId;
+    private ProjectCategories category;
 
     public ProjectDto() {}
 
@@ -31,5 +33,6 @@ public class ProjectDto {
         this.dateTo = project.getDateTo();
         this.timeLeft = project.getTimeLeft();
         this.userId = project.getCreateUserId();
+        this.category = project.getCategory();
     }
 }

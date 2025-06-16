@@ -42,5 +42,9 @@ public class Project {
 
     @Column(name = "create_user_id", nullable = false)
     private Integer createUserId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category", nullable = false)
+    private ProjectCategories category;
 }
 
