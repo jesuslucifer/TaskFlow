@@ -4,6 +4,7 @@ import com.example.backend.model.Priority;
 import com.example.backend.model.Project;
 import com.example.backend.model.ProjectCategories;
 import com.example.backend.model.Status;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -16,6 +17,7 @@ public class ProjectDto {
     private String description;
     private Status status;
     private Priority priority;
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate dateTo;
     private LocalTime timeLeft;
     private UserDto createUser;
