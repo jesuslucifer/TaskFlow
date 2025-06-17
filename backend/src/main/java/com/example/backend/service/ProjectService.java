@@ -70,6 +70,15 @@ public class ProjectService {
         return projectRepository.findAllByCreateUserId(userId);
     }
 
+    public List<ProjectDto> getProjectsByUserIdIsCreator(Long userId) {
+        return projectRepository
+                .findAllByCreateUserId(userId)
+                .stream()
+                .filter(p -> p.getCreateUser().getId().equals(userId))
+                .map(ProjectDto::new)
+                .collect(Collectors.toList());
+    }
+
     public Project getProjectByNameForUsername(String username, String name) {
         return getProjectsByUserId(userService.getByUsername(username).getId())
                 .stream()

@@ -86,6 +86,13 @@ public class ProjectController {
         return ResponseEntity.ok(projectDto);
     }
 
+    @GetMapping("/{id}/creator")
+    public ResponseEntity<?> getProjectsUserIsCreator(@PathVariable Long id) {
+        List<ProjectDto> projectDtoList = projectService.getProjectsByUserIdIsCreator(id);
+
+        return ResponseEntity.ok(projectDtoList);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<?> updateProjectById(
             @PathVariable Long id,
