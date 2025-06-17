@@ -29,7 +29,8 @@ public class UserController {
         User user = (User) authentication.getPrincipal();
 
         return ResponseEntity.ok(Map.of
-                ("username", user.getUsername(),
+                ("id", user.getId(),
+                        "username", user.getUsername(),
                         "email", user.getEmail(),
                         "avatarUrl", user.getAvatarUrl()));
     }
@@ -64,15 +65,4 @@ public class UserController {
 
         return ResponseEntity.ok(userDto);
     }
-
-    @GetMapping("/username/{username}")
-    public ResponseEntity<?> getByUsername(@PathVariable String username) {
-        User user = userService.getByUsername(username);
-
-        return ResponseEntity.ok(Map.of
-                ("username", user.getUsername(),
-                        "email", user.getEmail(),
-                        "avatarUrl", user.getAvatarUrl()));
-    }
-    
 }
