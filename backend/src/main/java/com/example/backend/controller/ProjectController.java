@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.dto.request.CreateProjectRequest;
+import com.example.backend.dto.request.ProjectExecutorRequest;
 import com.example.backend.dto.response.ProjectDto;
 import com.example.backend.dto.response.SuccessResponse;
 import com.example.backend.dto.response.UserDto;
@@ -14,7 +15,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -50,16 +50,7 @@ public class ProjectController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getProjectByID(@PathVariable Long id) {
         Project project = projectService.getById(id);
-        return ResponseEntity.ok(Map.of
-                ("project_name", project.getName() ,
-                        "description", project.getDescription(),
-                        "status", project.getStatus(),
-                        "priority", project.getPriority(),
-                        "date_to", project.getDateTo(),
-                        "time_left", project.getTimeLeft(),
-                        "create_user_id", project.getCreateUser().getId(),
-                        "category", project.getCategory()
-                        ));
+        return ResponseEntity.ok(new ProjectDto(project));
     }
 
     @GetMapping("/{username}/{name}")
@@ -67,16 +58,7 @@ public class ProjectController {
                                               @PathVariable String username) {
         Project project = projectService.getProjectByNameForUsername(username, name);
 
-        return ResponseEntity.ok(Map.of
-                ("project_name", project.getName() ,
-                        "description", project.getDescription(),
-                        "status", project.getStatus(),
-                        "priority", project.getPriority(),
-                        "date_to", project.getDateTo(),
-                        "time_left", project.getTimeLeft(),
-                        "create_user_id", project.getCreateUser().getId(),
-                        "category", project.getCategory()
-                ));
+        return ResponseEntity.ok(new ProjectDto(project));
     }
 
     @GetMapping("/")
@@ -93,6 +75,13 @@ public class ProjectController {
         return ResponseEntity.ok(projectDtoList);
     }
 
+    @GetMapping("/{id}/executor")
+    public ResponseEntity<?> getProjectsUserIsExecutor(@PathVariable Long id) {
+        List<ProjectDto> projectDtoList = projectService.getProjectsByUserIsExecutor(id);
+
+        return ResponseEntity.ok(projectDtoList);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<?> updateProjectById(
             @PathVariable Long id,
@@ -100,10 +89,24 @@ public class ProjectController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
         updateDto.setCreateUser(new UserDto(user));
+
         projectService.updateById(id, updateDto);
 
         return ResponseEntity.ok(new SuccessResponse(
                 "Проект обновлен",
+                HttpStatus.OK
+        ));
+    }
+
+    @PutMapping("/{projectId}/executors/")
+    public ResponseEntity<?> addExecutor(@PathVariable Long projectId,
+                                         @RequestBody ProjectExecutorRequest executorRequest) {
+        projectService.addExecutor(projectId,
+                executorRequest.getExecutorId(),
+                executorRequest.getExecutorRole());
+
+        return ResponseEntity.ok(new SuccessResponse(
+                "Исполнитель добавлен",
                 HttpStatus.OK
         ));
     }
@@ -114,6 +117,17 @@ public class ProjectController {
 
         return ResponseEntity.ok(new SuccessResponse(
                 "Проект удален",
+                HttpStatus.OK
+        ));
+    }
+
+    @DeleteMapping("/{projectId}/{executorId}")
+    public ResponseEntity<?> deleteExecutor(@PathVariable Long projectId,
+                                            @PathVariable Long executorId) {
+        projectService.deleteExecutor(projectId, executorId);
+
+        return ResponseEntity.ok(new SuccessResponse(
+                "Исполнитель удален",
                 HttpStatus.OK
         ));
     }

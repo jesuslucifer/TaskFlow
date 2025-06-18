@@ -3,9 +3,14 @@ import com.example.backend.dto.response.ProjectDto;
 import com.example.backend.exception.ProjectAlreadyExist;
 import com.example.backend.exception.ProjectGetFailedException;
 import com.example.backend.exception.ProjectNotExist;
+import com.example.backend.exception.UserNotFoundException;
+import com.example.backend.model.ExecutorRole;
 import com.example.backend.model.Project;
+import com.example.backend.model.ProjectExecutor;
 import com.example.backend.model.User;
+import com.example.backend.repository.ProjectExecutorRepository;
 import com.example.backend.repository.ProjectRepository;
+import com.example.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +22,8 @@ import java.util.stream.Collectors;
 public class ProjectService {
     private final ProjectRepository projectRepository;
     private final UserService userService;
+    private final UserRepository userRepository;
+    private final ProjectExecutorRepository projectExecutorRepository;
 
     public Project save(Project project) {
         return projectRepository.save(project);
@@ -52,6 +59,30 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
+    public Project addExecutor(Long projectId, Long executorId, ExecutorRole role) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(ProjectNotExist::new);
+
+        User user = userRepository.findById(executorId)
+                .orElseThrow(UserNotFoundException::new);
+
+        project.addExecutor(user, role);
+
+        return projectRepository.save(project);
+    }
+
+    public Project deleteExecutor(Long projectId, Long executorId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(ProjectNotExist::new);
+
+        User user = userRepository.findById(executorId)
+                .orElseThrow(UserNotFoundException::new);
+
+        project.removeExecutor(user);
+
+        return projectRepository.save(project);
+    }
+
     public List<ProjectDto> getAll() {
         return projectRepository.findAll()
                 .stream()
@@ -75,6 +106,14 @@ public class ProjectService {
                 .findAllByCreateUserId(userId)
                 .stream()
                 .filter(p -> p.getCreateUser().getId().equals(userId))
+                .map(ProjectDto::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProjectDto> getProjectsByUserIsExecutor(Long userId) {
+        return projectExecutorRepository.findByUserId(userId)
+                .stream()
+                .map(ProjectExecutor::getProject)
                 .map(ProjectDto::new)
                 .collect(Collectors.toList());
     }

@@ -1,14 +1,13 @@
 package com.example.backend.dto.response;
 
-import com.example.backend.model.Priority;
-import com.example.backend.model.Project;
-import com.example.backend.model.ProjectCategories;
-import com.example.backend.model.Status;
+import com.example.backend.model.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class ProjectDto {
@@ -22,6 +21,7 @@ public class ProjectDto {
     private LocalTime timeLeft;
     private UserDto createUser;
     private ProjectCategories category;
+    private List<ExecutorDto> executors;
 
     public ProjectDto() {}
 
@@ -35,5 +35,9 @@ public class ProjectDto {
         this.timeLeft = project.getTimeLeft();
         this.createUser = new UserDto(project.getCreateUser());
         this.category = project.getCategory();
+        this.executors = project.getExecutors()
+                .stream()
+                .map(ExecutorDto::new)
+                .collect(Collectors.toList());
     }
 }

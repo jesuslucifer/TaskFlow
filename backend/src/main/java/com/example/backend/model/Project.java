@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -47,5 +49,16 @@ public class Project {
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)
     private ProjectCategories category;
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProjectExecutor> executors = new ArrayList<>();
+
+    public void addExecutor(User user, ExecutorRole role) {
+        executors.add(new ProjectExecutor(this, user, role));
+    }
+
+    public void removeExecutor(User user) {
+        executors.removeIf(executor -> executor.getUser().equals(user));
+    }
 }
 

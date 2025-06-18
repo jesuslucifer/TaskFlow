@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 10
+      author: jesuslucifer
+      changes:
+        - createTable:
+            tableName: project_executors
+            columns:
+              - column:
+                  name: project_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: role
+                  type: NVARCHAR(50)
+                  constraints:
+                    nullable: false
