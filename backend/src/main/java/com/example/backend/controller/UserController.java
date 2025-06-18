@@ -28,11 +28,7 @@ public class UserController {
 
         User user = (User) authentication.getPrincipal();
 
-        return ResponseEntity.ok(Map.of
-                ("id", user.getId(),
-                        "username", user.getUsername(),
-                        "email", user.getEmail(),
-                        "avatarUrl", user.getAvatarUrl()));
+        return ResponseEntity.ok(new UserDto(user));
     }
 
     @PostMapping("/avatar")
@@ -53,10 +49,7 @@ public class UserController {
     public ResponseEntity<?> getUser(@PathVariable Long id) {
         User user = userService.getById(id);
 
-        return ResponseEntity.ok(Map.of
-                ("username", user.getUsername(),
-                        "email", user.getEmail(),
-                        "avatarUrl", user.getAvatarUrl()));
+        return ResponseEntity.ok(new UserDto(user));
     }
 
     @GetMapping("/all")
