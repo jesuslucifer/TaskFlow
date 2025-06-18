@@ -22,7 +22,7 @@ export class LoginComponent {
   router = inject(Router);
   isReg: boolean = false;
   authService = inject(AuthService);
-  form = new FormGroup({
+  form: FormGroup = new FormGroup({
     usernameOrEmail: new FormControl<string | null>(null, [
       Validators.required,
     ]),
@@ -33,7 +33,6 @@ export class LoginComponent {
   });
   onSubmit = () => {
     if (this.form.valid) {
-      //@ts-ignore
       this.authService.login(this.form.value).subscribe({
         next: () => {
           this.router.navigate(['/profile/me']);

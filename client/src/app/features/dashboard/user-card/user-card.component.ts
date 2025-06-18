@@ -1,11 +1,9 @@
 import { Component, inject, Input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {
-  IProfile,
-  ProfileService,
-} from '../../../core/services/profile.service';
+import { ProfileService } from '../../../core/services/profile.service';
 import { ToastrService } from 'ngx-toastr';
+import { IProfile } from '../../../core/interface/user.interface';
 
 @Component({
   selector: 'app-user-card',

@@ -23,7 +23,7 @@ export class RegisterComponent {
   authService = inject(AuthService);
   isReg: boolean = true;
 
-  form = new FormGroup({
+  form: FormGroup = new FormGroup({
     username: new FormControl<string | null>(null, [Validators.required]),
     password: new FormControl<string | null>(null, [
       Validators.required,
@@ -36,7 +36,6 @@ export class RegisterComponent {
   });
   onSubmit = () => {
     if (this.form.valid) {
-      //@ts-ignore
       this.authService.signUp(this.form.value).subscribe({
         next: () => {
           this.router.navigate(['/login']);

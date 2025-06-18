@@ -6,6 +6,7 @@ import { LoginPageComponent } from './pages/authPages/login-page/login-page.comp
 import { ProjectsPageComponent } from './pages/projects-page/projects-page.component';
 import { canActivateAuth } from './core/guards/auth.guard';
 import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
+import { ProjectPageComponent } from './features/project/project-page/project-page.component';
 
 export const routes: Routes = [
   {
@@ -18,8 +19,14 @@ export const routes: Routes = [
         pathMatch: 'full',
       },
 
+      {
+        path: 'project/:username/:name',
+        component: ProjectPageComponent,
+      },
+
       { path: 'projects', component: ProjectsPageComponent },
       { path: 'profile/:id', component: DashboardComponent },
+
       { path: 'settings', component: SettingsPageComponent },
     ],
     canActivate: [canActivateAuth],

@@ -1,13 +1,23 @@
 .projects {
   // .projects__header
   margin: 20px 20px;
+
   &__header {
-    display: flex;
   }
 
-  &__main {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 70px;
+  // .projects__last
+
+  &__last {
+  }
+}
+.projects-last {
+  // .projects-last__title
+
+  &__title {
+  }
+
+  // .projects-last__list
+
+  &__list {
   }
 }

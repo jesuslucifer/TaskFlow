@@ -2,11 +2,8 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, Observable, tap, throwError } from 'rxjs';
-export interface IProfile {
-  username: string | null;
-  email: string | null;
-  avatarUrl: string | null;
-}
+import { IProfile } from '../interface/user.interface';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -18,7 +15,11 @@ export class ProfileService {
   router = inject(Router);
   getMe() {
     return this.http.get<IProfile>(`${this.baseApiUrl}users/me`).pipe(
-      tap((res: IProfile) => this.me.set(res)),
+      tap((res: IProfile) => {
+        console.log(res);
+
+        this.me.set(res);
+      }),
       catchError((err: HttpErrorResponse) => {
         return throwError(() => err);
       })

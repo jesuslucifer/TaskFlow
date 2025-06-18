@@ -1,9 +1,9 @@
-<form class="auth__form" [formGroup]="form" (ngSubmit)="onSubmit()">
+<form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
 
   @if(isReg){
-  <label class="auth-control__label">
+  <label class="form-control__label">
     Имя пользователя
-    <input class="auth__input" formControlName="username" placeholder="Ivan" type="text">
+    <input class="form__input" formControlName="username" placeholder="Ivan" type="text">
     @if(form.controls["username"].invalid && form.controls["username"].touched){
     <div class="error">
       @if(form.get('username')?.errors?.['required']){
@@ -17,9 +17,9 @@
   }
 
   @if(isReg){
-  <label class="auth-control__label">
+  <label class="form-control__label">
     Email
-    <input class="auth__input" formControlName="email" placeholder="example@mail.ru" type="text">
+    <input class="form__input" formControlName="email" placeholder="example@mail.ru" type="text">
 
     @if(form.controls["email"].invalid && form.controls["email"].touched){
     <div class="error">
@@ -35,9 +35,9 @@
 
   </label>
   } @else {
-  <label class="auth-control__label">
+  <label class="form-control__label">
     Email или Имя пользователя
-    <input class="auth__input" formControlName="usernameOrEmail" placeholder="example@mail.ru" type="text">
+    <input class="form__input" formControlName="usernameOrEmail" placeholder="example@mail.ru" type="text">
     @if(form.controls["usernameOrEmail"].invalid && form.controls["usernameOrEmail"].touched){
     <div class="error">
       @if(form.get('usernameOrEmail')?.errors?.['required']){
@@ -52,7 +52,7 @@
   <label class="auth-control__label">
     Пароль
     <div class="password-input">
-      <input class="auth__input" formControlName="password" [type]="isEyeVisible() ?  'text' : 'password'"
+      <input class="form__input" formControlName="password" [type]="isEyeVisible() ?  'text' : 'password'"
         placeholder="******">
       <div class="password__eye" (click)="isEyeVisible.set(!isEyeVisible())">
         @if(isEyeVisible()){
@@ -76,7 +76,7 @@
 
   </label>
 
-  <button class="auth__btn" type="submit" [disabled]="form.invalid">Продолжить</button>
+  <button class="form__btn" type="submit" [disabled]="form.invalid">Продолжить</button>
 
   @if(isReg){
   <h4>Уже есть аккаунт? <a [routerLink]="['/login']"> Войти </a> </h4>

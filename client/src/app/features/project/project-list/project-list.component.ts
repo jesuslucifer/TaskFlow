@@ -1,51 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { ProjectCardComponent } from '../project-card/project-card.component';
-import { IProject } from '../../../core/interface/project.interface';
+import { ProjectService } from '../../../core/services/project.service';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { CommonModule } from '@angular/common';
+import { ProfileService } from '../../../core/services/profile.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-project-list',
-  imports: [ProjectCardComponent],
+  imports: [ProjectCardComponent, CommonModule, FormsModule],
   templateUrl: './project-list.component.html',
   styleUrl: './project-list.component.scss',
 })
 export class ProjectListComponent {
-  projects: IProject[] = [
-    {
-      id: 1,
-      name: 'Project 1',
-      description: 'This is project 1',
-      image: 'https://picsum.photos/200/300',
-      owner: 'Иван Иванов',
-      createdAt: '12-06-2025',
-      tasksCount: '12',
-      tasksCompleted: '4',
-      tags: [
-        {
-          tag: 'IOS APP',
-        },
-        {
-          tag: 'UI/UX',
-        },
-      ],
-    },
-    {
-      id: 2,
-      name: 'Project 2',
-      description: 'This is project 2',
-      image: 'https://picsum.photos/200/301',
-      owner: 'Иван Иванов',
-      tasksCount: '5',
-      tasksCompleted: '4',
+  projectsService = inject(ProjectService);
+  profileService = inject(ProfileService);
+  projects$ = toObservable(this.projectsService.projects);
 
-      createdAt: '15-03-2025',
-      tags: [
-        {
-          tag: '3',
-        },
-        {
-          tag: '4',
-        },
-      ],
-    },
-  ];
+  // ngOnInit() {
+  //   this.projectsService.getAllProjects().subscribe();
+  // }
+  // projects: IProject[] = [
+  //   {
+  //     name: 'Project 1',
+  //     description: 'This is project 1.',
+  //     dateTo: '2020-01-01',
+  //     timeLeft: '1 day',
+  //     projectStatus: 'in progress',
+  //     projectPriority: 'high',
+  //     projectCategory: 'development',
+  //   },
+  // ];
 }

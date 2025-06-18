@@ -11,7 +11,8 @@ import { catchError, Observable, switchMap, throwError } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../core/services/auth.service';
-import { IProfile, ProfileService } from '../../core/services/profile.service';
+import { ProfileService } from '../../core/services/profile.service';
+import { IProfile } from '../../core/interface/user.interface';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -43,6 +44,7 @@ export class DashboardComponent {
       return throwError(() => err);
     })
   );
+
   tasks = [
     'Созвон с заказчиком',
     'Финализировать макет',

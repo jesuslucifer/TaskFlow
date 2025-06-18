@@ -1,0 +1,37 @@
+<form action="" [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="form  ">
+  <label for="">
+    Название проекта
+    <input class="form__input" type="text" formControlName="name" placeholder="Проект 1">
+  </label>
+  <label for="">
+    Описание проекта
+    <input type="text" class="form__input" formControlName="description" placeholder="Описание">
+  </label>
+  <label for="" class="project-form__select">
+    Приоритет проекта
+    <select name="priority" formControlName="priority" class="form__select">
+      <option [value]="priorityEnum.HIGH" selected>Высокий</option>
+      <option [value]="priorityEnum.MEDIUM">Средний</option>
+      <option [value]="priorityEnum.LOW">Низкий</option>
+    </select>
+    <!-- <input type="text" class="form__input" formControlName="projectPriority" placeholder="Высокий"> -->
+  </label>
+  <label class="project__date" for="">
+    Сроки проекта
+    <label for="">
+      Дата
+      <input type="date" class="form__input" formControlName="dateTo" placeholder="Проект 1">
+    </label>
+    <label for="">
+      Время
+      <input type="time" class="form__input" formControlName="timeLeft" placeholder="Проект 1">
+
+    </label>
+  </label>
+
+
+
+
+
+  <button class="form__btn" type="submit" [disabled]="projectForm.invalid">Создать проект</button>
+</form>

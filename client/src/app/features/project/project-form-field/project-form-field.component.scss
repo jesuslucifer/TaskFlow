@@ -1,0 +1,11 @@
+.project-form {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 15px;
+  &__control {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+}

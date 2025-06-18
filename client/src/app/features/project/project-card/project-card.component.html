@@ -4,55 +4,62 @@
   <div class="project-card__header">
     <div class="project-card__info">
       <h3 class="project-card__title">{{ project.name }}</h3>
-      <p class="project-card__owner">Автор: {{ project.owner }}</p>
+      <p class="project-card__owner">Автор: {{ project.createUser.username }}</p>
     </div>
     <button class="project-card__menu">
-      <mat-icon>more_vert</mat-icon>
+      <button matButton [matMenuTriggerFor]="menu" class="project-card__menu"> <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="onDeleteProject()">Удалить</button>
+        <button mat-menu-item> >Редактировать </button>
+      </mat-menu>
     </button>
   </div>
 
-  <p class="project-card__description">{{ project.description }}</p>
+  <p class="project-card__description">Описание: {{ project.description }}</p>
 
   <div class="project-card__meta">
-    <span class="project-card__date">Создан: {{ project.createdAt }}</span>
-    <span class="project-card__tasks">Задач: {{ project.tasksCompleted }}/{{ project.tasksCount }}</span>
+    <!-- <span class="project-card__date">Создан: {{ project.dateTo }}</span> -->
+    <span class="project-card__date">Создан: -</span>
+
   </div>
 
-  <div class="project-card__progress">
-    <div class="project-card__progress-bar">
-      <div class="project-card__progress-fill" [style.width.%]="projectProgressPercent()"></div>
-    </div>
-    <span class="project-card__progress-text">{{ projectProgressPercent() }}%</span>
-  </div>
+
 
   <div class="project-card__selects">
     <label class="project-card__select">
       Статус:
-      <select name="progress">
-        <option value="complete">Выполнено</option>
-        <option value="development">Разрабатывается</option>
-        <option value="abandoned">Брошено</option>
+      <select name="progress" [value]="project.status">
+        <option value="ACTIVE">Разрабатывается</option>
+        <option value="STOPPED">Приостановлено</option>
+        <option value="COMPLETED">Выполнено</option>
+        <option value="DRAFT">Черновик</option>
+
       </select>
     </label>
 
     <label class="project-card__select">
       Приоритет:
-      <select name="priority">
-        <option value="high">Высокий</option>
-        <option value="medium">Средний</option>
-        <option value="low">Низкий</option>
+      <select name="priority" [value]="project.priority">
+        <option value="HIGH">Высокий</option>
+        <option value="MEDIUM">Средний</option>
+        <option value="LOW">Низкий</option>
       </select>
     </label>
   </div>
 
   <div class="project-card__tags">
-    @for(tag of project.tags; track tag) {
-    <span class="project-card__tag">{{ tag.tag }}</span>
-    }
+    <div class="project-card__tag">
+      {{project.category}}
+
+    </div>
+
   </div>
 
   <div class="project-card__footer">
-    <button class="project-card__open-btn">Открыть проект</button>
+    <button class="open-btn"> <a [routerLink]="[`/project/${project.createUser.username}/${project.name}`]">Открыть
+        проект</a>
+    </button>
   </div>
 </div>
 }

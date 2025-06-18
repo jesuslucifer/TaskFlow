@@ -1,0 +1,40 @@
+@if(project$ | async; as project){
+<div class="container">
+  <header class="header">
+    <div class="project__info">
+      <span class="project__name">{{project.name}}</span>
+      <span class="project__category">{{project.category}}</span>
+      <div class="project__details">
+        <span class="created-at">Created At: May 15, 2024 14:23 PM</span>
+
+        <span class="assigned">Создатель: {{project.createUser.username}}</span>
+
+        <span class="group">Group: Team projects → Fashion</span>
+        <span class="priority">Приоритет: {{project.priority}}</span>
+      </div>
+      <div class="project__description">
+        Описание: {{project.description}}
+      </div>
+      <div class="project__dates">
+        <span>Сроки: День: {{project.dateTo}} / Время: {{ project.timeLeft}}</span>
+      </div>
+    </div>
+  </header>
+
+
+  <div class="view__type">
+    <span>Calendar</span> | <span>Kanban</span> | <span>List</span>
+  </div>
+  <div class="task__grid">
+    @for( task of tasks; track task.title){
+    <div class="task__card">
+      <span class="task__status">{{ task.status }}</span>
+      <span class="task__title">{{ task.title }}</span>
+      <span class="task__assigned"> {{ task.assigned }}</span>
+      <span class="task__priority">{{ task.priority }}</span>
+    </div>
+    }
+
+  </div>
+</div>
+}
