@@ -4,17 +4,18 @@ import com.example.backend.exception.ProjectAlreadyExist;
 import com.example.backend.exception.ProjectGetFailedException;
 import com.example.backend.exception.ProjectNotExist;
 import com.example.backend.exception.UserNotFoundException;
-import com.example.backend.model.ExecutorRole;
-import com.example.backend.model.Project;
-import com.example.backend.model.ProjectExecutor;
-import com.example.backend.model.User;
+import com.example.backend.model.*;
 import com.example.backend.repository.ProjectExecutorRepository;
 import com.example.backend.repository.ProjectRepository;
 import com.example.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,17 +45,38 @@ public class ProjectService {
 
     }
 
-    public Project updateById(Long id, ProjectDto projectUpdateDto) {
+    public Project updateById(Long id, Map<String, Object> updateDto) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(ProjectNotExist::new);
-        project.setName(projectUpdateDto.getName());
-        project.setDescription(projectUpdateDto.getDescription());
-        project.setStatus(projectUpdateDto.getStatus());
-        project.setPriority(projectUpdateDto.getPriority());
-        project.setDateTo(projectUpdateDto.getDateTo());
-        project.setTimeLeft(projectUpdateDto.getTimeLeft());
-        project.setCreateUser(project.getCreateUser());
-        project.setCategory(project.getCategory());
+
+        updateDto.forEach((k, v) -> {
+            switch (k) {
+                case "name":
+                    project.setName(v.toString());
+                    break;
+                case "description":
+                    project.setDescription(v.toString());
+                    break;
+                case "status":
+                    project.setStatus(Status.valueOf(v.toString()));
+                    break;
+                case "priority":
+                    project.setPriority(Priority.valueOf(v.toString()));
+                    break;
+                case "dateTo":
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                    project.setDateTo(LocalDate.parse(v.toString(), formatter));
+                    break;
+                case "timeLeft":
+                    project.setTimeLeft(LocalTime.parse(v.toString()));
+                    break;
+                case "category":
+                    project.setCategory(ProjectCategories.valueOf(v.toString()));
+                    break;
+                default:
+                    break;
+            }
+        });
 
         return projectRepository.save(project);
     }

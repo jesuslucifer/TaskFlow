@@ -4,7 +4,6 @@ import com.example.backend.dto.request.CreateProjectRequest;
 import com.example.backend.dto.request.ProjectExecutorRequest;
 import com.example.backend.dto.response.ProjectDto;
 import com.example.backend.dto.response.SuccessResponse;
-import com.example.backend.dto.response.UserDto;
 import com.example.backend.model.*;
 import com.example.backend.service.ProjectService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -82,13 +82,10 @@ public class ProjectController {
         return ResponseEntity.ok(projectDtoList);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<?> updateProjectById(
             @PathVariable Long id,
-            @RequestBody ProjectDto updateDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-        updateDto.setCreateUser(new UserDto(user));
+            @RequestBody Map<String, Object> updateDto) {
 
         projectService.updateById(id, updateDto);
 
