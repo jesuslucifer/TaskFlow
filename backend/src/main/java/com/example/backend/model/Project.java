@@ -50,6 +50,9 @@ public class Project {
     @Column(name = "category", nullable = false)
     private ProjectCategories category;
 
+    @Column(name = "date_create")
+    public LocalDate dateCreate;
+
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProjectExecutor> executors = new ArrayList<>();
 

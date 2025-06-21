@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,7 @@ public class ProjectController {
                 .timeLeft(projectRequest.getTimeLeft())
                 .category(ProjectCategories.IOS_APP)
                 .createUser(user)
+                .dateCreate(LocalDate.now())
                 .build();
 
         projectService.createProject(project);

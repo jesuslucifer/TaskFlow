@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-column-time-create-in-project.yaml
+      author: jesuslucifer
+      changes:
+        - addColumn:
+            tableName: projects
+            columns:
+              - column:
+                  name: date_create
+                  type: date

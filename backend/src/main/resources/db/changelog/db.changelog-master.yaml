@@ -15,3 +15,5 @@ databaseChangeLog:
       file: db/changelog/create-tasks-table.yaml
   - include:
       file: db/changelog/add-table-project-executors.yaml
+  - include:
+      file: db/changelog/add-column-time-create-in-project.yaml
