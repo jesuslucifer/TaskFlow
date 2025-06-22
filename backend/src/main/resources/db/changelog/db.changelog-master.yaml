@@ -9,3 +9,11 @@ databaseChangeLog:
       file: db/changelog/add-column-available-in-tokens.yaml
   - include:
       file: db/changelog/change-column-in-users.yaml
+  - include:
+      file: db/changelog/create-projects-table.yaml
+  - include:
+      file: db/changelog/create-tasks-table.yaml
+  - include:
+      file: db/changelog/add-table-project-executors.yaml
+  - include:
+      file: db/changelog/add-column-time-create-in-project.yaml

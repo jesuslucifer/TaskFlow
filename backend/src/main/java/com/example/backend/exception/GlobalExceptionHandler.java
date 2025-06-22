@@ -91,4 +91,39 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
     }
 
+    @ExceptionHandler(ProjectAlreadyExist.class)
+    public ResponseEntity<ErrorResponse> handleProjectAlreadyExist(ProjectAlreadyExist ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "Данный проект уже существует",
+                HttpStatus.BAD_REQUEST
+        );
+        return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
+    }
+
+    @ExceptionHandler(ProjectNotExist.class)
+    public ResponseEntity<ErrorResponse> handleProjectNotExist(ProjectNotExist ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "Данного проекта не существует",
+                HttpStatus.BAD_REQUEST
+        );
+        return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
+    }
+
+    @ExceptionHandler(ProjectGetFailedException.class)
+    public ResponseEntity<ErrorResponse> ProjectGetFailedException(ProjectGetFailedException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "Ошибка при получении проекта",
+                HttpStatus.BAD_REQUEST
+        );
+        return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "Пользователь не найден",
+                HttpStatus.NOT_FOUND
+        );
+        return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
+    }
 }
