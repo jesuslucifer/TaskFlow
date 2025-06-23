@@ -36,9 +36,9 @@ public class ProjectController {
                 .priority(projectRequest.getPriority())
                 .dateTo(projectRequest.getDateTo())
                 .timeLeft(projectRequest.getTimeLeft())
-                .category(ProjectCategories.IOS_APP)
                 .createUser(user)
                 .dateCreate(LocalDate.now())
+                .categories(projectRequest.getCategories())
                 .build();
 
         projectService.createProject(project);
@@ -110,6 +110,17 @@ public class ProjectController {
         ));
     }
 
+    @PutMapping("/{projectId}/category/")
+    public ResponseEntity<?> addCategory(@PathVariable Long projectId,
+                                         @RequestBody Category category) {
+        projectService.addCategory(projectId, category);
+
+        return ResponseEntity.ok(new SuccessResponse(
+                "Категория добавлена",
+                HttpStatus.OK
+        ));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProject(@PathVariable Long id) {
         projectService.deleteProjectById(id);
@@ -120,13 +131,24 @@ public class ProjectController {
         ));
     }
 
-    @DeleteMapping("/{projectId}/{executorId}")
+    @DeleteMapping("/{projectId}/{executorId}/executors")
     public ResponseEntity<?> deleteExecutor(@PathVariable Long projectId,
                                             @PathVariable Long executorId) {
         projectService.deleteExecutor(projectId, executorId);
 
         return ResponseEntity.ok(new SuccessResponse(
                 "Исполнитель удален",
+                HttpStatus.OK
+        ));
+    }
+
+    @DeleteMapping("/{projectId}/{categoryName}/category")
+    public ResponseEntity<?> deleteCategory(@PathVariable Long projectId,
+                                            @PathVariable String categoryName) {
+        projectService.deleteCategory(projectId, categoryName);
+
+        return ResponseEntity.ok(new SuccessResponse(
+                "Категория удалена",
                 HttpStatus.OK
         ));
     }

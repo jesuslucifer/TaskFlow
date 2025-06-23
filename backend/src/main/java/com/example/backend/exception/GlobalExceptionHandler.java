@@ -126,4 +126,23 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
         return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
     }
+
+    @ExceptionHandler(CategoryAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleCategoryAlreadyExists(CategoryAlreadyExistsException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "Данная категория уже существует",
+                HttpStatus.BAD_REQUEST
+        );
+
+        return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCategoryNotFound(CategoryNotFoundException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "Категория не найдена",
+                HttpStatus.NOT_FOUND
+        );
+        return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
+    }
 }

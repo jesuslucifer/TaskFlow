@@ -1,10 +1,8 @@
 package com.example.backend.service;
 import com.example.backend.dto.response.ProjectDto;
-import com.example.backend.exception.ProjectAlreadyExist;
-import com.example.backend.exception.ProjectGetFailedException;
-import com.example.backend.exception.ProjectNotExist;
-import com.example.backend.exception.UserNotFoundException;
+import com.example.backend.exception.*;
 import com.example.backend.model.*;
+import com.example.backend.repository.CategoryRepository;
 import com.example.backend.repository.ProjectExecutorRepository;
 import com.example.backend.repository.ProjectRepository;
 import com.example.backend.repository.UserRepository;
@@ -25,6 +23,7 @@ public class ProjectService {
     private final UserService userService;
     private final UserRepository userRepository;
     private final ProjectExecutorRepository projectExecutorRepository;
+    private final CategoryRepository categoryRepository;
 
     public Project save(Project project) {
         return projectRepository.save(project);
@@ -36,6 +35,7 @@ public class ProjectService {
                 .filter(p -> p.getName().equals(project.getName()))
                 .findFirst()
                 .ifPresent(p -> { throw new ProjectAlreadyExist(); });
+        project.getCategories().forEach(c -> {c.setProject(project); });
         return save(project);
     }
 
@@ -70,9 +70,6 @@ public class ProjectService {
                 case "timeLeft":
                     project.setTimeLeft(LocalTime.parse(v.toString()));
                     break;
-                case "category":
-                    project.setCategory(ProjectCategories.valueOf(v.toString()));
-                    break;
                 default:
                     break;
             }
@@ -101,6 +98,36 @@ public class ProjectService {
                 .orElseThrow(UserNotFoundException::new);
 
         project.removeExecutor(user);
+
+        return projectRepository.save(project);
+    }
+
+    public Project addCategory(Long projectId, Category category) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(ProjectNotExist::new);
+
+        categoryRepository.findByProjectId(projectId)
+                .stream()
+                .filter(c -> c.getName().equals(category.getName()))
+                .findFirst()
+                .ifPresent(c -> {throw new CategoryAlreadyExistsException();});
+
+        category.setProject(project);
+
+        project.addCategory(category);
+
+        return projectRepository.save(project);
+    }
+
+    public Project deleteCategory(Long projectId, String categoryName) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(ProjectNotExist::new);
+
+        Category category = categoryRepository.findByProjectIdAndName(projectId, categoryName)
+                .orElseThrow(CategoryNotFoundException::new);
+
+        project.removeCategory(category);
+        categoryRepository.delete(category);
 
         return projectRepository.save(project);
     }

@@ -46,9 +46,8 @@ public class Project {
     @JoinColumn(name = "create_user_id")
     private User createUser;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "category", nullable = false)
-    private ProjectCategories category;
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Category> categories = new ArrayList<>();
 
     @Column(name = "date_create")
     public LocalDate dateCreate;
@@ -62,6 +61,14 @@ public class Project {
 
     public void removeExecutor(User user) {
         executors.removeIf(executor -> executor.getUser().equals(user));
+    }
+
+    public void addCategory(Category category) {
+        categories.add(category);
+    }
+
+    public void removeCategory(Category category) {
+        categories.remove(category);
     }
 }
 

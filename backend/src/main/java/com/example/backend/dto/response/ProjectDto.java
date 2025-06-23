@@ -20,10 +20,10 @@ public class ProjectDto {
     private LocalDate dateTo;
     private LocalTime timeLeft;
     private UserDto createUser;
-    private ProjectCategories category;
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate dateCreate;
     private List<ExecutorDto> executors;
+    private List<CategoryDto> categories;
 
     public ProjectDto() {}
 
@@ -36,11 +36,14 @@ public class ProjectDto {
         this.dateTo = project.getDateTo();
         this.timeLeft = project.getTimeLeft();
         this.createUser = new UserDto(project.getCreateUser());
-        this.category = project.getCategory();
         this.dateCreate = project.getDateCreate();
         this.executors = project.getExecutors()
                 .stream()
                 .map(ExecutorDto::new)
                 .collect(Collectors.toList());
+        this.categories = project.getCategories()
+                .stream()
+                .map(CategoryDto::new)
+                .toList();
     }
 }
