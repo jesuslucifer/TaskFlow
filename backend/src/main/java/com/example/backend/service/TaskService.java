@@ -1,83 +1,25 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.response.ProjectDto;
 import com.example.backend.dto.response.TaskDto;
-import com.example.backend.exception.ProjectAlreadyExist;
-import com.example.backend.exception.ProjectGetFailedException;
-import com.example.backend.exception.ProjectNotExist;
 import com.example.backend.model.Task;
-import com.example.backend.repository.TaskRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Service
-@RequiredArgsConstructor
-public class TaskService {
-    @Autowired
-    private final TaskRepository taskRepository;
+public interface TaskService {
 
-    public Task save(Task task) {
-        return taskRepository.save(task);
-    }
+    Task save(Task task);
 
-    public Task createTask(Task task) {
-        if(taskRepository.existsByName(task.getName())) {
-            throw new ProjectAlreadyExist();
-        }
+    Task createTask(Task task);
 
-        return save(task);
-    }
+    Task getById(Long id);
 
-    public Task getById(Long id) {
-        return taskRepository.findById(id)
-                .orElseThrow(ProjectGetFailedException::new);
+    Task getByName(String name);
 
-    }
+    Task updateById(Long id, TaskDto taskUpdateDto);
 
-    public Task getByName(String name) {
-        return taskRepository.findByName(name)
-                .orElseThrow(ProjectGetFailedException::new);
-    }
+    Task updateByName(String name, TaskDto taskUpdateDto);
 
-    public Task updateById(Long id, TaskDto taskUpdateDto) {
-        Task task = taskRepository.findById(id)
-                .orElseThrow(ProjectNotExist::new);
-        task.setName(taskUpdateDto.getName());
-        task.setDescription(taskUpdateDto.getDescription());
-        task.setStatus(taskUpdateDto.getStatus());
-        task.setPriority(taskUpdateDto.getPriority());
-        task.setDateTo(taskUpdateDto.getDateTo());
-        task.setTimeLeft(taskUpdateDto.getTimeLeft());
-        return taskRepository.save(task);
-    }
+    List<TaskDto> getAll();
 
-    public Task updateByName(String name, TaskDto taskUpdateDto) {
-        Task task = taskRepository.findByName(name)
-                .orElseThrow(ProjectNotExist::new);
-        task.setName(taskUpdateDto.getName());
-        task.setDescription(taskUpdateDto.getDescription());
-        task.setStatus(taskUpdateDto.getStatus());
-        task.setPriority(taskUpdateDto.getPriority());
-        task.setDateTo(taskUpdateDto.getDateTo());
-        task.setTimeLeft(taskUpdateDto.getTimeLeft());
-        return taskRepository.save(task);
-    }
-
-    public List<TaskDto> getAll() {
-        return taskRepository.findAll()
-                .stream()
-                .map(TaskDto::new)
-                .collect(Collectors.toList());
-    }
-
-    public void deleteTaskById(Long id) {
-        if (!taskRepository.existsById(id)) {
-            throw new ProjectNotExist();
-        }
-        taskRepository.deleteById(id);
-    }
+    void deleteTaskById(Long id);
 }
