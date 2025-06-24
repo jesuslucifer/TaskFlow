@@ -17,3 +17,7 @@ databaseChangeLog:
       file: db/changelog/add-table-project-executors.yaml
   - include:
       file: db/changelog/add-column-time-create-in-project.yaml
+  - include:
+      file: db/changelog/drop-category-in-projects.yaml
+  - include:
+      file: db/changelog/add-table-categories.yaml

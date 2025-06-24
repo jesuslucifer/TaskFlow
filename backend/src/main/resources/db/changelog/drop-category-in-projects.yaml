@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: drop-category-in-projects.yaml
+      author: jesuslucifer
+      changes:
+        - dropColumn:
+            tableName: projects
+            columnName: category
