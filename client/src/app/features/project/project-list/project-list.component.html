@@ -1,10 +1,16 @@
 @if(projects$ | async; as projects){
-
+@if(projects.length == 0){
+<div>
+  Проектов нет
+</div>
+}
 <div class="projects__list">
   @for(project of projects; track project.name){
-
   <app-project-card [project]="project"></app-project-card>
-
   }
+</div>
+}@else {
+<div>
+  Загрузка проектов
 </div>
 }

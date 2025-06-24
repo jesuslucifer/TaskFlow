@@ -3,29 +3,79 @@ import { ProjectService } from '../../../core/services/project.service';
 import { ProfileService } from '../../../core/services/profile.service';
 import { Observable, switchMap, tap } from 'rxjs';
 import { IProject } from '../../../core/interface/project.interface';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { ProjectExecutorDialogComponent } from '../project-executor-dialog/project-executor-dialog.component';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { ProjectPageExecutorsComponent } from './project-page-executors/project-page-executors.component';
+import { ProjectPageInfoComponent } from './project-page-info/project-page-info.component';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-project-page',
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ProjectPageExecutorsComponent,
+    ProjectPageInfoComponent,
+  ],
   templateUrl: './project-page.component.html',
   styleUrl: './project-page.component.scss',
 })
 export class ProjectPageComponent {
   projectService = inject(ProjectService);
   profileService = inject(ProfileService);
+  router = inject(Router);
+  users$ = toObservable(this.profileService.users);
+  toastr = inject(ToastrService);
   route = inject(ActivatedRoute);
-
+  fb = inject(FormBuilder);
+  projectId: number = -1;
+  dialog: MatDialog = inject(MatDialog);
   project$: Observable<IProject | null> = this.route.params.pipe(
     switchMap(({ username, name }) => {
       return this.projectService.getProjectByName(username, name).pipe(
         tap((project) => {
-          console.log(project);
+          this.form.patchValue(project);
+          this.projectId = project.id;
         })
       );
     })
   );
+  isEditingNameDesc = false;
+
+  toggleEditNameDesc() {
+    this.isEditingNameDesc = !this.isEditingNameDesc;
+  }
+
+  saveNameDesc() {
+    const { name, description } = this.form.value;
+    this.projectService
+      .patchProject(this.projectId, { name, description })
+      .subscribe({
+        next: () => {
+          this.isEditingNameDesc = false;
+          this.toastr.success('Данные изменены');
+        },
+      });
+  }
+
+  openCreateDialog() {
+    this.dialog.open(ProjectExecutorDialogComponent, {
+      width: '500px',
+      data: {
+        projectId: this.projectId,
+      },
+      height: '80%',
+      disableClose: false,
+    });
+  }
+  form: FormGroup = this.fb.group({
+    name: [{ value: '' }],
+    description: [{ value: '' }],
+  });
+
   tasks = [
     {
       status: 'In Progress',

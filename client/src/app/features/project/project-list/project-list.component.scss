@@ -8,8 +8,10 @@
   // .projects__main
 
   &__list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 70px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(1, 1fr);
+    grid-column-gap: 70px;
+    grid-row-gap: 0px;
   }
 }

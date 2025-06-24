@@ -1,0 +1,71 @@
+<div class="side-bar__info">
+  <div class="info__item">Создан: {{project.dateCreate}}</div>
+  <div class="info__item">Создатель: {{ project.createUser.username }}</div>
+
+  <div class="info__item">
+    Приоритет:
+    <select [ngModel]=" project.priority" (ngModelChange)="onPriorityChange($event)">
+      <option [value]="priorityEnum.CRITICAL">Критический</option>
+      <option [value]="priorityEnum.HIGH">Высокий</option>
+      <option [value]="priorityEnum.MEDIUM">Средний</option>
+      <option [value]="priorityEnum.LOW">Низкий</option>
+    </select>
+  </div>
+
+  <div class="info__item">
+    Статус:
+    <select [ngModel]="project.status" (ngModelChange)="onStatusChange($event)">
+      <option [value]="statusEnum.ACTIVE">Разрабатывается</option>
+      <option [value]="statusEnum.STOPPED">Приостановлено</option>
+      <option [value]="statusEnum.COMPLETED">Выполнено</option>
+      <option [value]="statusEnum.DRAFT">Черновик</option>
+
+    </select>
+  </div>
+
+  <div class="info__item">
+    Категория:
+    <div class="category__list">
+      @for(category of project.categories; track category.name)
+      {
+      <div class="category__tag">
+        {{ category.name}}
+
+      </div>
+      }
+    </div>
+  </div>
+
+  <div class="info__item">
+    Срок:
+    @if(!showEditDate){
+    <ng-container>
+      {{ project.dateTo }}
+      <button (click)="showEditDate = true">Изменить</button>
+    </ng-container>
+    }
+    @if(showEditDate){
+    <ng-container>
+      <input type="date" [(ngModel)]="editDateTo" />
+      <button (click)="saveDateTo()">Сохранить</button>
+      <button (click)="cancelEditDate()">Отмена</button>
+    </ng-container>}
+  </div>
+  <div class="info__item">
+    Время:
+    @if(!showEditTime){
+    <ng-container>
+      {{ project.timeLeft }}
+      <button (click)="showEditTime = true">Изменить</button>
+    </ng-container>
+    }
+    @if(showEditTime){
+    <ng-container>
+      <input type="time" [(ngModel)]="editTimeLeft" />
+      <button (click)="saveTimeLeft()">Сохранить</button>
+      <button (click)="cancelEditTime()">Отмена</button>
+    </ng-container>
+    }
+  </div>
+
+</div>

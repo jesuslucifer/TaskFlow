@@ -1,0 +1,11 @@
+<ul class="executor__list">
+  @for(executor of executors; track executor.user.id){
+  <li class="executor__item">
+    <img class="executor__image" [src]="executor.user.avatarUrl" alt="">
+    <div class="executor__name">
+      <a [routerLink]="['/profile', executor.user.id]">{{executor.user.username}}</a>
+    </div>
+    <div class="executor__role">{{executor.role}}</div>
+  </li>
+  }
+</ul>

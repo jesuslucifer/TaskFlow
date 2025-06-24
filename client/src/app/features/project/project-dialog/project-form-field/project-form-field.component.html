@@ -10,11 +10,11 @@
   <label for="" class="project-form__select">
     Приоритет проекта
     <select name="priority" formControlName="priority" class="form__select">
+      <option [value]="priorityEnum.CRITICAL">Критический</option>
       <option [value]="priorityEnum.HIGH" selected>Высокий</option>
       <option [value]="priorityEnum.MEDIUM">Средний</option>
       <option [value]="priorityEnum.LOW">Низкий</option>
     </select>
-    <!-- <input type="text" class="form__input" formControlName="projectPriority" placeholder="Высокий"> -->
   </label>
   <label class="project__date" for="">
     Сроки проекта
@@ -28,10 +28,21 @@
 
     </label>
   </label>
+  <label class="category-field">
+    Категории проекта
+
+    <div class="input-with-tags">
+      @for (cat of category; track $index) {
+      <div class="tag">
+        {{ cat }}
+        <button type="button" (click)="removeCategory(cat)">✕</button>
+      </div>
+      }
 
 
-
-
-
+      <input type="text" class="tag-input" placeholder="Введите категорию и нажмите Enter" [formControl]="categoryInput"
+        (keydown.enter)="onEnterCategory($event)" />
+    </div>
+  </label>
   <button class="form__btn" type="submit" [disabled]="projectForm.invalid">Создать проект</button>
 </form>

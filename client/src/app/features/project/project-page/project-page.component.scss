@@ -1,8 +1,3 @@
-$primary-gradient: linear-gradient(to right, #ff6b6b, #4ecdc4);
-$card-bg: #f0f0f0;
-$text-color: #333;
-$light-text: #888;
-
 .container {
   font-family: Arial, sans-serif;
   padding: 20px;
@@ -10,17 +5,24 @@ $light-text: #888;
   box-sizing: border-box;
 }
 .header {
-  background: $primary-gradient;
-
-  color: white;
-  padding: 20px;
+  color: black;
   border-radius: 10px;
   margin-bottom: 20px;
   width: 100%;
 }
 
 .project {
-  // .project__name
+  display: flex;
+  gap: 15px;
+  justify-content: space-between; // .project__name
+  &__main {
+    width: 70%;
+    padding: 1.5rem;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    min-height: 100vh;
+  }
   &__info {
     margin-bottom: 15px;
     display: flex;
@@ -28,18 +30,34 @@ $light-text: #888;
     gap: 15px;
   }
   &__name {
-    font-size: 24px;
+    font-size: 32px;
+    font-weight: bold;
   }
   &__details {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
   }
   // .project__category
 
   &__category {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  &__side-bar {
+    width: 30%;
+    padding: 1.5rem;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    min-height: 100vh;
   }
 
+  &__executors {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+  }
   // .project__description
 
   &__description {
@@ -50,14 +68,77 @@ $light-text: #888;
   &__dates {
   }
 }
+.description__text {
+  margin: 15px 0;
+}
+.side-bar {
+  &__item {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+}
 
-.created-at {
+.info__item {
+  margin: 10px 0;
+  display: flex;
+  gap: 15px;
+  h5 {
+    font-size: 16px;
+  }
 }
-.assigned {
+.executor {
+  // .executor__list
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  // .executor__item
+
+  &__item {
+    border-radius: 15px;
+    background: #e0f3ff;
+    padding: 7px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border: 1px solid #007bff;
+  }
+
+  // .executor__image
+
+  &__image {
+    border-radius: 30px;
+    width: 40px;
+    height: 40px;
+  }
+
+  // .executor__name
+
+  &__name {
+    a {
+      text-decoration: none;
+      color: black;
+    }
+  }
+
+  // .executor__role
+
+  &__role {
+  }
 }
-.group {
-}
-.priority {
+.executors__add {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  > button {
+    font-size: 14px;
+    padding: 2px 6px;
+    border-radius: 30px;
+  }
 }
 .view {
   // .view__type
@@ -80,7 +161,6 @@ $light-text: #888;
   // .task__card
 
   &__card {
-    background: $card-bg;
     padding: 15px;
     border-radius: 5px;
     text-align: center;
@@ -90,7 +170,6 @@ $light-text: #888;
   // .task__status
 
   &__status {
-    color: $light-text;
     display: block;
     margin-bottom: 10px;
   }
@@ -98,14 +177,12 @@ $light-text: #888;
   // .task__title
 
   &__title {
-    color: $text-color;
     font-style: italic;
   }
 
   // .task__assigned
 
   &__assigned {
-    color: $light-text;
     display: block;
     margin: 10px 0;
   }
@@ -114,6 +191,76 @@ $light-text: #888;
 
   &__priority {
     font-weight: bold;
-    color: $text-color;
+  }
+}
+
+.project__description {
+  margin-bottom: 2rem;
+  border-radius: 12px;
+  // box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.3s ease;
+
+  h4 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+
+  .description__text {
+    font-size: 14px;
+    color: #374151;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+
+  input[type="text"],
+  textarea {
+    width: 90%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    transition: border-color 0.3s;
+
+    &:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  button {
+    margin-right: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &.edit-btn {
+      background-color: #3b82f6;
+      color: #ffffff;
+
+      &:hover {
+        background-color: #2563eb;
+      }
+    }
+
+    &.cancel-btn {
+      background-color: #e5e7eb;
+      color: #374151;
+
+      &:hover {
+        background-color: #d1d5db;
+      }
+    }
   }
 }

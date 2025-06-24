@@ -28,6 +28,13 @@ export class ProfileService {
   getProfile(id: string) {
     return this.http.get<IProfile>(`${this.baseApiUrl}users/${id}`);
   }
+  getUsers() {
+    return this.http.get<IProfile[]>(`${this.baseApiUrl}users/all`).pipe(
+      tap((res) => {
+        this.users.set(res);
+      })
+    );
+  }
   uploadImage(file: File): Observable<string> {
     const fd = new FormData();
     fd.append('file', file);

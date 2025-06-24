@@ -1,0 +1,38 @@
+<div class="executor-search">
+  <div class="search__block">
+    <input type="text" placeholder="Поиск" class="search" (input)="searchQuery.set($any($event.target).value)" />
+  </div>
+
+  <ul>
+    @if (filteredUsers()) {
+    @for (user of filteredUsers(); track user.id) {
+    <li class="executor__item">
+      <div class="executor__info">
+        <img class="executor__image" [src]="user.avatarUrl" alt="" />
+        <div class="executor__name">
+          <a [routerLink]="['/profile', user.id]">{{ user.username }}</a>
+        </div>
+        <button class="open-btn executor__btn" (click)="toggleSelect(user.id)">
+          +
+        </button>
+      </div>
+
+      @if (selectedUserId() === user.id) {
+      <div class="executor__role-select">
+        <label>Выберите роль:</label>
+        <select [value]="selectedRoles()[user.id] || 'DEVELOPER'"
+          (change)="setRoleForUser(user.id, $any($event.target).value)">
+          @for (role of executorRoles; track $index) {
+          <option [value]="role">{{ role }}</option>
+          }
+        </select>
+        <button class="confirm-btn" (click)="onAddExecutor(user.id)">
+          Добавить
+        </button>
+      </div>
+      }
+    </li>
+    }
+    }
+  </ul>
+</div>

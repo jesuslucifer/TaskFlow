@@ -6,20 +6,51 @@ export interface IProjectResponse {
   dateTo: string;
   timeLeft: string;
   priority: string;
+  categories: ICategory[];
+}
+
+export interface IExecutorsResponse {
+  executorId: number;
+  executorRole: string;
 }
 export interface IExecutors {
   user: IProfile;
   role: string;
 }
+export interface ICategory {
+  name: string;
+}
 export interface IProject {
   id: number;
   name: string;
   description: string;
+  dateCreate: string;
   createUser: IProfile;
   dateTo: string;
   timeLeft: string;
   status: string;
   priority: string;
-  category: string;
-  executors: IExecutors;
+  categories: ICategory[];
+  executors: IExecutors[];
+}
+export interface IProjectUpdate {
+  name?: string;
+  description?: string;
+  dateTo?: string | null;
+  timeLeft?: string;
+  status?: string;
+  priority?: string;
+  categories?: ICategory[];
+}
+export enum Priority {
+  LOW = 'LOW',
+  MEDIUM = 'MEDIUM',
+  HIGH = 'HIGH',
+  CRITICAL = 'CRITICAL',
+}
+export enum Status {
+  ACTIVE = 'ACTIVE',
+  STOPPED = 'STOPPED',
+  COMPLETED = 'COMPLETED',
+  DRAFT = 'DRAFT',
 }

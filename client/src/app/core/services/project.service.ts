@@ -1,7 +1,14 @@
 import { tap } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { IProject, IProjectResponse } from '../interface/project.interface';
+import {
+  ICategory,
+  IExecutors,
+  IExecutorsResponse,
+  IProject,
+  IProjectResponse,
+  IProjectUpdate,
+} from '../interface/project.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +17,7 @@ export class ProjectService {
   http = inject(HttpClient);
   baseApiUrl = 'http://localhost:8080/api/projects';
   projects = signal<IProject[] | null>(null);
-
+  executorsProject = signal<IProject[] | null>(null);
   createProject(projectForm: IProjectResponse) {
     return this.http.post<IProject>(`${this.baseApiUrl}/create`, projectForm);
   }
@@ -38,12 +45,38 @@ export class ProjectService {
     );
   }
   deleteProject(id: number) {
-    return this.http.delete(`${this.baseApiUrl}/${id}`);
-  }
-  updateProject(projectId: number, projectForm: IProjectResponse) {
-    return this.http.put(
-      `${this.baseApiUrl}/projects/${projectId}`,
-      projectForm
+    return this.http.delete(`${this.baseApiUrl}/${id}`).pipe(
+      tap(() => {
+        const current = this.projects();
+        if (current) {
+          const updated = current.filter((p) => p.id !== id);
+          this.projects.set(updated);
+        }
+      })
     );
+  }
+  patchProject(projectId: number, projectForm: IProjectUpdate) {
+    return this.http.patch(`${this.baseApiUrl}/${projectId}`, projectForm);
+  }
+  addExecutor(projectId: number, executor: IExecutorsResponse) {
+    return this.http.put<IExecutorsResponse>(
+      `${this.baseApiUrl}/${projectId}/executors/`,
+      executor
+    );
+  }
+  addCategory(projectId: number, category: ICategory[]) {
+    return this.http.put<ICategory>(
+      `${this.baseApiUrl}/${projectId}/category/`,
+      category
+    );
+  }
+  getProjectExecutors(projectId: number) {
+    return this.http
+      .get<IProject[]>(`${this.baseApiUrl}/${projectId}/executor`)
+      .pipe(
+        tap((res: IProject[]) => {
+          this.executorsProject.set(res);
+        })
+      );
   }
 }

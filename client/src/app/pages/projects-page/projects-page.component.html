@@ -7,9 +7,18 @@
   </header>
 
   <section class="projects__last">
-    <h2 class="projects-last__title"> Последние проекты</h2>
+    <h2 class="projects-last__title"> Проекты</h2>
     <div class="projects-last__list">
-      <app-project-list></app-project-list>
+      <app-project-list [projects$]="projects$"></app-project-list>
+    </div>
+  </section>
+
+
+  <section class="projects__last">
+    <h2 class="projects-last__title"> Исполнительские проекты</h2>
+    <div class="projects-last__list">
+      <app-project-list [projects$]="executorsProjects$"></app-project-list>
+
     </div>
   </section>
 </main>

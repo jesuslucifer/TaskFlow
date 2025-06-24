@@ -1,40 +1,61 @@
 @if(project$ | async; as project){
 <div class="container">
-  <header class="header">
-    <div class="project__info">
-      <span class="project__name">{{project.name}}</span>
-      <span class="project__category">{{project.category}}</span>
-      <div class="project__details">
-        <span class="created-at">Created At: May 15, 2024 14:23 PM</span>
+  <div class="project">
+    <div class="project__main">
+      <header class="header">
+        <div class="project__info">
+          <span class="project__name">{{project.name}}</span>
+          <form [formGroup]="form">
+            <div class="project__description">
+              <h4>Описание</h4>
+              @if(!isEditingNameDesc){
+              <div>
+                <div class="description__text">{{ project.description }}</div>
+                <button class="edit-btn" (click)="toggleEditNameDesc()">Редактировать</button>
+              </div>
+              }@else{
+              <div>
+                <input type="text" formControlName="name" placeholder="Имя проекта" />
+                <textarea formControlName="description" placeholder="Описание проекта"></textarea>
+                <button class="edit-btn" (click)="saveNameDesc()">Сохранить</button>
+                <button class="cancel-btn" (click)="toggleEditNameDesc()">Отмена</button>
+              </div>
+              }
+            </div>
 
-        <span class="assigned">Создатель: {{project.createUser.username}}</span>
+          </form>
 
-        <span class="group">Group: Team projects → Fashion</span>
-        <span class="priority">Приоритет: {{project.priority}}</span>
+        </div>
+      </header>
+      <div class="view__type">
+        <span>Calendar</span> | <span>Kanban</span> | <span>List</span>
       </div>
-      <div class="project__description">
-        Описание: {{project.description}}
-      </div>
-      <div class="project__dates">
-        <span>Сроки: День: {{project.dateTo}} / Время: {{ project.timeLeft}}</span>
+      <div class="task__grid">
+        @for( task of tasks; track task.title){
+        <div class="task__card">
+          <span class="task__status">{{ task.status }}</span>
+          <span class="task__title">{{ task.title }}</span>
+          <span class="task__assigned"> {{ task.assigned }}</span>
+          <span class="task__priority">{{ task.priority }}</span>
+        </div>
+        }
       </div>
     </div>
-  </header>
-
-
-  <div class="view__type">
-    <span>Calendar</span> | <span>Kanban</span> | <span>List</span>
-  </div>
-  <div class="task__grid">
-    @for( task of tasks; track task.title){
-    <div class="task__card">
-      <span class="task__status">{{ task.status }}</span>
-      <span class="task__title">{{ task.title }}</span>
-      <span class="task__assigned"> {{ task.assigned }}</span>
-      <span class="task__priority">{{ task.priority }}</span>
+    <div class="project__side-bar">
+      <div class="side-bar__item">
+        <h3>Информация о проекте</h3>
+        <app-project-page-info [project]="project"></app-project-page-info>
+        <div class="project__executors info__item">
+          <div class="executors__add">
+            <h5>Исполнители</h5>
+            <button (click)="openCreateDialog()" class="open-btn">+</button>
+          </div>
+          <app-project-page-executors [executors]="project.executors"></app-project-page-executors>
+        </div>
+      </div>
     </div>
-    }
 
   </div>
+
 </div>
 }

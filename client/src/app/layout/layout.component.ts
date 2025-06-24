@@ -3,7 +3,6 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { HeaderComponent } from './header/header.component';
 import { RouterOutlet } from '@angular/router';
 import { ProfileService } from '../core/services/profile.service';
-import { Observable } from 'rxjs';
 import { ProjectService } from '../core/services/project.service';
 import { toObservable } from '@angular/core/rxjs-interop';
 
@@ -20,7 +19,9 @@ export class LayoutComponent {
 
   ngOnInit() {
     this.profileService.getMe().subscribe((res) => {
-      this.projectsService.getAllUserProjects(res.id).subscribe();
+      // this.projectsService.getAllUserProjects(res.id).subscribe();
+      // this.projectsService.getProjectExecutors(res.id).subscribe();
+      this.profileService.getUsers().subscribe();
     });
   }
 }

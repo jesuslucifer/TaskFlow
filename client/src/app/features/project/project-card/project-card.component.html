@@ -11,7 +11,6 @@
       </button>
       <mat-menu #menu="matMenu">
         <button mat-menu-item (click)="onDeleteProject()">Удалить</button>
-        <button mat-menu-item> >Редактировать </button>
       </mat-menu>
     </button>
   </div>
@@ -19,8 +18,7 @@
   <p class="project-card__description">Описание: {{ project.description }}</p>
 
   <div class="project-card__meta">
-    <!-- <span class="project-card__date">Создан: {{ project.dateTo }}</span> -->
-    <span class="project-card__date">Создан: -</span>
+    <span class="project-card__date">Создан: {{ project.dateCreate }}</span>
 
   </div>
 
@@ -29,7 +27,7 @@
   <div class="project-card__selects">
     <label class="project-card__select">
       Статус:
-      <select name="progress" [value]="project.status">
+      <select [ngModel]="project.status" (ngModelChange)="onStatusChange($event)">
         <option value="ACTIVE">Разрабатывается</option>
         <option value="STOPPED">Приостановлено</option>
         <option value="COMPLETED">Выполнено</option>
@@ -40,7 +38,8 @@
 
     <label class="project-card__select">
       Приоритет:
-      <select name="priority" [value]="project.priority">
+      <select [ngModel]="project.priority" (ngModelChange)="onPriorityChange($event)">
+        <option value="CRITICAL">Критический</option>
         <option value="HIGH">Высокий</option>
         <option value="MEDIUM">Средний</option>
         <option value="LOW">Низкий</option>
@@ -49,10 +48,14 @@
   </div>
 
   <div class="project-card__tags">
+    @for(category of project.categories; track category.name)
+    {
     <div class="project-card__tag">
-      {{project.category}}
+      {{ category.name}}
 
     </div>
+    }
+
 
   </div>
 

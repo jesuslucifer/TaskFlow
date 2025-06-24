@@ -1,0 +1,57 @@
+.executor {
+  // .executor__list
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  // .executor__item
+
+  &__item {
+    border-radius: 15px;
+    background: #e0f3ff;
+    padding: 7px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border: 1px solid #007bff;
+  }
+
+  // .executor__image
+
+  &__image {
+    border-radius: 30px;
+    width: 40px;
+    height: 40px;
+  }
+
+  // .executor__name
+
+  &__name {
+    a {
+      text-decoration: none;
+      color: black;
+    }
+  }
+
+  // .executor__role
+
+  &__role {
+  }
+}
+.executors__add {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 15px 0;
+  > h5 {
+    font-size: 16px;
+  }
+  > button {
+    font-size: 14px;
+    padding: 2px 6px;
+    border-radius: 30px;
+  }
+}
