@@ -34,12 +34,12 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Project createProject(Project project) {
-        getProjectsByUserId(project.getCreateUser().getId())
-                .stream()
-                .filter(p -> p.getName().equals(project.getName()))
-                .findFirst()
-                .ifPresent(p -> { throw new ProjectAlreadyExist(); });
-        project.getCategories().forEach(c -> {c.setProject(project); });
+
+        if (projectRepository.existsByCreateUserIdAndName(project.getCreateUser().getId(), project.getName())) {
+            throw new ProjectAlreadyExist();
+        }
+
+        project.getCategories().forEach(c -> c.setProject(project));
         return save(project);
     }
 
@@ -47,7 +47,6 @@ public class ProjectServiceImpl implements ProjectService {
     public Project getById(Long id) {
         return projectRepository.findById(id)
                 .orElseThrow(ProjectGetFailedException::new);
-
     }
 
     @Override
@@ -115,11 +114,9 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(ProjectNotExist::new);
 
-        categoryRepository.findByProjectId(projectId)
-                .stream()
-                .filter(c -> c.getName().equals(category.getName()))
-                .findFirst()
-                .ifPresent(c -> {throw new CategoryAlreadyExistsException();});
+        if (categoryRepository.existsByProjectIdAndName(project.getId(), category.getName())) {
+            throw new CategoryAlreadyExistsException();
+        }
 
         category.setProject(project);
 
@@ -168,7 +165,6 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository
                 .findAllByCreateUserId(userId)
                 .stream()
-                .filter(p -> p.getCreateUser().getId().equals(userId))
                 .map(ProjectDto::new)
                 .collect(Collectors.toList());
     }
@@ -184,10 +180,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Project getProjectByNameForUsername(String username, String name) {
-        return getProjectsByUserId(userService.getByUsername(username).getId())
-                .stream()
-                .filter(p -> p.getName().equals(name))
-                .findFirst()
+        return projectRepository.findByCreateUserIdAndName(userService.getByUsername(username).getId(), name)
                 .orElseThrow(ProjectNotExist::new);
     }
 }
