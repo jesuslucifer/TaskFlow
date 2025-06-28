@@ -11,11 +11,7 @@ import com.example.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,35 +46,16 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Project updateById(Long id, Map<String, Object> updateDto) {
+    public Project updateById(Long id, ProjectDto updateDto) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(ProjectNotExist::new);
 
-        updateDto.forEach((k, v) -> {
-            switch (k) {
-                case "name":
-                    project.setName(v.toString());
-                    break;
-                case "description":
-                    project.setDescription(v.toString());
-                    break;
-                case "status":
-                    project.setStatus(Status.valueOf(v.toString()));
-                    break;
-                case "priority":
-                    project.setPriority(Priority.valueOf(v.toString()));
-                    break;
-                case "dateTo":
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-                    project.setDateTo(LocalDate.parse(v.toString(), formatter));
-                    break;
-                case "timeLeft":
-                    project.setTimeLeft(LocalTime.parse(v.toString()));
-                    break;
-                default:
-                    break;
-            }
-        });
+        project.setName(updateDto.getName());
+        project.setDescription(updateDto.getDescription());
+        project.setStatus(updateDto.getStatus());
+        project.setPriority(updateDto.getPriority());
+        project.setDateTo(updateDto.getDateTo());
+        project.setTimeLeft(updateDto.getTimeLeft());
 
         return projectRepository.save(project);
     }
