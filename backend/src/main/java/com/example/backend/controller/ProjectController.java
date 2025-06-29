@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -84,10 +83,10 @@ public class ProjectController {
         return ResponseEntity.ok(projectDtoList);
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateProjectById(
             @PathVariable Long id,
-            @RequestBody Map<String, Object> updateDto) {
+            @RequestBody ProjectDto updateDto) {
 
         projectService.updateById(id, updateDto);
 

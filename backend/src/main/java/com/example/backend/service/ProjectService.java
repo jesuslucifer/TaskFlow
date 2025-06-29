@@ -6,7 +6,6 @@ import com.example.backend.model.ExecutorRole;
 import com.example.backend.model.Project;
 
 import java.util.List;
-import java.util.Map;
 
 public interface ProjectService {
 
@@ -16,7 +15,7 @@ public interface ProjectService {
 
     Project getById(Long id);
 
-    Project updateById(Long id, Map<String, Object> updateDto);
+    Project updateById(Long id, ProjectDto updateDto);
 
     Project addExecutor(Long projectId, Long executorId, ExecutorRole role);
 
