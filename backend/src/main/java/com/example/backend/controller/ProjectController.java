@@ -24,7 +24,7 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody CreateProjectRequest projectRequest) {
+    public ResponseEntity<ProjectDto> create(@RequestBody CreateProjectRequest projectRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
 
@@ -42,10 +42,7 @@ public class ProjectController {
 
         projectService.createProject(project);
 
-        return ResponseEntity.ok(new SuccessResponse(
-                "Проект создан",
-                HttpStatus.OK
-        ));
+        return ResponseEntity.ok(new ProjectDto(project));
     }
 
     @GetMapping("/{id}")
@@ -84,16 +81,13 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateProjectById(
+    public ResponseEntity<ProjectDto> updateProjectById(
             @PathVariable Long id,
             @RequestBody ProjectDto updateDto) {
 
         projectService.updateById(id, updateDto);
 
-        return ResponseEntity.ok(new SuccessResponse(
-                "Проект обновлен",
-                HttpStatus.OK
-        ));
+        return ResponseEntity.ok(updateDto);
     }
 
     @PutMapping("/{projectId}/executors/")
