@@ -9,4 +9,5 @@ public interface NotificationHistoryService {
     NotificationHistory save(NotificationHistory notificationHistory);
     List<NotificationHistoryDto> getNotificationsForUser(Long id);
     void deleteNotificationHistory(Long id);
+    void deleteNotificationByProjectIdAndUserId(Long projectId, Long userId);
  }

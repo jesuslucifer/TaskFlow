@@ -10,4 +10,5 @@ import java.util.List;
 public interface NotificationHistoryRepository extends JpaRepository<NotificationHistory, Long> {
     boolean existsByProjectIdAndTypeNotificationAndPeriodNotification(Long projectId, String typeNotification, String periodNotification);
     List<NotificationHistory> findAllByUserId(Long user_id);
+    void deleteByProjectIdAndUserId(Long project_id, Long user_id);
 }

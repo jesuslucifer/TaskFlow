@@ -7,7 +7,6 @@ import com.example.backend.service.NotificationHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,18 +26,24 @@ public class NotificationHistoryServiceImpl implements NotificationHistoryServic
         List<NotificationHistoryDto> notificationHistoryDto = new ArrayList<>();
 
         notificationHistories.forEach(notificationHistory -> {
-            String message = "Скоро дедлайн у проекта ";
             if (notificationHistory.getTypeNotification().equals("deadline_days")) {
-                message += String.valueOf(notificationHistory.getProject().getName());
+                String message = "Скоро дедлайн у проекта " + notificationHistory.getProject().getName();
                 notificationHistoryDto.add(new NotificationHistoryDto(notificationHistory.getId(),
                         message,
-                        LocalDateTime.now()));
+                        notificationHistory.getDateTime()));
             }
             if (notificationHistory.getTypeNotification().equals("deadline_hours")) {
-                message += String.valueOf(notificationHistory.getProject().getName());
+                String message = "Скоро дедлайн у проекта " + notificationHistory.getProject().getName();
                 notificationHistoryDto.add(new NotificationHistoryDto(notificationHistory.getId(),
                         message,
-                        LocalDateTime.now()));
+                        notificationHistory.getDateTime()));
+            }
+            if (notificationHistory.getTypeNotification().equals("add_executor")) {
+                String message = "Вас назначили исполнителем в проекте " + notificationHistory.getProject().getName();
+                notificationHistoryDto.add(new NotificationHistoryDto(notificationHistory.getId(),
+                        message,
+                        notificationHistory.getDateTime()
+                ));
             }
         });
 
@@ -48,5 +53,10 @@ public class NotificationHistoryServiceImpl implements NotificationHistoryServic
     @Override
     public void deleteNotificationHistory(Long id) {
         notificationHistoryRepository.deleteById(id);
+    }
+
+    @Override
+    public void deleteNotificationByProjectIdAndUserId(Long projectId, Long userId) {
+        notificationHistoryRepository.deleteByProjectIdAndUserId(projectId, userId);
     }
 }

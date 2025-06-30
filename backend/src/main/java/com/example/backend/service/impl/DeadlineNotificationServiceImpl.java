@@ -1,20 +1,18 @@
 package com.example.backend.service.impl;
 
-import com.example.backend.model.NotificationHistory;
 import com.example.backend.model.Project;
-import com.example.backend.model.User;
 import com.example.backend.repository.NotificationHistoryRepository;
 import com.example.backend.repository.ProjectRepository;
 import com.example.backend.service.DeadlineNotificationService;
-import com.example.backend.service.NotificationHistoryService;
+import com.example.backend.service.NotificationService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -23,9 +21,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DeadlineNotificationServiceImpl implements DeadlineNotificationService {
     private final ProjectRepository projectRepository;
-    private final SimpMessagingTemplate messagingTemplate;
     private final NotificationHistoryRepository notificationHistoryRepository;
-    private final NotificationHistoryService notificationHistoryService;
+    private final NotificationService notificationService;
+    private final String destination = "/queue/deadline-notification";
 
     @Scheduled(fixedRate = 30000)
     @Transactional
@@ -64,33 +62,27 @@ public class DeadlineNotificationServiceImpl implements DeadlineNotificationServ
                     typeNotification,
                     periodNotification)) {
                 String message = String.format("Скоро дедлайн у проекта %s", project.getName());
-                sendNotificationToUser(project.getCreateUser().getUsername(), message);
-                saveNotification(project, typeNotification, periodNotification, project.getCreateUser());
+                notificationService.sendNotificationToUser(
+                        project.getCreateUser().getUsername(),
+                        message,
+                        destination);
+                notificationService.saveNotification(project,
+                        typeNotification,
+                        periodNotification,
+                        project.getCreateUser(),
+                        LocalDateTime.now());
                 project.getExecutors().forEach(executor -> {
-                    sendNotificationToUser(executor.getUser().getUsername(), message);
-                    saveNotification(project, typeNotification, periodNotification, executor.getUser());
+                    notificationService.sendNotificationToUser(
+                            executor.getUser().getUsername(),
+                            message,
+                            destination);
+                    notificationService.saveNotification(project,
+                            typeNotification,
+                            periodNotification,
+                            executor.getUser(),
+                            LocalDateTime.now());
                 });
             }
         });
-    }
-
-    private void sendNotificationToUser(String userName, String message) {
-        try {
-            messagingTemplate.convertAndSendToUser(userName,
-                    "/queue/deadline-notification",
-                    message);
-            log.info("Уведомление отправлено пользователю {}: {}", userName, message);
-        } catch (Exception e) {
-            log.error("Ошибка при отправке уведомления пользователю {}", userName, e);
-        }
-    }
-
-    private void saveNotification(Project project, String typeNotification, String periodNotification, User user) {
-        notificationHistoryService.save(NotificationHistory.builder()
-                .project(project)
-                .typeNotification(typeNotification)
-                .periodNotification(periodNotification)
-                .user(user)
-                .build());
     }
 }

@@ -2,10 +2,8 @@ package com.example.backend.service.impl;
 import com.example.backend.dto.response.ProjectDto;
 import com.example.backend.exception.*;
 import com.example.backend.model.*;
-import com.example.backend.repository.CategoryRepository;
-import com.example.backend.repository.ProjectExecutorRepository;
-import com.example.backend.repository.ProjectRepository;
-import com.example.backend.repository.UserRepository;
+import com.example.backend.repository.*;
+import com.example.backend.service.ExecutorNotificationService;
 import com.example.backend.service.ProjectService;
 import com.example.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +20,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final UserRepository userRepository;
     private final ProjectExecutorRepository projectExecutorRepository;
     private final CategoryRepository categoryRepository;
+    private final ExecutorNotificationService executorNotificationService;
 
     @Override
     public Project save(Project project) {
@@ -70,6 +69,8 @@ public class ProjectServiceImpl implements ProjectService {
 
         project.addExecutor(user, role);
 
+        executorNotificationService.sendNotificationToAddExecutor(user, project);
+
         return projectRepository.save(project);
     }
 
@@ -80,6 +81,8 @@ public class ProjectServiceImpl implements ProjectService {
 
         User user = userRepository.findById(executorId)
                 .orElseThrow(UserNotFoundException::new);
+
+        executorNotificationService.sendNotificationToDeleteExecutor(user, project);
 
         project.removeExecutor(user);
 
