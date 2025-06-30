@@ -21,3 +21,5 @@ databaseChangeLog:
       file: db/changelog/drop-category-in-projects.yaml
   - include:
       file: db/changelog/add-table-categories.yaml
+  - include:
+      file: db/changelog/add-table-notification-history.yaml

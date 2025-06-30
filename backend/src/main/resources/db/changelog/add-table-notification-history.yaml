@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-table-notification-history.yaml
+      author: jesuslucifer
+      changes:
+        - createTable:
+            tableName: notification_history
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                  autoIncrement: true
+              - column:
+                  name: project_id
+                  type: bigint
+              - column:
+                  name: type_notification
+                  type: NVARCHAR(40)
+              - column:
+                  name: period_notification
+                  type: NVARCHAR(40)
