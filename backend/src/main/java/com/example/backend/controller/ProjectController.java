@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -24,7 +25,7 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @PostMapping("/create")
-    public ResponseEntity<ProjectDto> create(@RequestBody CreateProjectRequest projectRequest) {
+    public ResponseEntity<?> create(@RequestBody CreateProjectRequest projectRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
 
@@ -38,9 +39,10 @@ public class ProjectController {
                 .createUser(user)
                 .dateCreate(LocalDate.now())
                 .categories(projectRequest.getCategories())
+                .executors(new ArrayList<>())
                 .build();
 
-        projectService.createProject(project);
+        projectService.save(project);
 
         return ResponseEntity.ok(new ProjectDto(project));
     }
@@ -87,7 +89,7 @@ public class ProjectController {
 
         projectService.updateById(id, updateDto);
 
-        return ResponseEntity.ok(updateDto);
+        return ResponseEntity.ok(new ProjectDto(projectService.getById(id)));
     }
 
     @PutMapping("/{projectId}/executors/")
@@ -97,10 +99,7 @@ public class ProjectController {
                 executorRequest.getExecutorId(),
                 executorRequest.getExecutorRole());
 
-        return ResponseEntity.ok(new SuccessResponse(
-                "Исполнитель добавлен",
-                HttpStatus.OK
-        ));
+        return ResponseEntity.ok(new ProjectDto(projectService.getById(projectId)));
     }
 
     @PutMapping("/{projectId}/category/")
@@ -108,10 +107,7 @@ public class ProjectController {
                                          @RequestBody Category category) {
         projectService.addCategory(projectId, category);
 
-        return ResponseEntity.ok(new SuccessResponse(
-                "Категория добавлена",
-                HttpStatus.OK
-        ));
+        return ResponseEntity.ok(new ProjectDto(projectService.getById(projectId)));
     }
 
     @DeleteMapping("/{id}")
