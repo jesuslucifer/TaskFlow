@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -27,4 +29,11 @@ public class NotificationHistory {
 
     @Column(name = "period_notification")
     private String periodNotification;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @Column(name = "date_time")
+    private LocalDateTime dateTime;
 }

@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-column-user-id-and-date-time-in-notification-history.yaml
+      author: jesuslucifer
+      changes:
+        - addColumn:
+            tableName: notification_history
+            columns:
+              - column:
+                  name: user_id
+                  type: bigint
+              - column:
+                  name: date_time
+                  type: datetime

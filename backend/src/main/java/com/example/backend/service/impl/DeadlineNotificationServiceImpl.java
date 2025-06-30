@@ -2,6 +2,7 @@ package com.example.backend.service.impl;
 
 import com.example.backend.model.NotificationHistory;
 import com.example.backend.model.Project;
+import com.example.backend.model.User;
 import com.example.backend.repository.NotificationHistoryRepository;
 import com.example.backend.repository.ProjectRepository;
 import com.example.backend.service.DeadlineNotificationService;
@@ -64,14 +65,11 @@ public class DeadlineNotificationServiceImpl implements DeadlineNotificationServ
                     periodNotification)) {
                 String message = String.format("Скоро дедлайн у проекта %s", project.getName());
                 sendNotificationToUser(project.getCreateUser().getUsername(), message);
+                saveNotification(project, typeNotification, periodNotification, project.getCreateUser());
                 project.getExecutors().forEach(executor -> {
                     sendNotificationToUser(executor.getUser().getUsername(), message);
+                    saveNotification(project, typeNotification, periodNotification, executor.getUser());
                 });
-                notificationHistoryService.save(NotificationHistory.builder()
-                        .project(project)
-                        .typeNotification(typeNotification)
-                        .periodNotification(periodNotification)
-                        .build());
             }
         });
     }
@@ -85,5 +83,14 @@ public class DeadlineNotificationServiceImpl implements DeadlineNotificationServ
         } catch (Exception e) {
             log.error("Ошибка при отправке уведомления пользователю {}", userName, e);
         }
+    }
+
+    private void saveNotification(Project project, String typeNotification, String periodNotification, User user) {
+        notificationHistoryService.save(NotificationHistory.builder()
+                .project(project)
+                .typeNotification(typeNotification)
+                .periodNotification(periodNotification)
+                .user(user)
+                .build());
     }
 }
