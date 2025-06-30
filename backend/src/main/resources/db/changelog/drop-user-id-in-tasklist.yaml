@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: drop-user-id-tasklist.yaml
+      author: kisliashka100
+      changes:
+        - dropColumn:
+            tableName: task_list
+            columnName: user_id

@@ -63,11 +63,11 @@ public class ProjectController {
                 .priority(Priority.LOW)
                 .dateTo(taskRequest.getDateTo())
                 .timeLeft(taskRequest.getTimeLeft())
+                .createUser(user)
                 .build();
 
         TaskList taskList = TaskList.builder()
                 .projectId(projectId)
-                .userId(user.getId())
                 .task(task)
                 .build();
 

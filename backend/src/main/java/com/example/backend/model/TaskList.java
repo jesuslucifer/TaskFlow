@@ -20,9 +20,6 @@ public class TaskList {
     @Column(name = "project_id", nullable = false)
     private long projectId;
 
-    @Column(name = "user_id", nullable = false)
-    private long userId;
-
     @ManyToOne
     @JoinColumn(name = "task_id")
     private Task task;

@@ -41,6 +41,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "createUser", fetch = FetchType.EAGER)
     private List<Project> createProjects;
 
+    @OneToMany(mappedBy = "createUser", fetch = FetchType.EAGER)
+    private List<Task> createTasks;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

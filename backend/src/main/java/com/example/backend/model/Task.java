@@ -22,7 +22,7 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "task_name", unique = true, nullable = false)
+    @Column(name = "task_name", nullable = false)
     private String name;
 
     @Column(name = "description")
@@ -45,4 +45,8 @@ public class Task {
     @OneToMany(mappedBy = "task", cascade = CascadeType.PERSIST)
     @Builder.Default
     private List<TaskList> taskLists = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "create_user_id", nullable = false)
+    private User createUser;
 }

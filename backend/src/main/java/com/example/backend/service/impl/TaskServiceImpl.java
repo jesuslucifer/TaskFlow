@@ -5,6 +5,7 @@ import com.example.backend.exception.ProjectAlreadyExist;
 import com.example.backend.exception.ProjectGetFailedException;
 import com.example.backend.exception.ProjectNotExist;
 import com.example.backend.model.Task;
+import com.example.backend.repository.TaskListRepository;
 import com.example.backend.repository.TaskRepository;
 import com.example.backend.service.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -19,18 +20,19 @@ import java.util.stream.Collectors;
 public class TaskServiceImpl implements TaskService {
     @Autowired
     private final TaskRepository taskRepository;
+    private final TaskListRepository taskListRepository;
 
     @Override
     public Task save(Task task) {
         return taskRepository.save(task);
     }
 
+
     @Override
     public Task createTask(Task task) {
-        if(taskRepository.existsByName(task.getName())) {
+        if(taskRepository.existsByCreateUserIdAndName(task.getCreateUser().getId(), task.getName())) {
             throw new ProjectAlreadyExist();
         }
-
         return save(task);
     }
 
