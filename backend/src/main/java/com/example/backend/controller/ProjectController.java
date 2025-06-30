@@ -1,13 +1,11 @@
 package com.example.backend.controller;
 
 import com.example.backend.dto.request.CreateProjectRequest;
-import com.example.backend.dto.request.CreateTaskRequest;
 import com.example.backend.dto.request.ProjectExecutorRequest;
 import com.example.backend.dto.response.ProjectDto;
 import com.example.backend.dto.response.SuccessResponse;
 import com.example.backend.model.*;
 import com.example.backend.service.ProjectService;
-import com.example.backend.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +22,6 @@ import java.util.List;
 public class ProjectController {
 
     private final ProjectService projectService;
-    private final TaskService taskService;
 
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody CreateProjectRequest projectRequest) {
@@ -49,26 +46,6 @@ public class ProjectController {
                 "Проект создан",
                 HttpStatus.OK
         ));
-    }
-
-    @PostMapping("/{projectId}/task/create")
-    public ResponseEntity<?> createTask(@PathVariable Long projectId, @RequestBody CreateTaskRequest taskRequest) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-
-        Task task = Task.builder()
-                .name(taskRequest.getName())
-                .description(taskRequest.getDescription())
-                .status(Status.ACTIVE)
-                .priority(Priority.LOW)
-                .dateTo(taskRequest.getDateTo())
-                .timeLeft(taskRequest.getTimeLeft())
-                .createUser(user)
-                .build();
-
-        taskService.createTask(task, projectId);
-
-        return ResponseEntity.ok("Task created!");
     }
 
     @GetMapping("/{id}")

@@ -6,29 +6,37 @@ import com.example.backend.model.*;
 import com.example.backend.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/tasks")
+@RequestMapping("/api/projects")
 @RequiredArgsConstructor
 public class TaskController {
 
     private final TaskService taskService;
 
-    @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody CreateTaskRequest taskRequest, Long projectId) {
-        var task = Task.builder()
+    @PostMapping("/{projectId}/task/create")
+    public ResponseEntity<?> createTask(@PathVariable Long projectId, @RequestBody CreateTaskRequest taskRequest) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
+        Task task = Task.builder()
                 .name(taskRequest.getName())
                 .description(taskRequest.getDescription())
                 .status(Status.ACTIVE)
                 .priority(Priority.LOW)
                 .dateTo(taskRequest.getDateTo())
                 .timeLeft(taskRequest.getTimeLeft())
+                .createUser(user)
                 .build();
-        taskService.createTask(task,projectId);
+
+        taskService.createTask(task, projectId);
+
         return ResponseEntity.ok("Task created!");
     }
 

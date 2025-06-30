@@ -6,6 +6,7 @@ import com.example.backend.exception.ProjectGetFailedException;
 import com.example.backend.exception.ProjectNotExist;
 import com.example.backend.model.Task;
 import com.example.backend.model.TaskList;
+import com.example.backend.repository.ProjectRepository;
 import com.example.backend.repository.TaskListRepository;
 import com.example.backend.repository.TaskRepository;
 import com.example.backend.service.TaskService;
@@ -22,6 +23,7 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private final TaskRepository taskRepository;
     private final TaskListRepository taskListRepository;
+    private final ProjectRepository projectRepository;
 
     @Override
     public Task save(Task task) {
@@ -36,6 +38,9 @@ public class TaskServiceImpl implements TaskService {
                 projectId
         )) {
             throw new ProjectAlreadyExist();
+        }
+        if(!projectRepository.existsById(projectId)) {
+            throw new ProjectNotExist();
         }
         Task savedTask = save(task);
 
