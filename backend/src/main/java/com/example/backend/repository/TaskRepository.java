@@ -11,15 +11,13 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     Optional<Task> findByName(String name);
     void deleteById(Long id);
     @Query("""
-        SELECT CASE WHEN COUNT(t) > 0 THEN true ELSE false END
-        FROM Task t
-        JOIN t.taskLists tl
-        WHERE t.createUser.id = :userId
-          AND t.name = :name
-          AND tl.projectId = :projectId
-    """)
-    boolean existsByCreateUserIdAndNameAndProjectId(
-            @Param("userId") Long userId,
+    SELECT CASE WHEN COUNT(t) > 0 THEN true ELSE false END
+    FROM Task t
+    JOIN t.taskLists tl
+    WHERE t.name = :name
+      AND tl.projectId = :projectId
+""")
+    boolean existsByNameAndProjectId(
             @Param("name") String name,
             @Param("projectId") Long projectId
     );

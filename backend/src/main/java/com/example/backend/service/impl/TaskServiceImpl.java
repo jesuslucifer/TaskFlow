@@ -31,8 +31,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task createTask(Task task, Long projectId) {
-        if (taskRepository.existsByCreateUserIdAndNameAndProjectId(
-                task.getCreateUser().getId(),
+        if (taskRepository.existsByNameAndProjectId(
                 task.getName(),
                 projectId
         )) {
