@@ -1,7 +1,6 @@
 package com.example.backend.controller;
 
 import com.example.backend.dto.request.CreateTaskRequest;
-import com.example.backend.dto.response.ProjectDto;
 import com.example.backend.dto.response.TaskDto;
 import com.example.backend.model.*;
 import com.example.backend.service.TaskService;
@@ -20,7 +19,7 @@ public class TaskController {
     private final TaskService taskService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody CreateTaskRequest taskRequest) {
+    public ResponseEntity<?> create(@RequestBody CreateTaskRequest taskRequest, Long projectId) {
         var task = Task.builder()
                 .name(taskRequest.getName())
                 .description(taskRequest.getDescription())
@@ -29,7 +28,7 @@ public class TaskController {
                 .dateTo(taskRequest.getDateTo())
                 .timeLeft(taskRequest.getTimeLeft())
                 .build();
-        taskService.createTask(task);
+        taskService.createTask(task,projectId);
         return ResponseEntity.ok("Task created!");
     }
 

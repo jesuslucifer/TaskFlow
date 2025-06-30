@@ -66,14 +66,7 @@ public class ProjectController {
                 .createUser(user)
                 .build();
 
-        TaskList taskList = TaskList.builder()
-                .projectId(projectId)
-                .task(task)
-                .build();
-
-        task.getTaskLists().add(taskList);
-
-        taskService.createTask(task);
+        taskService.createTask(task, projectId);
 
         return ResponseEntity.ok("Task created!");
     }

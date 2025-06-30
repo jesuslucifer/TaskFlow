@@ -5,4 +5,4 @@ databaseChangeLog:
       changes:
         - dropUniqueConstraint:
             tableName: tasks
-            constraintName: uklu17lb9kqfuphcjxxciash5ml  # имя из сообщения об ошибке
+            constraintName: uklu17lb9kqfuphcjxxciash5ml

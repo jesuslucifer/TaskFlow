@@ -5,6 +5,7 @@ import com.example.backend.exception.ProjectAlreadyExist;
 import com.example.backend.exception.ProjectGetFailedException;
 import com.example.backend.exception.ProjectNotExist;
 import com.example.backend.model.Task;
+import com.example.backend.model.TaskList;
 import com.example.backend.repository.TaskListRepository;
 import com.example.backend.repository.TaskRepository;
 import com.example.backend.service.TaskService;
@@ -29,11 +30,23 @@ public class TaskServiceImpl implements TaskService {
 
 
     @Override
-    public Task createTask(Task task) {
-        if(taskRepository.existsByCreateUserIdAndName(task.getCreateUser().getId(), task.getName())) {
+    public Task createTask(Task task, Long projectId) {
+        if (taskRepository.existsByCreateUserIdAndNameAndProjectId(
+                task.getCreateUser().getId(),
+                task.getName(),
+                projectId
+        )) {
             throw new ProjectAlreadyExist();
         }
-        return save(task);
+        Task savedTask = save(task);
+
+        TaskList taskList = TaskList.builder()
+                .projectId(projectId)
+                .task(savedTask)
+                .build();
+        taskListRepository.save(taskList);
+
+        return savedTask;
     }
 
     @Override
