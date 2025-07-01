@@ -1,9 +1,7 @@
 package com.example.backend.service.impl;
 
 import com.example.backend.dto.response.TaskDto;
-import com.example.backend.exception.ProjectAlreadyExist;
-import com.example.backend.exception.ProjectGetFailedException;
-import com.example.backend.exception.ProjectNotExist;
+import com.example.backend.exception.*;
 import com.example.backend.model.Task;
 import com.example.backend.model.TaskList;
 import com.example.backend.repository.ProjectRepository;
@@ -37,7 +35,7 @@ public class TaskServiceImpl implements TaskService {
                 task.getName(),
                 projectId
         )) {
-            throw new ProjectAlreadyExist();
+            throw new TaskAlreadyExistException();
         }
         if(!projectRepository.existsById(projectId)) {
             throw new ProjectNotExist();
@@ -59,7 +57,7 @@ public class TaskServiceImpl implements TaskService {
             throw new ProjectNotExist();
         }
         return taskRepository.findById(id)
-                .orElseThrow(ProjectGetFailedException::new);
+                .orElseThrow(TaskNotExistException::new);
 
     }
 
@@ -70,13 +68,14 @@ public class TaskServiceImpl implements TaskService {
         }
 
         Task task = taskRepository.findById(id)
-                .orElseThrow(ProjectNotExist::new);
+                .orElseThrow(TaskNotExistException::new);
         task.setName(taskUpdateDto.getName());
         task.setDescription(taskUpdateDto.getDescription());
         task.setStatus(taskUpdateDto.getStatus());
         task.setPriority(taskUpdateDto.getPriority());
         task.setDateTo(taskUpdateDto.getDateTo());
         task.setTimeLeft(taskUpdateDto.getTimeLeft());
+
         return taskRepository.save(task);
     }
 
@@ -97,8 +96,9 @@ public class TaskServiceImpl implements TaskService {
             throw new ProjectNotExist();
         }
         if (!taskRepository.existsById(id)) {
-            throw new ProjectNotExist();
+            throw new TaskNotExistException();
         }
         taskRepository.deleteById(id);
     }
+
 }
