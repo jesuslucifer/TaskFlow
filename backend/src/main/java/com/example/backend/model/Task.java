@@ -42,7 +42,7 @@ public class Task {
     @Column(name = "time_left", nullable = false)
     private LocalTime timeLeft;
 
-    @OneToMany(mappedBy = "task", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<TaskList> taskLists = new ArrayList<>();
 

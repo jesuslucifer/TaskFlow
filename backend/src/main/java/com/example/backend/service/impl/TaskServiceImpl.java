@@ -54,20 +54,21 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task getById(Long id) {
+    public Task getById(Long id, Long projectId) {
+        if(!projectRepository.existsById(projectId)) {
+            throw new ProjectNotExist();
+        }
         return taskRepository.findById(id)
                 .orElseThrow(ProjectGetFailedException::new);
 
     }
 
     @Override
-    public Task getByName(String name) {
-        return taskRepository.findByName(name)
-                .orElseThrow(ProjectGetFailedException::new);
-    }
+    public Task updateById(Long projectId, Long id, TaskDto taskUpdateDto) {
+        if(!projectRepository.existsById(projectId)) {
+            throw new ProjectNotExist();
+        }
 
-    @Override
-    public Task updateById(Long id, TaskDto taskUpdateDto) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(ProjectNotExist::new);
         task.setName(taskUpdateDto.getName());
@@ -80,20 +81,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task updateByName(String name, TaskDto taskUpdateDto) {
-        Task task = taskRepository.findByName(name)
-                .orElseThrow(ProjectNotExist::new);
-        task.setName(taskUpdateDto.getName());
-        task.setDescription(taskUpdateDto.getDescription());
-        task.setStatus(taskUpdateDto.getStatus());
-        task.setPriority(taskUpdateDto.getPriority());
-        task.setDateTo(taskUpdateDto.getDateTo());
-        task.setTimeLeft(taskUpdateDto.getTimeLeft());
-        return taskRepository.save(task);
-    }
-
-    @Override
-    public List<TaskDto> getAll() {
+    public List<TaskDto> getAll(Long projectId) {
+        if(!projectRepository.existsById(projectId)) {
+            throw new ProjectNotExist();
+        }
         return taskRepository.findAll()
                 .stream()
                 .map(TaskDto::new)
@@ -101,7 +92,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void deleteTaskById(Long id) {
+    public void deleteTaskById(Long projectId, Long id) {
+        if(!projectRepository.existsById(projectId)) {
+            throw new ProjectNotExist();
+        }
         if (!taskRepository.existsById(id)) {
             throw new ProjectNotExist();
         }

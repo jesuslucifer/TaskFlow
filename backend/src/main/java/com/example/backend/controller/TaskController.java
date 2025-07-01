@@ -20,7 +20,7 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    @PostMapping("/{projectId}/task/create")
+    @PostMapping("/{projectId}/tasks/create")
     public ResponseEntity<?> createTask(@PathVariable Long projectId, @RequestBody CreateTaskRequest taskRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
@@ -40,9 +40,9 @@ public class TaskController {
         return ResponseEntity.ok("Task created!");
     }
 
-    @GetMapping("/get/id/{id}")
-    public ResponseEntity<?> getTaskById(@PathVariable Long id) {
-        Task task = taskService.getById(id);
+    @GetMapping("{projectId}/tasks/{id}")
+    public ResponseEntity<?> getTaskById(@PathVariable Long id, @PathVariable Long projectId) {
+        Task task = taskService.getById(id, projectId);
         return ResponseEntity.ok(Map.of
                 ("task_name", task.getName() ,
                         "description", task.getDescription(),
@@ -53,45 +53,27 @@ public class TaskController {
                 ));
     }
 
-    @GetMapping("/get/name/{name}")
-    public ResponseEntity<?> getTaskByName(@PathVariable String name) {
-        Task task = taskService.getByName(name);
-        return ResponseEntity.ok(Map.of
-                ("task_name", task.getName() ,
-                        "description", task.getDescription(),
-                        "status", task.getStatus(),
-                        "priority", task.getPriority(),
-                        //"date_to", task.getDateTo(),
-                        "time_left", task.getTimeLeft()
-                ));
-    }
-
-    @GetMapping("/all")
-    public ResponseEntity<?> getTasks() {
-        List<TaskDto> taskDto = taskService.getAll();
+    @GetMapping("{projectId}/tasks/all")
+    public ResponseEntity<?> getTasks(@PathVariable Long projectId) {
+        List<TaskDto> taskDto = taskService.getAll(projectId);
 
         return ResponseEntity.ok(taskDto);
     }
 
-    @PutMapping("/update/id/{id}")
+    @PutMapping("{projectId}/tasks/{id}/update")
     public ResponseEntity<Task> updateTaskByid(
+            @PathVariable Long projectId,
             @PathVariable Long id,
             @RequestBody TaskDto updateDto) {
-        Task updatedTask = taskService.updateById(id, updateDto);
+        Task updatedTask = taskService.updateById(projectId, id, updateDto);
         return ResponseEntity.ok(updatedTask);
     }
 
-    @PutMapping("/update/name/{name}")
-    public ResponseEntity<Task> updateTaskByName(
-            @PathVariable String name,
-            @RequestBody TaskDto updateDto) {
-        Task updatedTask = taskService.updateByName(name, updateDto);
-        return ResponseEntity.ok(updatedTask);
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteTask(@PathVariable Long id) {
-        taskService.deleteTaskById(id);
+    @DeleteMapping("{projectId}/tasks/{id}/delete")
+    public ResponseEntity<?> deleteTask(
+            @PathVariable Long projectId,
+            @PathVariable Long id) {
+        taskService.deleteTaskById(projectId, id);
         return ResponseEntity.ok("Task deleted!");
     }
 }

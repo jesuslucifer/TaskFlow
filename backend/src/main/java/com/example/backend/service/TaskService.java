@@ -13,15 +13,11 @@ public interface TaskService {
 
     public Task createTask(Task task, Long projectId);
 
-    Task getById(Long id);
+    Task getById(Long id, Long projectId);
 
-    Task getByName(String name);
+    Task updateById(Long projectId, Long id, TaskDto taskUpdateDto);
 
-    Task updateById(Long id, TaskDto taskUpdateDto);
+    List<TaskDto> getAll(Long projectId);
 
-    Task updateByName(String name, TaskDto taskUpdateDto);
-
-    List<TaskDto> getAll();
-
-    void deleteTaskById(Long id);
+    void deleteTaskById(Long projectId, Long id);
 }
