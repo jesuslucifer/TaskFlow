@@ -145,4 +145,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
         return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
     }
+
+    @ExceptionHandler(ExecutorAlreadyExistsInProjectException.class)
+    public ResponseEntity<ErrorResponse> handleExecutorAlreadyExistsInProject(ExecutorAlreadyExistsInProjectException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "Исполнитель уже назначен в проект",
+                HttpStatus.BAD_REQUEST
+        );
+        return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
+    }
+
+    @ExceptionHandler(ExecutorNotFoundInProjectException.class)
+    public ResponseEntity<ErrorResponse> handleExecutorNotFoundInProject(ExecutorNotFoundInProjectException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "Исполнитель не найден в проекте",
+                HttpStatus.BAD_REQUEST
+        );
+        return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
+    }
 }

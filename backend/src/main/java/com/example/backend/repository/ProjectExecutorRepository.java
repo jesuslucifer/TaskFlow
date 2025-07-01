@@ -9,4 +9,5 @@ import java.util.List;
 public interface ProjectExecutorRepository extends JpaRepository<ProjectExecutor, Long> {
     @EntityGraph(attributePaths = "project")
     List<ProjectExecutor> findByUserId(Long userId);
+    boolean existsByProjectIdAndUserId(Long projectId, Long userId);
 }

@@ -67,6 +67,10 @@ public class ProjectServiceImpl implements ProjectService {
         User user = userRepository.findById(executorId)
                 .orElseThrow(UserNotFoundException::new);
 
+        if (projectExecutorRepository.existsByProjectIdAndUserId(project.getId(), user.getId())) {
+            throw new ExecutorAlreadyExistsInProjectException();
+        }
+
         project.addExecutor(user, role);
 
         executorNotificationService.sendNotificationToAddExecutor(user, project);
@@ -81,6 +85,10 @@ public class ProjectServiceImpl implements ProjectService {
 
         User user = userRepository.findById(executorId)
                 .orElseThrow(UserNotFoundException::new);
+
+        if (!projectExecutorRepository.existsByProjectIdAndUserId(project.getId(), user.getId())) {
+            throw new ExecutorNotFoundInProjectException();
+        }
 
         executorNotificationService.sendNotificationToDeleteExecutor(user, project);
 
