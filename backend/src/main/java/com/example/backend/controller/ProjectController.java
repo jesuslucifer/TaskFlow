@@ -6,6 +6,7 @@ import com.example.backend.dto.response.ProjectDto;
 import com.example.backend.dto.response.SuccessResponse;
 import com.example.backend.model.*;
 import com.example.backend.service.ProjectService;
+import com.example.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import java.util.List;
 public class ProjectController {
 
     private final ProjectService projectService;
+    private final UserService userService;
 
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody CreateProjectRequest projectRequest) {
@@ -42,7 +44,9 @@ public class ProjectController {
                 .executors(new ArrayList<>())
                 .build();
 
-        projectService.save(project);
+        project.addExecutor(userService.getById(user.getId()), ExecutorRole.ADMINISTRATOR);
+
+        projectService.createProject(project);
 
         return ResponseEntity.ok(new ProjectDto(project));
     }
