@@ -2,7 +2,6 @@ package com.example.backend.repository;
 
 import com.example.backend.model.Project;
 import lombok.NonNull;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;

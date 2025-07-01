@@ -2,6 +2,7 @@ package com.example.backend.service.impl;
 
 import com.example.backend.dto.response.NotificationHistoryDto;
 import com.example.backend.model.NotificationHistory;
+import com.example.backend.model.NotificationType;
 import com.example.backend.repository.NotificationHistoryRepository;
 import com.example.backend.service.NotificationHistoryService;
 import lombok.RequiredArgsConstructor;
@@ -26,19 +27,19 @@ public class NotificationHistoryServiceImpl implements NotificationHistoryServic
         List<NotificationHistoryDto> notificationHistoryDto = new ArrayList<>();
 
         notificationHistories.forEach(notificationHistory -> {
-            if (notificationHistory.getTypeNotification().equals("deadline_days")) {
+            if (notificationHistory.getTypeNotification().equals(NotificationType.DEADLINE_DAYS)) {
                 String message = "Скоро дедлайн у проекта " + notificationHistory.getProject().getName();
                 notificationHistoryDto.add(new NotificationHistoryDto(notificationHistory.getId(),
                         message,
                         notificationHistory.getDateTime()));
             }
-            if (notificationHistory.getTypeNotification().equals("deadline_hours")) {
+            if (notificationHistory.getTypeNotification().equals(NotificationType.DEADLINE_HOURS)) {
                 String message = "Скоро дедлайн у проекта " + notificationHistory.getProject().getName();
                 notificationHistoryDto.add(new NotificationHistoryDto(notificationHistory.getId(),
                         message,
                         notificationHistory.getDateTime()));
             }
-            if (notificationHistory.getTypeNotification().equals("add_executor")) {
+            if (notificationHistory.getTypeNotification().equals(NotificationType.ADD_EXECUTOR)) {
                 String message = "Вас назначили исполнителем в проекте " + notificationHistory.getProject().getName();
                 notificationHistoryDto.add(new NotificationHistoryDto(notificationHistory.getId(),
                         message,

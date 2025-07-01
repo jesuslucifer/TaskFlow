@@ -1,6 +1,7 @@
 package com.example.backend.service.impl;
 
 import com.example.backend.model.NotificationHistory;
+import com.example.backend.model.NotificationType;
 import com.example.backend.model.Project;
 import com.example.backend.model.User;
 import com.example.backend.service.NotificationHistoryService;
@@ -32,7 +33,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void saveNotification(Project project, String typeNotification, String periodNotification, User user, LocalDateTime dateTime) {
+    public void saveNotification(Project project, NotificationType typeNotification, String periodNotification, User user, LocalDateTime dateTime) {
         notificationHistoryService.save(NotificationHistory.builder()
                 .project(project)
                 .typeNotification(typeNotification)

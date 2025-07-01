@@ -1,8 +1,8 @@
 package com.example.backend.service.impl;
 
+import com.example.backend.model.NotificationType;
 import com.example.backend.model.Project;
 import com.example.backend.model.User;
-import com.example.backend.repository.NotificationHistoryRepository;
 import com.example.backend.service.ExecutorNotificationService;
 import com.example.backend.service.NotificationHistoryService;
 import com.example.backend.service.NotificationService;
@@ -27,7 +27,7 @@ public class ExecutorNotificationServiceImpl implements ExecutorNotificationServ
                 message,
                 destination);
         notificationService.saveNotification(project,
-                "add_executor",
+                NotificationType.ADD_EXECUTOR,
                 "1",
                 user,
                 LocalDateTime.now());
@@ -44,7 +44,7 @@ public class ExecutorNotificationServiceImpl implements ExecutorNotificationServ
         );
         notificationHistoryService.deleteNotificationByProjectIdAndUserId(project.getId(), user.getId());
         notificationService.saveNotification(project,
-                "delete_executor",
+                NotificationType.DELETE_EXECUTOR,
                 "1",
                 user,
                 LocalDateTime.now());

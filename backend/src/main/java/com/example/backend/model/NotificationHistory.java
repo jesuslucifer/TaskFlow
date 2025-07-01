@@ -25,7 +25,8 @@ public class NotificationHistory {
     private Project project;
 
     @Column(name = "type_notification")
-    private String typeNotification;
+    @Enumerated(EnumType.STRING)
+    private NotificationType typeNotification;
 
     @Column(name = "period_notification")
     private String periodNotification;

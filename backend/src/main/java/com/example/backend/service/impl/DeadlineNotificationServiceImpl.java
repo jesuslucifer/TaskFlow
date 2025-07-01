@@ -1,5 +1,6 @@
 package com.example.backend.service.impl;
 
+import com.example.backend.model.NotificationType;
 import com.example.backend.model.Project;
 import com.example.backend.repository.NotificationHistoryRepository;
 import com.example.backend.repository.ProjectRepository;
@@ -36,26 +37,24 @@ public class DeadlineNotificationServiceImpl implements DeadlineNotificationServ
 
     private void checkDeadlinesOfDays(int days) {
         LocalDate dateNow = LocalDate.now();
-        String typeNotification = "deadline_days";
 
-        LocalDate dateTomorrow = dateNow.plusDays(days);
+        LocalDate targetDate = dateNow.plusDays(days);
 
-        List<Project> projects = projectRepository.findAllByDateToIs(dateTomorrow);
+        List<Project> projects = projectRepository.findAllByDateToIs(targetDate);
 
-        sendNotification(projects, typeNotification,  String.valueOf(days));
+        sendNotification(projects, NotificationType.DEADLINE_DAYS,  String.valueOf(days));
     }
 
     private void checkDeadlinesOfHours(int hours) {
         LocalDate dateNow = LocalDate.now();
         LocalTime now = LocalTime.now();
-        String typeNotification = "deadline_hours";
 
         List<Project> projects = projectRepository.findAllByDateToAndTimeLeftBetween(dateNow, now, now.plusHours(hours));
 
-        sendNotification(projects, typeNotification,  String.valueOf(hours));
+        sendNotification(projects, NotificationType.DEADLINE_HOURS,  String.valueOf(hours));
     }
 
-    private void sendNotification(List<Project> projects, String typeNotification, String periodNotification) {
+    private void sendNotification(List<Project> projects, NotificationType typeNotification, String periodNotification) {
         projects.forEach(project -> {
             if (!notificationHistoryRepository.existsByProjectIdAndTypeNotificationAndPeriodNotification(
                     project.getId(),
