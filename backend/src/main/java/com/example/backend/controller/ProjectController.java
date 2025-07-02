@@ -6,6 +6,7 @@ import com.example.backend.dto.response.ProjectDto;
 import com.example.backend.dto.response.SuccessResponse;
 import com.example.backend.model.*;
 import com.example.backend.service.ProjectService;
+import com.example.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -22,6 +24,7 @@ import java.util.List;
 public class ProjectController {
 
     private final ProjectService projectService;
+    private final UserService userService;
 
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody CreateProjectRequest projectRequest) {
@@ -38,14 +41,14 @@ public class ProjectController {
                 .createUser(user)
                 .dateCreate(LocalDate.now())
                 .categories(projectRequest.getCategories())
+                .executors(new ArrayList<>())
                 .build();
+
+        project.addExecutor(userService.getById(user.getId()), ExecutorRole.ADMINISTRATOR);
 
         projectService.createProject(project);
 
-        return ResponseEntity.ok(new SuccessResponse(
-                "Проект создан",
-                HttpStatus.OK
-        ));
+        return ResponseEntity.ok(new ProjectDto(project));
     }
 
     @GetMapping("/{id}")
@@ -84,16 +87,13 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateProjectById(
+    public ResponseEntity<ProjectDto> updateProjectById(
             @PathVariable Long id,
             @RequestBody ProjectDto updateDto) {
 
         projectService.updateById(id, updateDto);
 
-        return ResponseEntity.ok(new SuccessResponse(
-                "Проект обновлен",
-                HttpStatus.OK
-        ));
+        return ResponseEntity.ok(new ProjectDto(projectService.getById(id)));
     }
 
     @PutMapping("/{projectId}/executors/")
@@ -103,10 +103,7 @@ public class ProjectController {
                 executorRequest.getExecutorId(),
                 executorRequest.getExecutorRole());
 
-        return ResponseEntity.ok(new SuccessResponse(
-                "Исполнитель добавлен",
-                HttpStatus.OK
-        ));
+        return ResponseEntity.ok(new ProjectDto(projectService.getById(projectId)));
     }
 
     @PutMapping("/{projectId}/category/")
@@ -114,10 +111,7 @@ public class ProjectController {
                                          @RequestBody Category category) {
         projectService.addCategory(projectId, category);
 
-        return ResponseEntity.ok(new SuccessResponse(
-                "Категория добавлена",
-                HttpStatus.OK
-        ));
+        return ResponseEntity.ok(new ProjectDto(projectService.getById(projectId)));
     }
 
     @DeleteMapping("/{id}")

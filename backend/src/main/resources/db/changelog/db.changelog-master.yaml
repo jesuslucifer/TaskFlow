@@ -25,3 +25,7 @@ databaseChangeLog:
       file: db/changelog/drop-unique-task-name.yaml
   - include:
       file: db/changelog/add-table-categories.yaml
+  - include:
+      file: db/changelog/add-table-notification-history.yaml
+  - include:
+      file: db/changelog/add-column-user-id-and-date-time-in-notification-history.yaml
