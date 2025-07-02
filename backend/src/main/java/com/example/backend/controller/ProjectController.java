@@ -44,7 +44,7 @@ public class ProjectController {
                 .executors(new ArrayList<>())
                 .build();
 
-        project.addExecutor(userService.getById(user.getId()), ExecutorRole.ADMINISTRATOR);
+        project.addExecutor(userService.getById(user.getId()), ExecutorRole.ADMINISTRATOR, true);
 
         projectService.createProject(project);
 
@@ -110,6 +110,26 @@ public class ProjectController {
     public ResponseEntity<?> addCategory(@PathVariable Long projectId,
                                          @RequestBody Category category) {
         projectService.addCategory(projectId, category);
+
+        return ResponseEntity.ok(new ProjectDto(projectService.getById(projectId)));
+    }
+
+    @PutMapping("/{projectId}/executors/accept/")
+    public ResponseEntity<?> acceptExecutor(@PathVariable Long projectId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
+        projectService.acceptExecutor(projectId, user.getId());
+
+        return ResponseEntity.ok(new ProjectDto(projectService.getById(projectId)));
+    }
+
+    @PutMapping("/{projectId}/executors/decline/")
+    public ResponseEntity<?> declineExecutor(@PathVariable Long projectId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
+        projectService.acceptExecutor(projectId, user.getId());
 
         return ResponseEntity.ok(new ProjectDto(projectService.getById(projectId)));
     }

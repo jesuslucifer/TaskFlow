@@ -21,7 +21,7 @@ public class ExecutorNotificationServiceImpl implements ExecutorNotificationServ
 
     @Override
     public void sendNotificationToAddExecutor(User user, Project project) {
-        String message = "Вас назначили исполнителем в проекте " + project.getName();
+        String message = "Вас пригласили исполнителем в проект " + project.getName();
         notificationService.sendNotificationToUser(
                 user.getUsername(),
                 message,
@@ -48,6 +48,33 @@ public class ExecutorNotificationServiceImpl implements ExecutorNotificationServ
                 "1",
                 user,
                 LocalDateTime.now());
+    }
 
+    @Override
+    public void sendNotificationToAcceptInviteExecutor(User creator, Project project, User executor) {
+        String message = executor.getUsername() + " принял Ваше приглашение в проект " + project.getName();
+        notificationService.sendNotificationToUser(
+                creator.getUsername(),
+                message,
+                destination);
+        notificationService.saveNotification(project,
+                NotificationType.ACCEPT_EXECUTOR,
+                "1",
+                creator,
+                LocalDateTime.now());
+    }
+
+    @Override
+    public void sendNotificationToDeclineInviteExecutor(User creator, Project project, User executor) {
+        String message = executor.getUsername() + " отклонил Ваше приглашение в проект " + project.getName();
+        notificationService.sendNotificationToUser(
+                creator.getUsername(),
+                message,
+                destination);
+        notificationService.saveNotification(project,
+                NotificationType.DECLINE_EXECUTOR,
+                "1",
+                creator,
+                LocalDateTime.now());
     }
 }

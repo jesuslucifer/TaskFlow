@@ -46,6 +46,20 @@ public class NotificationHistoryServiceImpl implements NotificationHistoryServic
                         notificationHistory.getDateTime()
                 ));
             }
+            if (notificationHistory.getTypeNotification().equals(NotificationType.DECLINE_EXECUTOR)) {
+                String message = " отклонил ваше приглашение в проект " + notificationHistory.getProject().getName();
+                notificationHistoryDto.add(new NotificationHistoryDto(notificationHistory.getId(),
+                        message,
+                        notificationHistory.getDateTime()
+                ));
+            }
+            if (notificationHistory.getTypeNotification().equals(NotificationType.ACCEPT_EXECUTOR)) {
+                String message = " принял ваше приглашение в проект " + notificationHistory.getProject().getName();
+                notificationHistoryDto.add(new NotificationHistoryDto(notificationHistory.getId(),
+                        message,
+                        notificationHistory.getDateTime()
+                ));
+            }
         });
 
         return notificationHistoryDto;

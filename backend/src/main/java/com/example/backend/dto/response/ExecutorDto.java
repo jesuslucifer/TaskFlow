@@ -8,9 +8,11 @@ import lombok.Data;
 public class ExecutorDto {
     UserDto user;
     ExecutorRole role;
+    Boolean inviteFlag;
 
     public ExecutorDto(ProjectExecutor executor) {
         this.user = new UserDto(executor.getUser());
         this.role = executor.getRole();
+        this.inviteFlag = executor.getInviteFlag();
     }
 }

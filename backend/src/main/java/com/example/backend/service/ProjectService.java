@@ -21,6 +21,10 @@ public interface ProjectService {
 
     Project deleteExecutor(Long projectId, Long executorId);
 
+    Project acceptExecutor(Long projectId, Long executorId);
+
+    Project declineExecutor(Long projectId, Long executorId);
+
     Project addCategory(Long projectId, Category category);
 
     Project deleteCategory(Long projectId, String categoryName);

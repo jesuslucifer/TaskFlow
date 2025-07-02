@@ -71,7 +71,7 @@ public class ProjectServiceImpl implements ProjectService {
             throw new ExecutorAlreadyExistsInProjectException();
         }
 
-        project.addExecutor(user, role);
+        project.addExecutor(user, role, false);
 
         executorNotificationService.sendNotificationToAddExecutor(user, project);
 
@@ -93,6 +93,44 @@ public class ProjectServiceImpl implements ProjectService {
         executorNotificationService.sendNotificationToDeleteExecutor(user, project);
 
         project.removeExecutor(user);
+
+        return projectRepository.save(project);
+    }
+
+    @Override
+    public Project acceptExecutor(Long projectId, Long executorId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(ProjectNotExist::new);
+
+        User user = userRepository.findById(executorId)
+                .orElseThrow(UserNotFoundException::new);
+
+        if (!projectExecutorRepository.existsByProjectIdAndUserId(project.getId(), user.getId())) {
+            throw new ExecutorNotFoundInProjectException();
+        }
+
+        projectExecutorRepository.findByProjectIdAndUserId(project.getId(), user.getId()).setInviteFlag(true);
+
+        executorNotificationService.sendNotificationToAcceptInviteExecutor(project.getCreateUser(), project, user);
+
+        return projectRepository.save(project);
+    }
+
+    @Override
+    public Project declineExecutor(Long projectId, Long executorId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(ProjectNotExist::new);
+
+        User user = userRepository.findById(executorId)
+                .orElseThrow(UserNotFoundException::new);
+
+        if (!projectExecutorRepository.existsByProjectIdAndUserId(project.getId(), user.getId())) {
+            throw new ExecutorNotFoundInProjectException();
+        }
+
+        project.removeExecutor(user);
+
+        executorNotificationService.sendNotificationToDeclineInviteExecutor(project.getCreateUser(), project, user);
 
         return projectRepository.save(project);
     }
