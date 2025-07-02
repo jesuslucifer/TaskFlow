@@ -159,7 +159,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<ProjectDto> getProjectsByUserIsExecutor(Long userId) {
-        return projectExecutorRepository.findByUserId(userId)
+        return projectExecutorRepository.findByUserIdAndRoleNot(userId, ExecutorRole.ADMINISTRATOR)
                 .stream()
                 .map(ProjectExecutor::getProject)
                 .map(ProjectDto::new)
