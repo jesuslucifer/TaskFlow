@@ -66,6 +66,9 @@ public class TaskServiceImpl implements TaskService {
         if(!projectRepository.existsById(projectId)) {
             throw new ProjectNotExist();
         }
+        /*if(taskRepository.existsByName(taskUpdateDto.getName())) {
+            throw new TaskAlreadyExistException();
+        }*/
 
         Task task = taskRepository.findById(id)
                 .orElseThrow(TaskNotExistException::new);

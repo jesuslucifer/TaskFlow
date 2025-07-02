@@ -61,12 +61,20 @@ public class TaskController {
     }
 
     @PutMapping("{projectId}/tasks/{id}/update")
-    public ResponseEntity<Task> updateTaskByid(
+    public ResponseEntity<TaskDto> updateTaskByid(
             @PathVariable Long projectId,
             @PathVariable Long id,
             @RequestBody TaskDto updateDto) {
         Task updatedTask = taskService.updateById(projectId, id, updateDto);
-        return ResponseEntity.ok(updatedTask);
+        TaskDto taskDtoResponse = TaskDto.builder()
+                .name(updatedTask.getName())
+                .description(updatedTask.getDescription())
+                .status(updatedTask.getStatus())
+                .priority(updatedTask.getPriority())
+                .dateTo(updatedTask.getDateTo())
+                .timeLeft(updatedTask.getTimeLeft())
+                .build();
+        return ResponseEntity.ok(taskDtoResponse);
     }
 
     @DeleteMapping("{projectId}/tasks/{id}/delete")
