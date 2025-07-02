@@ -4,7 +4,7 @@ import { HeaderComponent } from './header/header.component';
 import { RouterOutlet } from '@angular/router';
 import { ProfileService } from '../core/services/profile.service';
 import { ProjectService } from '../core/services/project.service';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-layout',
@@ -15,13 +15,11 @@ import { toObservable } from '@angular/core/rxjs-interop';
 export class LayoutComponent {
   profileService = inject(ProfileService);
   projectsService = inject(ProjectService);
-  me$ = toObservable(this.profileService.me);
-
-  ngOnInit() {
+  constructor() {
     this.profileService.getMe().subscribe((res) => {
-      // this.projectsService.getAllUserProjects(res.id).subscribe();
-      // this.projectsService.getProjectExecutors(res.id).subscribe();
-      this.profileService.getUsers().subscribe();
+      this.projectsService.getAllUserProjects(res.id).subscribe();
+      this.projectsService.getProjectExecutors(res.id).subscribe();
     });
   }
+  ngOnInit() {}
 }

@@ -5,13 +5,17 @@ import {
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ProjectDialogComponent } from '../project-dialog.component';
 import { ProjectService } from '../../../../core/services/project.service';
-import { Priority } from '../../../../core/interface/project.interface';
+import {
+  IProject,
+  Priority,
+} from '../../../../core/interface/project.interface';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -31,12 +35,12 @@ export class ProjectFormFieldComponent {
   category: string[] = [];
 
   projectForm: FormGroup = new FormGroup({
-    name: new FormControl(''),
-    description: new FormControl(''),
+    name: new FormControl<string | null>(null, [Validators.required]),
+    description: new FormControl<string | null>(''),
     priority: new FormControl<string>(this.priorityEnum.MEDIUM),
-    dateTo: new FormControl<string | null>(null),
-    timeLeft: new FormControl<string | null>(''),
-    categories: new FormControl([]),
+    dateTo: new FormControl<string>('', [Validators.required]),
+    timeLeft: new FormControl<string>('', [Validators.required]),
+    categories: new FormControl<string[]>([]),
   });
 
   categoryInput = new FormControl<string | null>('');
@@ -74,7 +78,7 @@ export class ProjectFormFieldComponent {
           this.dialogRef.close();
         },
         error: (err: HttpErrorResponse) => {
-          this.toastr.error(err.error);
+          this.toastr.error(err.error.message);
         },
       });
     }

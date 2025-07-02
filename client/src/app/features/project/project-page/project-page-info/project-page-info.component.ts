@@ -1,7 +1,6 @@
 import { Component, inject, Input } from '@angular/core';
 import {
   IProject,
-  IProjectUpdate,
   Priority,
   Status,
 } from '../../../../core/interface/project.interface';
@@ -17,39 +16,35 @@ import { FormsModule } from '@angular/forms';
 })
 export class ProjectPageInfoComponent {
   @Input() project!: IProject;
-  projectService = inject(ProjectService);
+  @Input() form: any;
+  @Input() profileId!: number;
 
+  projectService = inject(ProjectService);
   priorityEnum = Priority;
   statusEnum = Status;
-
   editDateTo: string = '';
   correctDate: string | null = '';
   editTimeLeft: string = '';
   showEditDate = false;
   showEditTime = false;
+
+  patch(data: Partial<IProject>) {
+    this.projectService.patchProject(this.project.id, data).subscribe({
+      next: () => Object.assign(this.project, data),
+      error: () => {},
+    });
+  }
   ngOnChanges() {
     this.editDateTo = this.project?.dateTo || '';
     this.editTimeLeft = this.project?.timeLeft || '';
   }
   onPriorityChange(newPriority: Priority) {
-    this.projectService
-      .patchProject(this.project.id, { priority: newPriority })
-      .subscribe({
-        next: () => {
-          this.project.priority = newPriority;
-        },
-        error: () => {},
-      });
+    this.form.value.priority = newPriority;
+    this.patch({ ...this.form.value });
   }
   onStatusChange(newStatus: Status) {
-    this.projectService
-      .patchProject(this.project.id, { status: newStatus })
-      .subscribe({
-        next: () => {
-          this.project.status = newStatus;
-        },
-        error: () => {},
-      });
+    this.form.value.status = newStatus;
+    this.patch({ ...this.form.value });
   }
   cancelEditDate() {
     this.editDateTo = this.project.dateTo || '';
@@ -65,28 +60,17 @@ export class ProjectPageInfoComponent {
       this.editDateTo,
       'dd-MM-yyyy'
     );
-    this.projectService
-      .patchProject(this.project.id, { dateTo: this.correctDate })
-      .subscribe({
-        next: () => {
-          this.project.dateTo = this.editDateTo;
-          this.showEditDate = false;
-        },
-        error: () => {},
-      });
+    this.form.value.dateTo = this.correctDate;
+    this.patch({ ...this.form.value });
+    this.project.dateTo = this.editDateTo;
+    this.showEditDate = false;
   }
 
   saveTimeLeft() {
     if (!this.editTimeLeft) return;
-
-    this.projectService
-      .patchProject(this.project.id, { timeLeft: this.editTimeLeft })
-      .subscribe({
-        next: () => {
-          this.project.timeLeft = this.editTimeLeft;
-          this.showEditTime = false;
-        },
-        error: () => {},
-      });
+    this.form.value.timeLeft = this.editTimeLeft;
+    this.patch({ ...this.form.value });
+    this.project.timeLeft = this.editTimeLeft;
+    this.showEditTime = false;
   }
 }

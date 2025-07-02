@@ -54,3 +54,6 @@ export enum Status {
   COMPLETED = 'COMPLETED',
   DRAFT = 'DRAFT',
 }
+export interface IProjectPut {
+  form: IProjectUpdate;
+}

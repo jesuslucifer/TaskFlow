@@ -4,23 +4,34 @@
 
   <div class="info__item">
     Приоритет:
+    @if(project.createUser.id == profileId){
     <select [ngModel]=" project.priority" (ngModelChange)="onPriorityChange($event)">
       <option [value]="priorityEnum.CRITICAL">Критический</option>
       <option [value]="priorityEnum.HIGH">Высокий</option>
       <option [value]="priorityEnum.MEDIUM">Средний</option>
       <option [value]="priorityEnum.LOW">Низкий</option>
     </select>
+    }@else{
+    <div>
+      {{project.priority}}
+    </div>
+    }
+
   </div>
 
   <div class="info__item">
     Статус:
+    @if(project.createUser.id == profileId){
     <select [ngModel]="project.status" (ngModelChange)="onStatusChange($event)">
       <option [value]="statusEnum.ACTIVE">Разрабатывается</option>
       <option [value]="statusEnum.STOPPED">Приостановлено</option>
       <option [value]="statusEnum.COMPLETED">Выполнено</option>
       <option [value]="statusEnum.DRAFT">Черновик</option>
-
-    </select>
+    </select>}@else{
+    <div>
+      {{project.status}}
+    </div>
+    }
   </div>
 
   <div class="info__item">
@@ -41,7 +52,10 @@
     @if(!showEditDate){
     <ng-container>
       {{ project.dateTo }}
+      @if(project.createUser.id == profileId){
       <button (click)="showEditDate = true">Изменить</button>
+
+      }
     </ng-container>
     }
     @if(showEditDate){
@@ -56,7 +70,14 @@
     @if(!showEditTime){
     <ng-container>
       {{ project.timeLeft }}
+      @if(project.createUser.id == profileId){
       <button (click)="showEditTime = true">Изменить</button>
+
+      }@else{
+      <div>
+        {{project.priority}}
+      </div>
+      }
     </ng-container>
     }
     @if(showEditTime){

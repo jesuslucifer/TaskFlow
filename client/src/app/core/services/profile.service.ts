@@ -16,8 +16,6 @@ export class ProfileService {
   getMe() {
     return this.http.get<IProfile>(`${this.baseApiUrl}users/me`).pipe(
       tap((res: IProfile) => {
-        console.log(res);
-
         this.me.set(res);
       }),
       catchError((err: HttpErrorResponse) => {

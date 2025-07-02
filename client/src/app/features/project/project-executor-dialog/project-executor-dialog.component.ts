@@ -11,6 +11,7 @@ enum ExecutorRole {
   DEVELOPER = 'DEVELOPER',
   TESTER = 'TESTER',
   ANALYZER = 'ANALYZER',
+  ADMINISTRATOR = 'ADMINISTRATOR',
 }
 @Component({
   selector: 'app-project-executor-dialog',
@@ -23,7 +24,9 @@ export class ProjectExecutorDialogComponent {
     @Inject(MAT_DIALOG_DATA)
     public data: { projectId: number }
   ) {}
-
+  ngOnInit() {
+    this.profileService.getUsers().subscribe();
+  }
   profileService = inject(ProfileService);
   projectService = inject(ProjectService);
   readonly dialogRef = inject(MatDialogRef<ProjectExecutorDialogComponent>);
@@ -69,7 +72,7 @@ export class ProjectExecutorDialogComponent {
           this.dialogRef.close();
           this.toastr.success('Исполнитель добавлен');
         },
-        error: (err) => {
+        error: (err: HttpErrorResponse) => {
           this.toastr.error(err.error.message);
         },
       });

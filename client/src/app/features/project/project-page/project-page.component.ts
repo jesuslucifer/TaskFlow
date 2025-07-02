@@ -1,8 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ProjectService } from '../../../core/services/project.service';
 import { ProfileService } from '../../../core/services/profile.service';
 import { Observable, switchMap, tap } from 'rxjs';
-import { IProject } from '../../../core/interface/project.interface';
+import {
+  IProject,
+  IProjectUpdate,
+} from '../../../core/interface/project.interface';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -12,6 +15,7 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { ProjectPageExecutorsComponent } from './project-page-executors/project-page-executors.component';
 import { ProjectPageInfoComponent } from './project-page-info/project-page-info.component';
 import { ToastrService } from 'ngx-toastr';
+import { NotificationPopupComponent } from '../../notifications/notification-popup/notification-popup.component';
 @Component({
   selector: 'app-project-page',
   imports: [
@@ -32,6 +36,17 @@ export class ProjectPageComponent {
   route = inject(ActivatedRoute);
   fb = inject(FormBuilder);
   projectId: number = -1;
+  profileId: number = -1;
+  me = this.profileService.me;
+  form: FormGroup = this.fb.group({
+    name: [{ value: '' }],
+    description: [{ value: '' }],
+    status: [{ value: '' }],
+    priority: [{ value: '' }],
+    dateTo: [{ value: '' }],
+    timeLeft: [{ value: '' }],
+  });
+
   dialog: MatDialog = inject(MatDialog);
   project$: Observable<IProject | null> = this.route.params.pipe(
     switchMap(({ username, name }) => {
@@ -39,6 +54,7 @@ export class ProjectPageComponent {
         tap((project) => {
           this.form.patchValue(project);
           this.projectId = project.id;
+          this.profileId = this.me()!.id;
         })
       );
     })
@@ -52,7 +68,7 @@ export class ProjectPageComponent {
   saveNameDesc() {
     const { name, description } = this.form.value;
     this.projectService
-      .patchProject(this.projectId, { name, description })
+      .patchProject(this.projectId, { ...this.form.value, name, description })
       .subscribe({
         next: () => {
           this.isEditingNameDesc = false;
@@ -71,10 +87,6 @@ export class ProjectPageComponent {
       disableClose: false,
     });
   }
-  form: FormGroup = this.fb.group({
-    name: [{ value: '' }],
-    description: [{ value: '' }],
-  });
 
   tasks = [
     {

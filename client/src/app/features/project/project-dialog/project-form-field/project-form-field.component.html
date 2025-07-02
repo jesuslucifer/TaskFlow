@@ -2,10 +2,19 @@
   <label for="">
     Название проекта
     <input class="form__input" type="text" formControlName="name" placeholder="Проект 1">
+    @if(projectForm.controls["name"].invalid && projectForm.controls["name"].touched){
+    <div class="error">
+      @if(projectForm.get('name')?.errors?.['required']){
+      <div class="error">Название проекта обязательно</div>
+      }
+    </div>
+
+    }
   </label>
   <label for="">
     Описание проекта
     <input type="text" class="form__input" formControlName="description" placeholder="Описание">
+
   </label>
   <label for="" class="project-form__select">
     Приоритет проекта
@@ -16,21 +25,35 @@
       <option [value]="priorityEnum.LOW">Низкий</option>
     </select>
   </label>
-  <label class="project__date" for="">
+  <label class="project__date">
     Сроки проекта
-    <label for="">
+    <label>
       Дата
       <input type="date" class="form__input" formControlName="dateTo" placeholder="Проект 1">
+      @if(projectForm.controls["dateTo"].invalid && projectForm.controls["dateTo"].touched){
+      <div class="error">
+        @if(projectForm.get('dateTo')?.errors?.['required']){
+        <div class="error">Дата обязательна</div>
+        }
+      </div>
+
+      }
     </label>
-    <label for="">
+    <label>
       Время
       <input type="time" class="form__input" formControlName="timeLeft" placeholder="Проект 1">
+      @if(projectForm.controls["timeLeft"].invalid && projectForm.controls["timeLeft"].touched){
+      <div class="error">
+        @if(projectForm.get('timeLeft')?.errors?.['required']){
+        <div class="error">Время обязательно</div>
+        }
+      </div>
 
+      }
     </label>
   </label>
   <label class="category-field">
     Категории проекта
-
     <div class="input-with-tags">
       @for (cat of category; track $index) {
       <div class="tag">
@@ -38,8 +61,6 @@
         <button type="button" (click)="removeCategory(cat)">✕</button>
       </div>
       }
-
-
       <input type="text" class="tag-input" placeholder="Введите категорию и нажмите Enter" [formControl]="categoryInput"
         (keydown.enter)="onEnterCategory($event)" />
     </div>

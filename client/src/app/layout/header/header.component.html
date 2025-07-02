@@ -8,9 +8,12 @@
       <div class="head-top__ava">
         <img [src]="me.avatarUrl" alt="">
       </div>
-      <div class="head-top__notification">
+      <div (click)="showNotification(!showNotif)" class="head-top__notification">
         <mat-icon>notifications</mat-icon>
       </div>
+      @if(showNotif){
+      <app-notification class="notification-wrapper" appClickOutside (clickOutside)="hideNotification()" />
+      }
     </div>
 
   </div>

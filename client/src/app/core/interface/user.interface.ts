@@ -1,8 +1,3 @@
-export interface IUser {
-  name: string;
-  email: string;
-  avatarUrl: string;
-}
 export interface IProfile {
   id: number;
   username: string | null;

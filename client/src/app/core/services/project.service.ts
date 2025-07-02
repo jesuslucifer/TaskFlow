@@ -6,7 +6,6 @@ import {
   IExecutors,
   IExecutorsResponse,
   IProject,
-  IProjectResponse,
   IProjectUpdate,
 } from '../interface/project.interface';
 
@@ -18,8 +17,15 @@ export class ProjectService {
   baseApiUrl = 'http://localhost:8080/api/projects';
   projects = signal<IProject[] | null>(null);
   executorsProject = signal<IProject[] | null>(null);
-  createProject(projectForm: IProjectResponse) {
-    return this.http.post<IProject>(`${this.baseApiUrl}/create`, projectForm);
+  createProject(projectForm: IProject) {
+    return this.http
+      .post<IProject>(`${this.baseApiUrl}/create`, projectForm)
+      .pipe(
+        tap((newProject: IProject) => {
+          const current = this.projects();
+          this.projects.set(current ? [...current, newProject] : [newProject]);
+        })
+      );
   }
   getAllProjects() {
     return this.http.get<IProject[]>(`${this.baseApiUrl}/`).pipe(
@@ -34,7 +40,6 @@ export class ProjectService {
       .get<IProject[]>(`${this.baseApiUrl}/${userId}/creator`)
       .pipe(
         tap((res: IProject[]) => {
-          console.log(res);
           this.projects.set(res);
         })
       );
@@ -56,7 +61,10 @@ export class ProjectService {
     );
   }
   patchProject(projectId: number, projectForm: IProjectUpdate) {
-    return this.http.patch(`${this.baseApiUrl}/${projectId}`, projectForm);
+    return this.http.put<IProjectUpdate>(
+      `${this.baseApiUrl}/${projectId}`,
+      projectForm
+    );
   }
   addExecutor(projectId: number, executor: IExecutorsResponse) {
     return this.http.put<IExecutorsResponse>(
@@ -70,13 +78,20 @@ export class ProjectService {
       category
     );
   }
-  getProjectExecutors(projectId: number) {
+  getProjectExecutors(userId: number) {
     return this.http
-      .get<IProject[]>(`${this.baseApiUrl}/${projectId}/executor`)
+      .get<IProject[]>(`${this.baseApiUrl}/${userId}/executor`)
       .pipe(
         tap((res: IProject[]) => {
+          console.log(res);
+
           this.executorsProject.set(res);
         })
       );
+  }
+  deleteExecutor(projectId: number, executorId: number) {
+    return this.http.delete<IExecutors>(
+      `${this.baseApiUrl}/${projectId}/${executorId}/executors`
+    );
   }
 }

@@ -1,6 +1,7 @@
 .header {
   padding: 20px 30px;
   background-color: #fff;
+  position: relative;
   &__top {
     display: flex;
     justify-content: space-between;
@@ -36,4 +37,11 @@
   height: 20px;
   border: 1px solid black;
   border-radius: 10px;
+}
+
+.notification-wrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1000;
 }

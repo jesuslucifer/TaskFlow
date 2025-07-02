@@ -3,9 +3,14 @@
   <li class="executor__item">
     <img class="executor__image" [src]="executor.user.avatarUrl" alt="">
     <div class="executor__name">
-      <a [routerLink]="['/profile', executor.user.id]">{{executor.user.username}}</a>
+      <a [routerLink]="[`/profile/${executor.user.id}`]">{{executor.user.username}}</a>
     </div>
     <div class="executor__role">{{executor.role}}</div>
+    @if(executor.role != 'ADMINISTRATOR' ){
+    @if(project.createUser.id == profileId ){
+    <button class="open-btn" (click)="onDeleteExecutor(project.id,executor.user.id)">x</button>
+    }
+    }
   </li>
   }
 </ul>
