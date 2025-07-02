@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-create-user-in-tasks
+      author: kisliashka100
+      changes:
+        - addColumn:
+            tableName: tasks
+            columns:
+              - column:
+                  name: create_user_id
+                  type: bigint
+                  constraints:
+                    nullable: false

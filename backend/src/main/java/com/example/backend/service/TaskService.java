@@ -9,17 +9,15 @@ public interface TaskService {
 
     Task save(Task task);
 
-    Task createTask(Task task);
+    //Task createTask(Task task);
 
-    Task getById(Long id);
+    public Task createTask(Task task, Long projectId);
 
-    Task getByName(String name);
+    Task getById(Long id, Long projectId);
 
-    Task updateById(Long id, TaskDto taskUpdateDto);
+    Task updateById(Long projectId, Long id, TaskDto taskUpdateDto);
 
-    Task updateByName(String name, TaskDto taskUpdateDto);
+    List<TaskDto> getAll(Long projectId);
 
-    List<TaskDto> getAll();
-
-    void deleteTaskById(Long id);
+    void deleteTaskById(Long projectId, Long id);
 }
