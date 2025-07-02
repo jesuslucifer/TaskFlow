@@ -20,4 +20,8 @@ databaseChangeLog:
   - include:
       file: db/changelog/drop-category-in-projects.yaml
   - include:
+      file: db/changelog/drop-user-id-in-tasklist.yaml
+  - include:
+      file: db/changelog/drop-unique-task-name.yaml
+  - include:
       file: db/changelog/add-table-categories.yaml
