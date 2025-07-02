@@ -1,8 +1,0 @@
-databaseChangeLog:
-  - changeSet:
-      id: drop-unique-task-name
-      author: kisliashka100
-      changes:
-        - dropUniqueConstraint:
-            tableName: tasks
-            constraintName: uklu17lb9kqfuphcjxxciash5ml
