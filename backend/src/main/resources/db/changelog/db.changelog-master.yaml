@@ -33,3 +33,7 @@ databaseChangeLog:
       file: db/changelog/add-create-user-in-tasks.yaml
   - include:
       file: db/changelog/add-column-invite-in-project-executor.yaml
+  - include:
+      file: db/changelog/add-table-project-notification-settings.yaml
+  - include:
+      file: db/changelog/add-table-user-notification-settings.yaml

@@ -5,6 +5,7 @@ import com.example.backend.exception.*;
 import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.service.LocalStorageService;
+import com.example.backend.service.UserNotificationSettingsService;
 import com.example.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserDetailsService, UserService {
     private final UserRepository userRepository;
     private final LocalStorageService localStorageService;
+    private final UserNotificationSettingsService userNotificationSettingsService;
 
     @Override
     public User save(User user) {
@@ -36,7 +38,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             throw new EmailAlreadyExistsException();
         }
 
-        return save(user);
+        save(user);
+
+        userNotificationSettingsService.createUserSettings(user);
+
+        return user;
     }
 
     @Override

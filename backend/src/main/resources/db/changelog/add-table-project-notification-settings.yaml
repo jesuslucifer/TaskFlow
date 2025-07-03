@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-table-project-notification-settings.yaml
+      author: jesuslucifer
+      changes:
+        - createTable:
+            tableName: project_notification_settings
+            columns:
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: project_id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: notification_enabled
+                  type: boolean
+              - column:
+                  name: notification_type
+                  type: nvarchar(100)

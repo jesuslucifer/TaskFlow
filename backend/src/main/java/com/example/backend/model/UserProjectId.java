@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class ProjectExecutorId {
+public class UserProjectId {
 
     @Column(name = "project_id")
     private Long projectId;

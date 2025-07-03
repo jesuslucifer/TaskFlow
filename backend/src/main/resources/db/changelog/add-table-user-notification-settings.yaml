@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-table-user-notification-settings.yaml
+      author: jesuslucifer
+      changes:
+        - createTable:
+            tableName: user_notification_settings
+            columns:
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: global_notification_enabled
+                  type: boolean
