@@ -87,9 +87,17 @@ public class TaskServiceImpl implements TaskService {
         if(!projectRepository.existsById(projectId)) {
             throw new ProjectNotExist();
         }
-        return taskRepository.findAll()
+        return taskRepository.findAllByProjectId(projectId)
                 .stream()
-                .map(TaskDto::new)
+                .map(task -> new TaskDto(
+                        task.getId(),
+                        task.getName(),
+                        task.getDescription(),
+                        task.getStatus(),
+                        task.getPriority(),
+                        task.getDateTo(),
+                        task.getTimeLeft()
+                ))
                 .collect(Collectors.toList());
     }
 
