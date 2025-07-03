@@ -1,6 +1,7 @@
 package com.example.backend.service;
 
 import com.example.backend.dto.response.TaskDto;
+import com.example.backend.dto.response.TaskDtoWithId;
 import com.example.backend.model.Task;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public interface TaskService {
 
     Task updateById(Long projectId, Long id, TaskDto taskUpdateDto);
 
-    List<TaskDto> getAll(Long projectId);
+    List<TaskDtoWithId> getAll(Long projectId);
 
     void deleteTaskById(Long projectId, Long id);
 }

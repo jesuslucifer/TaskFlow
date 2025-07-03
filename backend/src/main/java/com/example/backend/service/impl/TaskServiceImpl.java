@@ -1,6 +1,7 @@
 package com.example.backend.service.impl;
 
 import com.example.backend.dto.response.TaskDto;
+import com.example.backend.dto.response.TaskDtoWithId;
 import com.example.backend.exception.*;
 import com.example.backend.model.Task;
 import com.example.backend.model.TaskList;
@@ -83,13 +84,13 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskDto> getAll(Long projectId) {
+    public List<TaskDtoWithId> getAll(Long projectId) {
         if(!projectRepository.existsById(projectId)) {
             throw new ProjectNotExist();
         }
         return taskRepository.findAllByProjectId(projectId)
                 .stream()
-                .map(task -> new TaskDto(
+                .map(task -> new TaskDtoWithId(
                         task.getId(),
                         task.getName(),
                         task.getDescription(),

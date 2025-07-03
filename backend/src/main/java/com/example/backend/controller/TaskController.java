@@ -2,6 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.request.CreateTaskRequest;
 import com.example.backend.dto.response.TaskDto;
+import com.example.backend.dto.response.TaskDtoWithId;
 import com.example.backend.model.*;
 import com.example.backend.service.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -55,7 +56,7 @@ public class TaskController {
 
     @GetMapping("{projectId}/tasks/all")
     public ResponseEntity<?> getTasks(@PathVariable Long projectId) {
-        List<TaskDto> taskDto = taskService.getAll(projectId);
+        List<TaskDtoWithId> taskDto = taskService.getAll(projectId);
 
         return ResponseEntity.ok(taskDto);
     }

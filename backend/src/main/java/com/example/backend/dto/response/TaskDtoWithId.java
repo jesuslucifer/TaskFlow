@@ -14,7 +14,8 @@ import java.time.LocalTime;
 @Data
 @Builder
 @AllArgsConstructor
-public class TaskDto {
+public class TaskDtoWithId {
+    private Long id;
     private String name;
     private String description;
     private Status status;
@@ -23,9 +24,10 @@ public class TaskDto {
     private LocalDate dateTo;
     private LocalTime timeLeft;
 
-    public TaskDto() {}
+    public TaskDtoWithId() {}
 
-    public TaskDto(Task task) {
+    public TaskDtoWithId(Task task) {
+        this.id = task.getId();
         this.name = task.getName();
         this.description = task.getDescription();
         this.status = task.getStatus();
