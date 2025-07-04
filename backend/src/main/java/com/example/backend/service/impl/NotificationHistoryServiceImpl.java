@@ -23,7 +23,7 @@ public class NotificationHistoryServiceImpl implements NotificationHistoryServic
 
     @Override
     public List<NotificationHistoryDto> getNotificationsForUser(Long id) {
-        List<NotificationHistory> notificationHistories = notificationHistoryRepository.findAllByUserId(id);
+        List<NotificationHistory> notificationHistories = notificationHistoryRepository.findAllByUserIdOrderByDateTimeDesc(id);
         List<NotificationHistoryDto> notificationHistoryDto = new ArrayList<>();
 
         notificationHistories.forEach(notificationHistory -> {

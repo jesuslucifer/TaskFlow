@@ -26,11 +26,12 @@ public class ProjectNotificationSettingsServiceImpl implements ProjectNotificati
     }
 
     @Override
-    public void disableNotification(Long projectId, Long userId) {
+    public void disableEnableNotification(Long projectId, Long userId) {
         ProjectNotificationSettings projectNotificationSettings = projectNotificationSettingsRepository
                 .findById_ProjectIdAndId_UserId(projectId, userId);
 
-        projectNotificationSettings.setNotificationEnabled(false);
+        projectNotificationSettings.setNotificationEnabled(
+                !projectNotificationSettings.isNotificationEnabled());
 
         projectNotificationSettingsRepository.save(projectNotificationSettings);
     }

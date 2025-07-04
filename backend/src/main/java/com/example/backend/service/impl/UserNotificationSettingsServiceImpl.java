@@ -25,11 +25,12 @@ public class UserNotificationSettingsServiceImpl implements UserNotificationSett
     }
 
     @Override
-    public void disableNotification(Long userId) {
+    public void disableEnableNotification(Long userId) {
         UserNotificationSettings userNotificationSettings = userNotificationSettingsRepository
                 .findByUserId(userId);
 
-        userNotificationSettings.setGlobalNotificationEnabled(false);
+        userNotificationSettings.setGlobalNotificationEnabled(
+                !userNotificationSettings.isGlobalNotificationEnabled());
 
         userNotificationSettingsRepository.save(userNotificationSettings);
     }

@@ -8,6 +8,6 @@ public interface UserNotificationSettingsService {
 
     boolean notificationIsEnabled(Long userId);
 
-    void disableNotification(Long userId);
+    void disableEnableNotification(Long userId);
 
 }

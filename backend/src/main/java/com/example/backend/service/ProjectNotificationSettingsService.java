@@ -6,5 +6,5 @@ import com.example.backend.model.User;
 public interface ProjectNotificationSettingsService {
     void createProjectNotificationSettings(Project project, User user);
     boolean notificationIsEnabled(Long projectId, Long userId);
-    void disableNotification(Long projectId, Long userId);
+    void disableEnableNotification(Long projectId, Long userId);
 }

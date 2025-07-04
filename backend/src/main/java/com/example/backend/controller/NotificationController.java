@@ -32,24 +32,28 @@ public class NotificationController {
     }
 
     @PutMapping("/global")
-    public ResponseEntity<?> disableGlobalNotification() {
+    public ResponseEntity<?> disableEnableGlobalNotification() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         User user = (User) authentication.getPrincipal();
 
-        userNotificationSettingsService.disableNotification(user.getId());
+        userNotificationSettingsService.disableEnableNotification(user.getId());
 
-        return ResponseEntity.ok("Уведомления отключены");
+        return userNotificationSettingsService.notificationIsEnabled(user.getId()) ?
+                ResponseEntity.ok("Уведомления включены") :
+                ResponseEntity.ok("Уведомления отключены");
     }
 
     @PutMapping("/{projectId}")
-    public ResponseEntity<?> disableProjectNotification(@PathVariable Long projectId) {
+    public ResponseEntity<?> disableEnableProjectNotification(@PathVariable Long projectId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         User user = (User) authentication.getPrincipal();
 
-        projectNotificationSettingsService.disableNotification(projectId, user.getId());
+        projectNotificationSettingsService.disableEnableNotification(projectId, user.getId());
 
-        return ResponseEntity.ok("Уведомления отключены");
+        return projectNotificationSettingsService.notificationIsEnabled(projectId, user.getId()) ?
+                ResponseEntity.ok("Уведомления включены") :
+                ResponseEntity.ok("Уведомления отключены");
     }
 }
