@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface NotificationHistoryRepository extends JpaRepository<NotificationHistory, Long> {
     boolean existsByProjectIdAndTypeNotificationAndPeriodNotificationAndUserId(Long project_id, NotificationType typeNotification, String periodNotification, Long user_id);
-    List<NotificationHistory> findAllByUserId(Long user_id);
+    List<NotificationHistory> findAllByUserIdOrderByDateTimeDesc(Long user_id);
     void deleteByProjectIdAndUserId(Long project_id, Long user_id);
 }
