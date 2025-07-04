@@ -6,6 +6,8 @@ import com.example.backend.repository.NotificationHistoryRepository;
 import com.example.backend.repository.ProjectRepository;
 import com.example.backend.service.DeadlineNotificationService;
 import com.example.backend.service.NotificationService;
+import com.example.backend.service.ProjectNotificationSettingsService;
+import com.example.backend.service.UserNotificationSettingsService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,8 @@ public class DeadlineNotificationServiceImpl implements DeadlineNotificationServ
     private final ProjectRepository projectRepository;
     private final NotificationHistoryRepository notificationHistoryRepository;
     private final NotificationService notificationService;
+    private final UserNotificationSettingsService userNotificationSettingsService;
+    private final ProjectNotificationSettingsService projectNotificationSettingsService;
     private final String destination = "/queue/deadline-notification";
 
     @Scheduled(fixedRate = 30000)
@@ -56,21 +60,17 @@ public class DeadlineNotificationServiceImpl implements DeadlineNotificationServ
 
     private void sendNotification(List<Project> projects, NotificationType typeNotification, String periodNotification) {
         projects.forEach(project -> {
-            if (!notificationHistoryRepository.existsByProjectIdAndTypeNotificationAndPeriodNotification(
-                    project.getId(),
-                    typeNotification,
-                    periodNotification)) {
-                String message = String.format("Скоро дедлайн у проекта %s", project.getName());
-                notificationService.sendNotificationToUser(
-                        project.getCreateUser().getUsername(),
-                        message,
-                        destination);
-                notificationService.saveNotification(project,
+            String message = String.format("Скоро дедлайн у проекта %s", project.getName());
+            project.getExecutors().forEach(executor -> {
+                if (userNotificationSettingsService.notificationIsEnabled(executor.getId().getUserId())
+                        && !notificationHistoryRepository.existsByProjectIdAndTypeNotificationAndPeriodNotificationAndUserId(
+                        project.getId(),
                         typeNotification,
                         periodNotification,
-                        project.getCreateUser(),
-                        LocalDateTime.now());
-                project.getExecutors().forEach(executor -> {
+                        executor.getId().getUserId())
+                        && projectNotificationSettingsService
+                        .notificationIsEnabled(project.getId(), executor.getId().getUserId()
+                )) {
                     notificationService.sendNotificationToUser(
                             executor.getUser().getUsername(),
                             message,
@@ -80,8 +80,8 @@ public class DeadlineNotificationServiceImpl implements DeadlineNotificationServ
                             periodNotification,
                             executor.getUser(),
                             LocalDateTime.now());
-                });
-            }
+                }
+            });
         });
     }
 }

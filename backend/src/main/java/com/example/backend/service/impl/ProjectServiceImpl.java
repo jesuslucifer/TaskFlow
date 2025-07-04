@@ -4,6 +4,7 @@ import com.example.backend.exception.*;
 import com.example.backend.model.*;
 import com.example.backend.repository.*;
 import com.example.backend.service.ExecutorNotificationService;
+import com.example.backend.service.ProjectNotificationSettingsService;
 import com.example.backend.service.ProjectService;
 import com.example.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectExecutorRepository projectExecutorRepository;
     private final CategoryRepository categoryRepository;
     private final ExecutorNotificationService executorNotificationService;
+    private final ProjectNotificationSettingsService projectNotificationSettingsService;
 
     @Override
     public Project save(Project project) {
@@ -35,7 +37,12 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         project.getCategories().forEach(c -> c.setProject(project));
-        return save(project);
+
+        save(project);
+
+        projectNotificationSettingsService.createProjectNotificationSettings(project, project.getCreateUser());
+
+        return project;
     }
 
     @Override
@@ -72,6 +79,8 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         project.addExecutor(user, role, false);
+
+        projectNotificationSettingsService.createProjectNotificationSettings(project, user);
 
         executorNotificationService.sendNotificationToAddExecutor(user, project);
 
