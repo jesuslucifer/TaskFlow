@@ -60,7 +60,7 @@ public class DeadlineNotificationServiceImpl implements DeadlineNotificationServ
 
     private void sendNotification(List<Project> projects, NotificationType typeNotification, String periodNotification) {
         projects.forEach(project -> {
-            String message = String.format("Скоро дедлайн у проекта %s", project.getName());
+            String message = generateMessage(project.getName(), typeNotification, periodNotification);
             project.getExecutors().forEach(executor -> {
                 if (userNotificationSettingsService.notificationIsEnabled(executor.getId().getUserId())
                         && !notificationHistoryRepository.existsByProjectIdAndTypeNotificationAndPeriodNotificationAndUserId(
@@ -83,5 +83,36 @@ public class DeadlineNotificationServiceImpl implements DeadlineNotificationServ
                 }
             });
         });
+    }
+
+    private String generateMessage(String projectName,  NotificationType notificationType, String periodNotification) {
+        String message = String.format("До дедлайна проекта " + projectName + " осталось " + periodNotification + " ");
+
+
+        if (Integer.parseInt(periodNotification) % 100 / 10 == 1) {
+            return switch (notificationType) {
+                case DEADLINE_DAYS -> message + "дней";
+                case DEADLINE_HOURS -> message + "часов";
+                default -> "";
+            };
+        }
+
+        return switch (Integer.parseInt(periodNotification) % 10) {
+            case 1 -> switch (notificationType) {
+                case DEADLINE_DAYS -> message + "день";
+                case DEADLINE_HOURS -> message + "час";
+                default -> "";
+            };
+            case 2, 4, 3 -> switch (notificationType) {
+                case DEADLINE_DAYS -> message + "дня";
+                case DEADLINE_HOURS -> message + "часа";
+                default -> "";
+            };
+            default -> switch (notificationType) {
+                case DEADLINE_DAYS -> message + "дней";
+                case DEADLINE_HOURS -> message + "часов";
+                default -> "";
+            };
+        };
     }
 }
