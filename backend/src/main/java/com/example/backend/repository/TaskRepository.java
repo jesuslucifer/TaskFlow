@@ -25,6 +25,18 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     );
 
     @Query("""
+    SELECT CASE WHEN COUNT(t) > 0 THEN true ElSE false END
+    FROM Task t 
+    JOIN t.taskLists tl
+    WHERE t.id = :taskId 
+      AND tl.projectId = :projectId
+""")
+    boolean existsByTaskIdAndProjectId(
+            @Param("projectId") Long projectId,
+            @Param("taskId") Long taskId
+    );
+
+    @Query("""
     SELECT t
     FROM Task t 
     JOIN t.taskLists tl

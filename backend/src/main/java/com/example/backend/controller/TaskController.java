@@ -1,10 +1,12 @@
 package com.example.backend.controller;
 
+import com.example.backend.dto.request.CreateSubtaskRequest;
 import com.example.backend.dto.request.CreateTaskRequest;
 import com.example.backend.dto.response.TaskDto;
 import com.example.backend.dto.response.TaskDtoWithId;
 import com.example.backend.model.*;
 import com.example.backend.service.TaskService;
+import com.example.backend.service.impl.SubtaskServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,6 +22,7 @@ import java.util.Map;
 public class TaskController {
 
     private final TaskService taskService;
+    private final SubtaskServiceImpl subtaskService;
 
     @PostMapping("/{projectId}/tasks/create")
     public ResponseEntity<?> createTask(@PathVariable Long projectId, @RequestBody CreateTaskRequest taskRequest) {
@@ -45,7 +48,7 @@ public class TaskController {
     public ResponseEntity<?> getTaskById(@PathVariable Long id, @PathVariable Long projectId) {
         Task task = taskService.getById(id, projectId);
         return ResponseEntity.ok(Map.of
-                ("task_name", task.getName() ,
+                ("name", task.getName() ,
                         "description", task.getDescription(),
                         "status", task.getStatus(),
                         "priority", task.getPriority(),
@@ -84,5 +87,24 @@ public class TaskController {
             @PathVariable Long id) {
         taskService.deleteTaskById(projectId, id);
         return ResponseEntity.ok("Task deleted!");
+    }
+
+    @PostMapping("{projectId}/tasks/{id}/subtasks/create")
+    public ResponseEntity<?> createTaskSubtask(
+            @RequestBody CreateSubtaskRequest subtaskRequest,
+            @PathVariable Long projectId,
+            @PathVariable Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+        Subtask subtask = Subtask.builder()
+                .name(subtaskRequest.getName())
+                .description(subtaskRequest.getDescription())
+                .status(Status.ACTIVE)
+                .priority(Priority.LOW)
+                .createUser(user)
+                .taskId(id)
+                .build();
+        subtaskService.createSubtask(subtask, projectId, id);
+        return ResponseEntity.ok("Task subtask created!");
     }
 }
