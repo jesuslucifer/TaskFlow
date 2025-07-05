@@ -2,19 +2,21 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.request.CreateSubtaskRequest;
 import com.example.backend.dto.request.CreateTaskRequest;
+import com.example.backend.dto.response.SubtaskDto;
+import com.example.backend.dto.response.SuccessResponse;
 import com.example.backend.dto.response.TaskDto;
 import com.example.backend.dto.response.TaskDtoWithId;
 import com.example.backend.model.*;
 import com.example.backend.service.TaskService;
 import com.example.backend.service.impl.SubtaskServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -41,20 +43,13 @@ public class TaskController {
 
         taskService.createTask(task, projectId);
 
-        return ResponseEntity.ok("Task created!");
+        return ResponseEntity.ok(new TaskDto(task));
     }
 
     @GetMapping("{projectId}/tasks/{id}")
     public ResponseEntity<?> getTaskById(@PathVariable Long id, @PathVariable Long projectId) {
         Task task = taskService.getById(id, projectId);
-        return ResponseEntity.ok(Map.of
-                ("name", task.getName() ,
-                        "description", task.getDescription(),
-                        "status", task.getStatus(),
-                        "priority", task.getPriority(),
-                        //"date_to", task.getDateTo(),
-                        "time_left", task.getTimeLeft()
-                ));
+        return ResponseEntity.ok(new TaskDto(task));
     }
 
     @GetMapping("{projectId}/tasks/all")
@@ -69,16 +64,9 @@ public class TaskController {
             @PathVariable Long projectId,
             @PathVariable Long id,
             @RequestBody TaskDto updateDto) {
-        Task updatedTask = taskService.updateById(projectId, id, updateDto);
-        TaskDto taskDtoResponse = TaskDto.builder()
-                .name(updatedTask.getName())
-                .description(updatedTask.getDescription())
-                .status(updatedTask.getStatus())
-                .priority(updatedTask.getPriority())
-                .dateTo(updatedTask.getDateTo())
-                .timeLeft(updatedTask.getTimeLeft())
-                .build();
-        return ResponseEntity.ok(taskDtoResponse);
+        taskService.updateById(projectId, id, updateDto);
+
+        return ResponseEntity.ok(new TaskDto(taskService.getById(id, projectId)));
     }
 
     @DeleteMapping("{projectId}/tasks/{id}/delete")
@@ -86,7 +74,10 @@ public class TaskController {
             @PathVariable Long projectId,
             @PathVariable Long id) {
         taskService.deleteTaskById(projectId, id);
-        return ResponseEntity.ok("Task deleted!");
+        return ResponseEntity.ok(new SuccessResponse(
+                "Задача удалена",
+                HttpStatus.OK
+        ));
     }
 
     @PostMapping("{projectId}/tasks/{id}/subtasks/create")
@@ -105,6 +96,6 @@ public class TaskController {
                 .taskId(id)
                 .build();
         subtaskService.createSubtask(subtask, projectId, id);
-        return ResponseEntity.ok("Task subtask created!");
+        return ResponseEntity.ok(new SubtaskDto(subtask));
     }
 }
