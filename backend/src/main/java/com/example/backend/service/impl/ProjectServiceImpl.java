@@ -58,7 +58,10 @@ public class ProjectServiceImpl implements ProjectService {
 
         project.setName(updateDto.getName());
         project.setDescription(updateDto.getDescription());
-        project.setStatus(updateDto.getStatus());
+        if (!project.getStatus().equals(updateDto.getStatus())) {
+            project.setStatus(updateDto.getStatus());
+            executorNotificationService.sendNotificationToChangeStatusProject(project);
+        }
         project.setPriority(updateDto.getPriority());
         project.setDateTo(updateDto.getDateTo());
         project.setTimeLeft(updateDto.getTimeLeft());

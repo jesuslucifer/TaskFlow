@@ -9,5 +9,6 @@ public enum NotificationType {
     ADD_EXECUTOR,
     DELETE_EXECUTOR,
     ACCEPT_EXECUTOR,
-    DECLINE_EXECUTOR
+    DECLINE_EXECUTOR,
+    CHANGE_STATUS
 }

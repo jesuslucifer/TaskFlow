@@ -88,4 +88,23 @@ public class ExecutorNotificationServiceImpl implements ExecutorNotificationServ
                     LocalDateTime.now());
         }
     }
+
+    @Override
+    public void sendNotificationToChangeStatusProject(Project project) {
+        String message = "Статус проекта " + project.getName() + " изменен на " + project.getStatus();
+        project.getExecutors().forEach(executor -> {
+            if (userNotificationSettingsService.notificationIsEnabled(executor.getId().getUserId())
+                    && projectNotificationSettingsService.notificationIsEnabled(project.getId(), executor.getId().getUserId())) {
+                notificationService.sendNotificationToUser(
+                        executor.getUser().getUsername(),
+                        message,
+                        destination);
+                notificationService.saveNotification(project,
+                        NotificationType.CHANGE_STATUS,
+                        "1",
+                        executor.getUser(),
+                        LocalDateTime.now());
+            }
+        });
+    }
 }
