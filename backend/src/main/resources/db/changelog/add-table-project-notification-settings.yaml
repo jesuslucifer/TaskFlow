@@ -7,18 +7,20 @@ databaseChangeLog:
             tableName: project_notification_settings
             columns:
               - column:
-                  name: user_id
+                  name: id
                   type: bigint
                   constraints:
                     primaryKey: true
+                  autoIncrement: true
+              - column:
+                  name: user_id
+                  type: bigint
               - column:
                   name: project_id
                   type: bigint
-                  constraints:
-                    primaryKey: true
               - column:
                   name: notification_enabled
                   type: boolean
               - column:
-                  name: notification_type
-                  type: nvarchar(100)
+                  name: delivery_method
+                  type: nvarchar(20)

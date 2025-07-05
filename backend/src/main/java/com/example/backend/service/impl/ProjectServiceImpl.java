@@ -40,7 +40,16 @@ public class ProjectServiceImpl implements ProjectService {
 
         save(project);
 
-        projectNotificationSettingsService.createProjectNotificationSettings(project, project.getCreateUser());
+        projectNotificationSettingsService.createProjectNotificationSettings(
+                project,
+                project.getCreateUser(),
+                DeliveryMethod.EMAIL);
+
+        projectNotificationSettingsService.createProjectNotificationSettings(
+                project,
+                project.getCreateUser(),
+                DeliveryMethod.PUSH
+        );
 
         return project;
     }
@@ -83,7 +92,16 @@ public class ProjectServiceImpl implements ProjectService {
 
         project.addExecutor(user, role, false);
 
-        projectNotificationSettingsService.createProjectNotificationSettings(project, user);
+        projectNotificationSettingsService.createProjectNotificationSettings(
+                project,
+                user,
+                DeliveryMethod.EMAIL);
+
+        projectNotificationSettingsService.createProjectNotificationSettings(
+                project,
+                user,
+                DeliveryMethod.PUSH
+        );
 
         executorNotificationService.sendNotificationToAddExecutor(user, project);
 

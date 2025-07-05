@@ -37,4 +37,8 @@ public class NotificationHistory {
 
     @Column(name = "date_time")
     private LocalDateTime dateTime;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "delivery_method")
+    private DeliveryMethod deliveryMethod;
 }

@@ -1,6 +1,7 @@
 package com.example.backend.service.impl;
 
 import com.example.backend.dto.response.NotificationHistoryDto;
+import com.example.backend.model.DeliveryMethod;
 import com.example.backend.model.NotificationHistory;
 import com.example.backend.model.NotificationType;
 import com.example.backend.repository.NotificationHistoryRepository;
@@ -23,7 +24,7 @@ public class NotificationHistoryServiceImpl implements NotificationHistoryServic
 
     @Override
     public List<NotificationHistoryDto> getNotificationsForUser(Long id) {
-        List<NotificationHistory> notificationHistories = notificationHistoryRepository.findAllByUserIdOrderByDateTimeDesc(id);
+        List<NotificationHistory> notificationHistories = notificationHistoryRepository.findAllByUserIdAndDeliveryMethodOrderByDateTimeDesc(id, DeliveryMethod.PUSH);
         List<NotificationHistoryDto> notificationHistoryDto = new ArrayList<>();
 
         notificationHistories.forEach(notificationHistory -> {

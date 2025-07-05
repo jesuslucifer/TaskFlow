@@ -1,9 +1,6 @@
 package com.example.backend.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -13,17 +10,23 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProjectNotificationSettings {
 
-    @EmbeddedId
-    private UserProjectId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Embedded
+    private UserProjectId userProjectId;
 
     @Column(name = "notification_enabled")
     private boolean notificationEnabled = true;
 
-    @Column(name = "notification_type")
-    private String notificationType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "delivery_method")
+    private DeliveryMethod deliveryMethod;
 
-    public ProjectNotificationSettings(Long projectId, Long userId) {
-        id = new UserProjectId(projectId, userId);
+    public ProjectNotificationSettings(Long projectId, Long userId, DeliveryMethod deliveryMethod) {
+        userProjectId = new UserProjectId(projectId, userId);
         notificationEnabled = true;
+        this.deliveryMethod = deliveryMethod;
     }
 }
