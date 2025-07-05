@@ -60,6 +60,13 @@ public class NotificationHistoryServiceImpl implements NotificationHistoryServic
                         notificationHistory.getDateTime()
                 ));
             }
+            if (notificationHistory.getTypeNotification().equals(NotificationType.CHANGE_STATUS)) {
+                String message = "Статус проекта " + notificationHistory.getProject().getName() + " был изменен";
+                notificationHistoryDto.add(new NotificationHistoryDto(notificationHistory.getId(),
+                        message,
+                        notificationHistory.getDateTime()
+                ));
+            }
         });
 
         return notificationHistoryDto;
