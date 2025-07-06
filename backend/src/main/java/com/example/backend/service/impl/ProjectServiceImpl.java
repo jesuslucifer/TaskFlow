@@ -6,7 +6,10 @@ import com.example.backend.repository.*;
 import com.example.backend.service.ExecutorNotificationService;
 import com.example.backend.service.ProjectService;
 import com.example.backend.service.UserService;
+import com.example.backend.specification.ProjectSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -128,8 +131,19 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectDto> getAll() {
-        return projectRepository.findAll()
+    public List<ProjectDto> getAll(Status status, Priority priority, String name, Pageable pageable, String role, Long userId) {
+        Specification<Project> spec = Specification
+                .where(ProjectSpecification.statusEquals(status))
+                .and(ProjectSpecification.priorityEquals(priority))
+                .and(ProjectSpecification.nameLike(name));
+
+        if ("creator".equals(role)) {
+            spec = spec.and(ProjectSpecification.isCreator(userId));
+        } else if ("executor".equals(role)) {
+            spec = spec.and(ProjectSpecification.isExecutor(userId));
+        }
+
+        return projectRepository.findAll(spec, pageable)
                 .stream()
                 .map(ProjectDto::new)
                 .collect(Collectors.toList());
@@ -141,29 +155,6 @@ public class ProjectServiceImpl implements ProjectService {
             throw new ProjectNotExist();
         }
         projectRepository.deleteById(id);
-    }
-
-    @Override
-    public List<Project> getProjectsByUserId(Long userId) {
-        return projectRepository.findAllByCreateUserId(userId);
-    }
-
-    @Override
-    public List<ProjectDto> getProjectsByUserIdIsCreator(Long userId) {
-        return projectRepository
-                .findAllByCreateUserId(userId)
-                .stream()
-                .map(ProjectDto::new)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ProjectDto> getProjectsByUserIsExecutor(Long userId) {
-        return projectExecutorRepository.findByUserIdAndRoleNot(userId, ExecutorRole.ADMINISTRATOR)
-                .stream()
-                .map(ProjectExecutor::getProject)
-                .map(ProjectDto::new)
-                .collect(Collectors.toList());
     }
 
     @Override
