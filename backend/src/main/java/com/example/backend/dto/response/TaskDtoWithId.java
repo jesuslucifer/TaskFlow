@@ -1,8 +1,8 @@
 package com.example.backend.dto.response;
 
 import com.example.backend.model.Priority;
-import com.example.backend.model.Status;
 import com.example.backend.model.Task;
+import com.example.backend.model.TaskStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +18,7 @@ public class TaskDtoWithId {
     private Long id;
     private String name;
     private String description;
-    private Status status;
+    private TaskStatus taskStatus;
     private Priority priority;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate dateTo;
@@ -30,7 +30,7 @@ public class TaskDtoWithId {
         this.id = task.getId();
         this.name = task.getName();
         this.description = task.getDescription();
-        this.status = task.getStatus();
+        this.taskStatus = task.getTaskStatus();
         this.priority = task.getPriority();
         this.dateTo = task.getDateTo();
         this.timeLeft = task.getTimeLeft();

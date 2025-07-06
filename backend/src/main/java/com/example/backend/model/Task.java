@@ -27,7 +27,7 @@ public class Task {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private Status status;
+    private TaskStatus taskStatus;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "priority", nullable = false)

@@ -34,7 +34,7 @@ public class TaskController {
         Task task = Task.builder()
                 .name(taskRequest.getName())
                 .description(taskRequest.getDescription())
-                .status(Status.ACTIVE)
+                .taskStatus(TaskStatus.TODO)
                 .priority(Priority.LOW)
                 .dateTo(taskRequest.getDateTo())
                 .timeLeft(taskRequest.getTimeLeft())

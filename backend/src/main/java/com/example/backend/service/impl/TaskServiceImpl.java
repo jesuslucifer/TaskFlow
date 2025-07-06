@@ -75,7 +75,7 @@ public class TaskServiceImpl implements TaskService {
                 .orElseThrow(TaskNotExistException::new);
         task.setName(taskUpdateDto.getName());
         task.setDescription(taskUpdateDto.getDescription());
-        task.setStatus(taskUpdateDto.getStatus());
+        task.setTaskStatus(taskUpdateDto.getTaskStatus());
         task.setPriority(taskUpdateDto.getPriority());
         task.setDateTo(taskUpdateDto.getDateTo());
         task.setTimeLeft(taskUpdateDto.getTimeLeft());
@@ -94,7 +94,7 @@ public class TaskServiceImpl implements TaskService {
                         task.getId(),
                         task.getName(),
                         task.getDescription(),
-                        task.getStatus(),
+                        task.getTaskStatus(),
                         task.getPriority(),
                         task.getDateTo(),
                         task.getTimeLeft()
