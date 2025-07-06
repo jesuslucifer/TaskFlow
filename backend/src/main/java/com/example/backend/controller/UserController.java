@@ -5,6 +5,8 @@ import com.example.backend.dto.response.UserDto;
 import com.example.backend.model.User;
 import com.example.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -51,10 +53,11 @@ public class UserController {
         return ResponseEntity.ok(new UserDto(user));
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<?> getUsers() {
-        List<UserDto> userDto = userService.getAll();
+    @GetMapping
+    public ResponseEntity<?> getUsers(
+            @RequestParam (required = false) String username,
+            Pageable pageable) {
 
-        return ResponseEntity.ok(userDto);
+        return ResponseEntity.ok(userService.getAll(username, pageable));
     }
 }
