@@ -9,7 +9,6 @@ import com.example.backend.service.UserService;
 import com.example.backend.specification.UserSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -64,14 +63,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public User getById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(IdNotFoundException::new);
-    }
-
-    @Override
-    public List<UserDto> getAll() {
-        return userRepository.findAll()
-                .stream()
-                .map(UserDto::new)
-                .collect(Collectors.toList());
     }
 
     @Override

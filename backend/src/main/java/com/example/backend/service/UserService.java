@@ -3,7 +3,6 @@ package com.example.backend.service;
 import com.example.backend.dto.response.UserDto;
 import com.example.backend.model.User;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.multipart.MultipartFile;
