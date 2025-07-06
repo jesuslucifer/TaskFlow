@@ -98,4 +98,25 @@ public class TaskController {
         subtaskService.createSubtask(subtask, projectId, id);
         return ResponseEntity.ok(new SubtaskDto(subtask));
     }
+
+    @DeleteMapping("{projectId}/tasks/{taskId}/subtasks/{subtaskId}/delete")
+    public ResponseEntity<?> deleteTaskSubtask(
+            @PathVariable Long projectId,
+            @PathVariable Long taskId,
+            @PathVariable Long subtaskId) {
+        subtaskService.deleteSubtaskById(projectId, taskId, subtaskId);
+        return ResponseEntity.ok(new SuccessResponse(
+                "Позадача удалена",
+                HttpStatus.OK
+        ));
+    }
+
+    @GetMapping("{projectId}/tasks/{taskId}/subtasks/all")
+    public ResponseEntity<?> getSubtasks(
+            @PathVariable Long projectId,
+            @PathVariable Long taskId) {
+        List<SubtaskDto> subtaskDto = subtaskService.getAll(projectId, taskId);
+
+        return ResponseEntity.ok(subtaskDto);
+    }
 }

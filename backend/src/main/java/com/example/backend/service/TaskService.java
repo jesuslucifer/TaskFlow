@@ -12,7 +12,7 @@ public interface TaskService {
 
     //Task createTask(Task task);
 
-    public Task createTask(Task task, Long projectId);
+    Task createTask(Task task, Long projectId);
 
     Task getById(Long id, Long projectId);
 
