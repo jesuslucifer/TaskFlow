@@ -1,23 +1,23 @@
-<form action="" [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="form  ">
+<form action="" [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="form">
   <label for="">
-    Название проекта
+    Название
     <input class="form__input" type="text" formControlName="name" placeholder="Проект 1">
     @if(projectForm.controls["name"].invalid && projectForm.controls["name"].touched){
     <div class="error">
       @if(projectForm.get('name')?.errors?.['required']){
-      <div class="error">Название проекта обязательно</div>
+      <div class="error">Название обязательно</div>
       }
     </div>
 
     }
   </label>
   <label for="">
-    Описание проекта
+    Описание
     <input type="text" class="form__input" formControlName="description" placeholder="Описание">
 
   </label>
   <label for="" class="project-form__select">
-    Приоритет проекта
+    Приоритет
     <select name="priority" formControlName="priority" class="form__select">
       <option [value]="priorityEnum.CRITICAL">Критический</option>
       <option [value]="priorityEnum.HIGH" selected>Высокий</option>
@@ -53,7 +53,7 @@
     </label>
   </label>
   <label class="category-field">
-    Категории проекта
+    Категории
     <div class="input-with-tags">
       @for (cat of category; track $index) {
       <div class="tag">
@@ -65,5 +65,6 @@
         (keydown.enter)="onEnterCategory($event)" />
     </div>
   </label>
-  <button class="form__btn" type="submit" [disabled]="projectForm.invalid">Создать проект</button>
+
+  <button class="form__btn" type="submit" [disabled]="projectForm.invalid">Создать</button>
 </form>

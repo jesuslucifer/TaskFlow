@@ -7,6 +7,7 @@ import { ProjectsPageComponent } from './pages/projects-page/projects-page.compo
 import { canActivateAuth } from './core/guards/auth.guard';
 import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
 import { ProjectPageComponent } from './features/project/project-page/project-page.component';
+import { TaskPageComponent } from './features/tasks/task-page/task-page.component';
 
 export const routes: Routes = [
   {
@@ -17,6 +18,10 @@ export const routes: Routes = [
         path: '',
         redirectTo: 'profile/me',
         pathMatch: 'full',
+      },
+      {
+        path: 'projects/:projectId/tasks/:taskId',
+        component: TaskPageComponent,
       },
 
       {

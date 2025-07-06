@@ -16,6 +16,8 @@ import { ProjectPageExecutorsComponent } from './project-page-executors/project-
 import { ProjectPageInfoComponent } from './project-page-info/project-page-info.component';
 import { ToastrService } from 'ngx-toastr';
 import { NotificationPopupComponent } from '../../notifications/notification-popup/notification-popup.component';
+import { TasksListComponent } from '../../tasks/tasks-list/tasks-list.component';
+import { TasksBoardComponent } from '../../tasks/tasks-board/tasks-board.component';
 @Component({
   selector: 'app-project-page',
   imports: [
@@ -23,6 +25,7 @@ import { NotificationPopupComponent } from '../../notifications/notification-pop
     ReactiveFormsModule,
     ProjectPageExecutorsComponent,
     ProjectPageInfoComponent,
+    TasksBoardComponent,
   ],
   templateUrl: './project-page.component.html',
   styleUrl: './project-page.component.scss',
@@ -87,25 +90,4 @@ export class ProjectPageComponent {
       disableClose: false,
     });
   }
-
-  tasks = [
-    {
-      status: 'In Progress',
-      title: 'Manage Finances',
-      assigned: 'mustafa',
-      priority: 'High',
-    },
-    {
-      status: 'In Progress',
-      title: 'Re design the logo',
-      assigned: 'mustafa',
-      priority: 'Small',
-    },
-    {
-      status: 'Done',
-      title: 'Start how to use the service course',
-      assigned: 'mustafa',
-      priority: 'Very High',
-    },
-  ];
 }

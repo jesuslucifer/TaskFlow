@@ -1,0 +1,90 @@
+<div class="side-bar__info">
+  <!-- <div class="info__item">Создан: {{task.dateCreate}}</div> -->
+  <div class="info__item">Создан:</div>
+
+  <!-- <div class="info__item">Создатель: {{ task.createUser.username }}</div> -->
+
+  <div class="info__item">
+    Приоритет:
+    @if(task.id == profileId){
+    <select [ngModel]="task.priority" (ngModelChange)="onPriorityChange($event)">
+      <option [value]="priorityEnum.CRITICAL">Критический</option>
+      <option [value]="priorityEnum.HIGH">Высокий</option>
+      <option [value]="priorityEnum.MEDIUM">Средний</option>
+      <option [value]="priorityEnum.LOW">Низкий</option>
+    </select>
+    }@else{
+    <div>
+      {{task.priority}}
+    </div>
+    }
+
+  </div>
+
+  <div class="info__item">
+    Статус:
+    @if(task.id == profileId){
+    <select [ngModel]="task.status" (ngModelChange)="onStatusChange($event)">
+      <option [value]="statusEnum.ACTIVE">Разрабатывается</option>
+      <option [value]="statusEnum.STOPPED">Приостановлено</option>
+      <option [value]="statusEnum.COMPLETED">Выполнено</option>
+      <option [value]="statusEnum.DRAFT">Черновик</option>
+    </select>}@else{
+    <div>
+      {{task.status}}
+    </div>
+    }
+  </div>
+
+  <!-- <div class="info__item">
+    Категория:
+    <div class="category__list">
+      @for(category of task.categories; track category.name)
+      {
+      <div class="category__tag">
+        {{ category.name}}
+
+      </div>
+      }
+    </div>
+  </div> -->
+
+  <div class="info__item">
+    Срок:
+    @if(!showEditDate){
+    <ng-container>
+      {{ task.dateTo }}
+      @if(task.id == profileId){
+      <button (click)="showEditDate = true">Изменить</button>
+
+      }
+    </ng-container>
+    }
+    @if(showEditDate){
+    <ng-container>
+      <input type="date" [(ngModel)]="editDateTo" />
+      <button (click)="saveDateTo()">Сохранить</button>
+      <button (click)="cancelEditDate()">Отмена</button>
+    </ng-container>}
+  </div>
+  <div class="info__item">
+    Время:
+    @if(!showEditTime){
+    <ng-container>
+      {{ task.timeLeft }}
+      @if(task.id == profileId){
+      <button (click)="showEditTime = true">Изменить</button>
+
+      }
+    </ng-container>
+    }
+    @if(showEditTime){
+    <ng-container>
+      <input type="time" [(ngModel)]="editTimeLeft" />
+      <button (click)="saveTimeLeft()">Сохранить</button>
+      <button (click)="cancelEditTime()">Отмена</button>
+    </ng-container>
+    }
+  </div>
+
+</div>

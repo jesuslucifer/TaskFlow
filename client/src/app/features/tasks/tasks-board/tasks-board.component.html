@@ -1,0 +1,33 @@
+<div class="tasks">
+  <div class="tasks__create">
+    <button class="open-btn" (click)="openCreateDialog()">
+      Создать задачу
+    </button>
+  </div>
+  <div class="tasks__list">
+    <div class="tasks-list__todo tasks-list" cdkDropList [cdkDropListData]="(todoTasks$ | async) ?? []"
+      [cdkDropListConnectedTo]="['inProgressList', 'completedList']"
+      (cdkDropListDropped)="onTaskDrop($event, status.DRAFT)" id="todoList">
+      <h3>Нужно выполнить</h3>
+      <app-tasks-list [tasks]="(todoTasks$ | async) ?? []" [status]="status.DRAFT"
+        [projectId]="projectId"></app-tasks-list>
+    </div>
+
+    <div class="tasks-list__active tasks-list" cdkDropList [cdkDropListData]="(inProgressTasks$ | async) ?? []"
+      [cdkDropListConnectedTo]="['todoList', 'completedList']" (cdkDropListDropped)="onTaskDrop($event, status.ACTIVE)"
+      id="inProgressList">
+      <h3>В процессе</h3>
+      <app-tasks-list [tasks]="(inProgressTasks$ | async) ?? []" [status]="status.ACTIVE"
+        [projectId]="projectId"></app-tasks-list>
+    </div>
+
+    <div class="tasks-list__completed tasks-list" cdkDropList [cdkDropListData]="(doneTasks$ | async) ?? []"
+      [cdkDropListConnectedTo]="['todoList', 'inProgressList']"
+      (cdkDropListDropped)="onTaskDrop($event, status.COMPLETED)" id="completedList">
+      <h3>Выполнено</h3>
+      <app-tasks-list [tasks]="(doneTasks$ | async) ?? []" [status]="status.COMPLETED"
+        [projectId]="projectId"></app-tasks-list>
+    </div>
+  </div>
+
+</div>

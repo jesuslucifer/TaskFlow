@@ -1,0 +1,7 @@
+@if(tasks; as tasksList){
+<div class="task__grid">
+  @for(task of tasks; track task.id){
+  <app-task-card *ngIf="task.status === status" [task]="task" [projectId]="projectId"></app-task-card>
+  }
+</div>
+}

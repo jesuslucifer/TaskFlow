@@ -29,7 +29,7 @@ export class WebSocketService {
         this.topics.forEach((topic) => this.subscribeToTopic(topic));
       },
       onStompError: (frame) => {
-        console.error('STOMP ошибка:', frame.headers['message'], frame.body);
+        console.log('STOMP ошибка:', frame.headers['message'], frame.body);
       },
     });
 

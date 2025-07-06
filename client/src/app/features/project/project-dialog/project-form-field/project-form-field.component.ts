@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, Inject, inject } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -9,7 +9,7 @@ import {
 } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ProjectDialogComponent } from '../project-dialog.component';
 import { ProjectService } from '../../../../core/services/project.service';
 import {
@@ -17,6 +17,7 @@ import {
   Priority,
 } from '../../../../core/interface/project.interface';
 import { HttpErrorResponse } from '@angular/common/http';
+import { TasksService } from '../../../../core/services/tasks.service';
 
 @Component({
   selector: 'app-project-form-field',
@@ -26,9 +27,12 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrl: './project-form-field.component.scss',
 })
 export class ProjectFormFieldComponent {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { onSave: any }) {}
   readonly dialogRef = inject(MatDialogRef<ProjectDialogComponent>);
   priorityEnum = Priority;
   projectService = inject(ProjectService);
+  tasksService = inject(TasksService);
+
   router = inject(Router);
   toastr = inject(ToastrService);
 
@@ -72,15 +76,7 @@ export class ProjectFormFieldComponent {
           'dd-MM-yyyy'
         );
       }
-      this.projectService.createProject(formValue).subscribe({
-        next: () => {
-          this.toastr.success('Проект успешно создан');
-          this.dialogRef.close();
-        },
-        error: (err: HttpErrorResponse) => {
-          this.toastr.error(err.error.message);
-        },
-      });
+      this.data.onSave(formValue);
     }
   };
 }

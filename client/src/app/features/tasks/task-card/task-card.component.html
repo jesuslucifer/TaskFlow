@@ -1,0 +1,41 @@
+@if(task){
+<div class="task__card " cdkDrag>
+  <div class="task-card__top">
+    <div class="task-card__info">
+      <div class="task-info__name">
+        <a [routerLink]="[`/projects/${projectId}/tasks/${task.id}`]" routerLinkActive="router-link-active">
+          {{task.name}}
+        </a>
+      </div>
+      <div class="task-info__description">
+        {{task.description}}
+      </div>
+    </div>
+    <div class="task-card__menu">
+      <button class="task-card__menu-item">
+        <button matButton [matMenuTriggerFor]="menu" class="task-card__menu-item"> <mat-icon>more_horiz</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="onDeleteTask()">Удалить</button>
+        </mat-menu>
+      </button>
+    </div>
+  </div>
+  <div class="task-card__middle">
+    <div class="task-card__progress-info">
+      <mat-icon>format_list_bulleted</mat-icon>
+      Progress
+    </div>
+    <div class="task-card__progress-bar">
+
+    </div>
+  </div>
+  <div class="task-card__bottom">
+    <div class="task-card__date">
+      {{task.dateTo}} - {{task.timeLeft}}
+    </div>
+    <div class="task-card__attachments"></div>
+  </div>
+</div>
+
+}

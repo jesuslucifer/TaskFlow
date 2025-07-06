@@ -1,19 +1,19 @@
-@if(project$ | async; as project){
+@if(task$ | async; as task){
 <div class="container">
   <div class="project">
     <div class="project__main">
       <header class="header">
         <div class="project__info">
-          <span class="project__name">{{project.name}}</span>
-          <form [formGroup]="form">
+          <span class="project__name">{{task.name}}</span>
+          <form>
             <div class="project__description">
               <h4>Описание</h4>
               @if(!isEditingNameDesc){
               <div>
-                <div class="description__text">{{ project.description }}</div>
-                @if(project.createUser.id == me()?.id){
+                <div class="description__text">{{ task.description }}</div>
+                <!-- @if(task.id == me()?.id){ -->
                 <button class="edit-btn" (click)="toggleEditNameDesc()">Редактировать</button>
-                }
+                <!-- } -->
               </div>
               }@else{
               <div>
@@ -29,23 +29,21 @@
 
         </div>
       </header>
-
-      <app-tasks-board [projectId]="projectId"></app-tasks-board>
+      <div class="view__type">
+      </div>
     </div>
     <div class="project__side-bar">
       <div class="side-bar__item">
         <h3>Информация о проекте</h3>
-        <app-project-page-info [project]="project" [form]="form" [profileId]="profileId"></app-project-page-info>
+        <app-task-page-info [task]="task" [form]="form" [profileId]="profileId"></app-task-page-info>
         <div class="project__executors info__item">
           <div class="executors__add">
             <h5>Исполнители</h5>
-            @if(project.createUser.id == me()?.id){
+            @if(task. id == me()?.id){
             <button (click)="openCreateDialog()" class="open-btn">+</button>
             }
           </div>
-          <app-project-page-executors [project]="project" [projectId]="projectId" [executors]="project.executors"
-            [profileId]="profileId">
-          </app-project-page-executors>
+
 
         </div>
       </div>

@@ -1,0 +1,57 @@
+.tasks {
+  margin: 20px 0;
+
+  &__create {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+  }
+
+  &__list {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+  }
+}
+
+.tasks-list {
+  width: 33%;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #f3f3f3;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+  h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  &__todo {
+    background-color: #fffde7;
+  }
+
+  &__active {
+    background-color: #e3f2fd;
+  }
+
+  &__completed {
+    background-color: #e8f5e9;
+  }
+
+  .tasks-dropzone {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 100px;
+  }
+}
+.cdk-drag-preview {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #fff;
+}
+
+.cdk-drop-list-dragging .task__card {
+  opacity: 0.5;
+}
