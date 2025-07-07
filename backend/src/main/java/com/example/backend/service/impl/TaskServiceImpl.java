@@ -30,14 +30,14 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task createTask(Task task, Long projectId) {
+        if(!projectRepository.existsById(projectId)) {
+            throw new ProjectNotExist();
+        }
         if (taskRepository.existsByNameAndProjectId(
                 task.getName(),
                 projectId
         )) {
             throw new TaskAlreadyExistException();
-        }
-        if(!projectRepository.existsById(projectId)) {
-            throw new ProjectNotExist();
         }
         Task savedTask = save(task);
 
