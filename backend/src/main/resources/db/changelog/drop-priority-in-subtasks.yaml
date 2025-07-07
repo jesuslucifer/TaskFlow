@@ -1,8 +1,0 @@
-databaseChangeLog:
-  - changeSet:
-      id: drop-priority-in-subtasks.yaml
-      author: kisliashka100
-      changes:
-        - dropColumn:
-            tableName: subtasks
-            columnName: priority

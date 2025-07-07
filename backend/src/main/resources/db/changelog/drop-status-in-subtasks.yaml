@@ -1,8 +1,0 @@
-databaseChangeLog:
-  - changeSet:
-      id: drop-status-in-subtasks.yaml
-      author: kisliashka100
-      changes:
-        - dropColumn:
-            tableName: subtasks
-            columnName: status
