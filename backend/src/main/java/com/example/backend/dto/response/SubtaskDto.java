@@ -11,6 +11,7 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class SubtaskDto {
+    private long id;
     private String name;
     private String description;
     private Status status;
@@ -19,6 +20,7 @@ public class SubtaskDto {
     public SubtaskDto() {}
 
     public SubtaskDto(Subtask subtask) {
+        this.id = subtask.getId();
         this.name = subtask.getName();
         this.description = subtask.getDescription();
         this.status = subtask.getStatus();

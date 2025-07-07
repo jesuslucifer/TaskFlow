@@ -52,12 +52,7 @@ public class SubtaskServiceImpl implements SubtaskService {
 
         return subtaskRepository.findAllByTaskId(taskId)
                 .stream()
-                .map(subtask -> new SubtaskDto(
-                        subtask.getName(),
-                        subtask.getDescription(),
-                        subtask.getStatus(),
-                        subtask.getPriority()
-                ))
+                .map(SubtaskDto::new)
                 .collect(Collectors.toList());
     }
 }
