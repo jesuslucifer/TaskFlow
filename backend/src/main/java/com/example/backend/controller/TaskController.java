@@ -91,8 +91,7 @@ public class TaskController {
         Subtask subtask = Subtask.builder()
                 .name(subtaskRequest.getName())
                 .description(subtaskRequest.getDescription())
-                .status(Status.ACTIVE)
-                .priority(Priority.LOW)
+                .isDone(false)
                 .createUser(user)
                 .taskId(id)
                 .build();

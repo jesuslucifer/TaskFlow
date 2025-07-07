@@ -20,13 +20,8 @@ public class Subtask {
     @Column(name = "description")
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
-    private Status status;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "priority", nullable = false)
-    private Priority priority;
+    @Column(name = "is_done", nullable = false)
+    private Boolean isDone;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "create_user_id", nullable = false)
