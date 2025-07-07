@@ -1,8 +1,6 @@
 package com.example.backend.dto.response;
 
-import com.example.backend.model.Priority;
-import com.example.backend.model.Task;
-import com.example.backend.model.TaskStatus;
+import com.example.backend.model.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,22 +13,29 @@ import java.time.LocalTime;
 @Builder
 @AllArgsConstructor
 public class TaskDto {
+    private long id;
     private String name;
     private String description;
-    private TaskStatus taskStatus;
+    private TaskStatus status;
     private Priority priority;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate dateTo;
     private LocalTime timeLeft;
+    private UserDto createUser;
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    private LocalDate dateCreate;
 
     public TaskDto() {}
 
     public TaskDto(Task task) {
+        this.id = task.getId();
         this.name = task.getName();
         this.description = task.getDescription();
-        this.taskStatus = task.getTaskStatus();
+        this.status = task.getTaskStatus();
         this.priority = task.getPriority();
         this.dateTo = task.getDateTo();
         this.timeLeft = task.getTimeLeft();
+        this.createUser = new UserDto(task.getCreateUser());
+        this.dateCreate = task.getDateCreate();
     }
 }

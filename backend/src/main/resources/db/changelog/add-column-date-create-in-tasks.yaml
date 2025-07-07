@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-column-date-create-in-tasks.yaml
+      author: kisliashka100
+      changes:
+        - addColumn:
+            tableName: tasks
+            columns:
+              - column:
+                  name: date_create
+                  type: date

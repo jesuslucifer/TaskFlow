@@ -46,4 +46,7 @@ public class Task {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "create_user_id", nullable = false)
     private User createUser;
+
+    @Column(name = "date_create")
+    public LocalDate dateCreate;
 }

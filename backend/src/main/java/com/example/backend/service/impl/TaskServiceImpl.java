@@ -1,7 +1,6 @@
 package com.example.backend.service.impl;
 
 import com.example.backend.dto.response.TaskDto;
-import com.example.backend.dto.response.TaskDtoWithId;
 import com.example.backend.exception.*;
 import com.example.backend.model.Task;
 import com.example.backend.model.TaskList;
@@ -67,15 +66,12 @@ public class TaskServiceImpl implements TaskService {
         if(!projectRepository.existsById(projectId)) {
             throw new ProjectNotExist();
         }
-        /*if(taskRepository.existsByName(taskUpdateDto.getName())) {
-            throw new TaskAlreadyExistException();
-        }*/
 
         Task task = taskRepository.findById(id)
                 .orElseThrow(TaskNotExistException::new);
         task.setName(taskUpdateDto.getName());
         task.setDescription(taskUpdateDto.getDescription());
-        task.setTaskStatus(taskUpdateDto.getTaskStatus());
+        task.setTaskStatus(taskUpdateDto.getStatus());
         task.setPriority(taskUpdateDto.getPriority());
         task.setDateTo(taskUpdateDto.getDateTo());
         task.setTimeLeft(taskUpdateDto.getTimeLeft());
@@ -84,21 +80,13 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskDtoWithId> getAll(Long projectId) {
+    public List<TaskDto> getAll(Long projectId) {
         if(!projectRepository.existsById(projectId)) {
             throw new ProjectNotExist();
         }
         return taskRepository.findAllByProjectId(projectId)
                 .stream()
-                .map(task -> new TaskDtoWithId(
-                        task.getId(),
-                        task.getName(),
-                        task.getDescription(),
-                        task.getTaskStatus(),
-                        task.getPriority(),
-                        task.getDateTo(),
-                        task.getTimeLeft()
-                ))
+                .map(TaskDto::new)
                 .collect(Collectors.toList());
     }
 
