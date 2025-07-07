@@ -2,8 +2,7 @@ package com.example.backend.service.impl;
 
 import com.example.backend.dto.response.TaskDto;
 import com.example.backend.exception.*;
-import com.example.backend.model.Task;
-import com.example.backend.model.TaskList;
+import com.example.backend.model.*;
 import com.example.backend.repository.ProjectRepository;
 import com.example.backend.repository.TaskListRepository;
 import com.example.backend.repository.TaskRepository;
@@ -53,18 +52,17 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task getById(Long id, Long projectId) {
-        if(!projectRepository.existsById(projectId)) {
-            throw new ProjectNotExist();
+        if(!taskListRepository.existsByProjectIdAndTaskId(projectId, id)){
+            throw new TaskNotExistException();
         }
         return taskRepository.findById(id)
                 .orElseThrow(TaskNotExistException::new);
-
     }
 
     @Override
     public Task updateById(Long projectId, Long id, TaskDto taskUpdateDto) {
-        if(!projectRepository.existsById(projectId)) {
-            throw new ProjectNotExist();
+        if(!taskListRepository.existsByProjectIdAndTaskId(projectId, id)){
+            throw new TaskNotExistException();
         }
 
         Task task = taskRepository.findById(id)
@@ -92,13 +90,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void deleteTaskById(Long projectId, Long id) {
-        if(!projectRepository.existsById(projectId)) {
-            throw new ProjectNotExist();
+        if(!taskListRepository.existsByProjectIdAndTaskId(projectId, id)){
+            throw new TaskNotExistException();
         }
         if (!taskRepository.existsById(id)) {
             throw new TaskNotExistException();
         }
         taskRepository.deleteById(id);
     }
-
 }

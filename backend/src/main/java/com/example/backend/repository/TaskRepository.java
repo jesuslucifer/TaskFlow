@@ -6,10 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
-    Optional<Task> findByName(String name);
     void deleteById(Long id);
 
     @Query("""
@@ -25,7 +23,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     );
 
     @Query("""
-    SELECT CASE WHEN COUNT(t) > 0 THEN true ElSE false END
+    SELECT CASE WHEN COUNT(t) > 0 THEN true ELSE false END
     FROM Task t 
     JOIN t.taskLists tl
     WHERE t.id = :taskId 
