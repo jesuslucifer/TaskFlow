@@ -4,7 +4,7 @@ databaseChangeLog:
       author: kisliashka100
       changes:
         - createTable:
-            tableName: tasks
+            tableName: subtasks
             columns:
               - column:
                   name: id
@@ -13,7 +13,7 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
               - column:
-                  name: task_name
+                  name: subtask_name
                   type: VARCHAR(100)
               - column:
                   name: description

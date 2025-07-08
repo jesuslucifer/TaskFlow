@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "Subtasks")
+@Table(name = "subtasks")
 public class Subtask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

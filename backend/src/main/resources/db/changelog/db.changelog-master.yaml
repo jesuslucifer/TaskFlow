@@ -22,6 +22,8 @@ databaseChangeLog:
   - include:
       file: db/changelog/create-task-list-table.yaml
   - include:
+      file: db/changelog/create-subtasks-table.yaml
+  - include:
       file: db/changelog/drop-user-id-in-tasklist.yaml
   - include:
       file: db/changelog/add-table-categories.yaml
@@ -39,3 +41,7 @@ databaseChangeLog:
       file: db/changelog/add-table-user-notification-settings.yaml
   - include:
       file: db/changelog/add-column-delivery-method-in-history-notification.yaml
+  - include:
+      file: db/changelog/create-task-categories-table.yaml
+  - include:
+      file: db/changelog/add-column-date-create-in-tasks.yaml
