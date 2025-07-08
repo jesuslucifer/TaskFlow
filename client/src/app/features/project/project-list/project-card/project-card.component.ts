@@ -1,18 +1,19 @@
 import { Component, inject, Input } from '@angular/core';
-import {
-  IProject,
-  IProjectUpdate,
-  Priority,
-  Status,
-} from '../../../core/interface/project.interface';
+
 import { MatIcon } from '@angular/material/icon';
-import { ProjectService } from '../../../core/services/project.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ProjectService } from '../../../../core/services/project.service';
+import {
+  IProject,
+  IProjectUpdate,
+  Priority,
+  Status,
+} from '../../../../core/interface/project.interface';
 @Component({
   selector: 'app-project-card',
   imports: [
@@ -69,7 +70,6 @@ export class ProjectCardComponent {
   }
 
   onDeleteProject() {
-    this.projectService.deleteProject(this.project!.id).subscribe(() => {});
-    console.log(this.project);
+    this.projectService.deleteProject(this.project!.id).subscribe();
   }
 }

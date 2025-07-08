@@ -24,8 +24,7 @@ export class ProjectsPageComponent {
   projects$ = toObservable(this.projectService.projects);
   toastr = inject(ToastrService);
   priorityEnum = Priority;
-
-  // dialogRef = inject(MatDialogRef<ProjectDialogComponent>);
+  me = this.profileService.me;
   projectForm: FormGroup = new FormGroup({
     name: new FormControl<string | null>(null, [Validators.required]),
     description: new FormControl<string | null>(''),
@@ -43,6 +42,7 @@ export class ProjectsPageComponent {
         onSave: (formValue: IProject) => {
           this.projectService.createProject(formValue).subscribe({
             next: () => {
+              this.projectService.getAllUserProjects(this.me()!.id).subscribe();
               this.toastr.success('Проект успешно создан');
               this.dialog.closeAll();
             },

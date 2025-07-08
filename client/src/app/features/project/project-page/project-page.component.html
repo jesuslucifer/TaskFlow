@@ -3,6 +3,11 @@
   <div class="project">
     <div class="project__main">
       <header class="header">
+        <div>
+          <button class="open-btn" (click)="goBack()"><- </button>
+
+        </div>
+
         <div class="project__info">
           <span class="project__name">{{project.name}}</span>
           <form [formGroup]="form">

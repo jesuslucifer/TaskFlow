@@ -4,9 +4,9 @@ import {
   inject,
   Input,
 } from '@angular/core';
-import { TasksListComponent } from '../tasks-list/tasks-list.component';
+import { TasksListComponent } from './tasks-list/tasks-list.component';
 import { MatDialog } from '@angular/material/dialog';
-import { Priority, Status } from '../../../core/interface/project.interface';
+import { Priority } from '../../../core/interface/project.interface';
 import { ProjectDialogComponent } from '../../project/project-dialog/project-dialog.component';
 import { TasksService } from '../../../core/services/tasks.service';
 import { ToastrService } from 'ngx-toastr';
@@ -17,11 +17,13 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { map } from 'rxjs';
 import {
   ITasks,
   ITasksResponse,
+  ITaskUpdate,
+  TaskStatus,
 } from '../../../core/interface/tasks.interface';
 
 @Component({
@@ -38,17 +40,17 @@ export class TasksBoardComponent {
   tasksService = inject(TasksService);
   toastr = inject(ToastrService);
   tasks$ = toObservable(this.tasksService.tasks);
-  status = Status;
+  status = TaskStatus;
   todoTasks$ = this.tasks$.pipe(
-    map((tasks) => tasks?.filter((t) => t.status === Status.DRAFT))
+    map((tasks) => tasks?.filter((t) => t.status === TaskStatus.TODO))
   );
 
   inProgressTasks$ = this.tasks$.pipe(
-    map((tasks) => tasks?.filter((t) => t.status === Status.ACTIVE))
+    map((tasks) => tasks?.filter((t) => t.status === TaskStatus.PROGRESS))
   );
 
   doneTasks$ = this.tasks$.pipe(
-    map((tasks) => tasks?.filter((t) => t.status === Status.COMPLETED))
+    map((tasks) => tasks?.filter((t) => t.status === TaskStatus.DONE))
   );
   ngOnInit() {
     this.tasksService.getTasks(this.projectId).subscribe();
@@ -74,7 +76,7 @@ export class TasksBoardComponent {
     });
   }
 
-  onTaskDrop(event: CdkDragDrop<ITasks[]>, newStatus: Status) {
+  onTaskDrop(event: CdkDragDrop<ITasks[]>, newTaskStatus: TaskStatus) {
     const prev = event.previousContainer.data;
     const curr = event.container.data;
 
@@ -85,21 +87,24 @@ export class TasksBoardComponent {
     }
 
     const movedTask = curr[event.currentIndex];
-    console.log(newStatus);
 
-    const updatedTask: ITasks = {
-      ...movedTask,
-      status: newStatus,
+    const updatedTask: ITaskUpdate = {
+      status: newTaskStatus,
+      name: movedTask.name,
+      description: movedTask.description,
+      priority: movedTask.priority,
+      dateTo: movedTask.dateTo,
+      timeLeft: movedTask.timeLeft,
     };
 
     this.tasksService
-      .updateTask(updatedTask, this.projectId, updatedTask.id)
-      .subscribe(() => {
+      .updateTask(updatedTask, this.projectId, movedTask.id)
+      .subscribe((newTask) => {
         const currentTasks = this.tasksService.tasks();
 
         if (currentTasks) {
           const newTasks = currentTasks.map((task) =>
-            task.id === updatedTask.id ? updatedTask : task
+            task.id === newTask.id ? newTask : task
           );
 
           this.tasksService.tasks.set(newTasks);

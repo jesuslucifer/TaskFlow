@@ -6,7 +6,7 @@ import {
 } from '../../../../core/interface/project.interface';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ProjectService } from '../../../../core/services/project.service';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-project-page-info',
@@ -27,7 +27,8 @@ export class ProjectPageInfoComponent {
   editTimeLeft: string = '';
   showEditDate = false;
   showEditTime = false;
-
+  showCategoryInput = false;
+  categoryInput = new FormControl<string | null>('');
   patch(data: Partial<IProject>) {
     this.projectService.patchProject(this.project.id, data).subscribe({
       next: () => Object.assign(this.project, data),
@@ -54,6 +55,7 @@ export class ProjectPageInfoComponent {
     this.editTimeLeft = this.project.timeLeft || '';
     this.showEditTime = false;
   }
+
   saveDateTo() {
     if (!this.editDateTo) return;
     this.correctDate = new DatePipe('en-US').transform(

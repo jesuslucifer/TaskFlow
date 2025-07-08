@@ -21,7 +21,6 @@ import { IProfile } from '../../core/interface/user.interface';
     RouterModule,
     UserCardComponent,
     ActivityComponent,
-    ProjectListComponent,
     FormsModule,
   ],
   templateUrl: './dashboard.component.html',

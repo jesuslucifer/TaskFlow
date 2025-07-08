@@ -1,0 +1,28 @@
+@if(subtask){
+<div class="subtask-card">
+
+  <div class="subtask-card__row">
+    <!-- <input type="checkbox" [checked]="subtask.done" class="subtask__done" (change)="toggleDone.emit()" /> -->
+    <input type="checkbox" [checked]="subtask.isDone" class="subtask__done" (change)="onToggleDone()" />
+
+    <div class="subtask-row__item">
+      <div class="subtask-card__name">
+        <span class="subtask-card__label">Имя:</span>
+        <span class="subtask-card__value">{{ subtask.name }}</span>
+
+      </div>
+      <div class="subtask-card__description">
+        <span class="subtask-card__label">Описание:</span>
+        <span class="subtask-card__value">{{ subtask.description }}</span>
+      </div>
+    </div>
+
+
+  </div>
+  <div class="subtask-card__delete">
+    <button class="open-btn" (click)="onDelete()">
+      x
+    </button>
+  </div>
+</div>
+}

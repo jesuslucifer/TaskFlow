@@ -1,0 +1,11 @@
+<div class="subtasks-list">
+  @if(subtasks$ | async; as subtasks){
+  @for(subtask of subtasks; track subtask.name){
+  <app-subtasks-card [subtask]="subtask" (toggleDone)="onToggleSubtaskDone($event)" (delete)="
+    onDeleteSubtask(subtask)"></app-subtasks-card>
+  }
+  } @else {
+  <div class=" subtasks-list__empty">Подзадачи отсутствуют
+  </div>
+  }
+</div>

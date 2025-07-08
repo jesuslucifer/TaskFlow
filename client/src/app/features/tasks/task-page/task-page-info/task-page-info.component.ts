@@ -7,7 +7,8 @@ import {
 import { ProjectService } from '../../../../core/services/project.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ITasks } from '../../../../core/interface/tasks.interface';
+import { ITasks, TaskStatus } from '../../../../core/interface/tasks.interface';
+import { TasksService } from '../../../../core/services/tasks.service';
 
 @Component({
   selector: 'app-task-page-info',
@@ -22,7 +23,7 @@ export class TaskPageInfoComponent {
 
   projectService = inject(ProjectService);
   priorityEnum = Priority;
-  statusEnum = Status;
+  statusEnum = TaskStatus;
   editDateTo: string = '';
   correctDate: string | null = '';
   editTimeLeft: string = '';

@@ -18,19 +18,17 @@ export class ProjectService {
   projects = signal<IProject[] | null>(null);
   executorsProject = signal<IProject[] | null>(null);
   createProject(projectForm: IProject) {
-    return this.http
-      .post<IProject>(`${this.baseApiUrl}/create`, projectForm)
-      .pipe(
-        tap((newProject: IProject) => {
-          const current = this.projects();
-          this.projects.set(current ? [...current, newProject] : [newProject]);
-        })
-      );
+    return this.http.post<IProject>(`${this.baseApiUrl}/create`, projectForm);
+    // .pipe(
+    //   tap((newProject: IProject) => {
+    //     const current = this.projects();
+    //     this.projects.set(current ? [...current, newProject] : [newProject]);
+    //   })
+    // );
   }
   getAllProjects() {
     return this.http.get<IProject[]>(`${this.baseApiUrl}/`).pipe(
       tap((res: IProject[]) => {
-        console.log(res);
         this.projects.set(res);
       })
     );

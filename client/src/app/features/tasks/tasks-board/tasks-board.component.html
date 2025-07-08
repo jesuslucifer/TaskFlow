@@ -7,25 +7,25 @@
   <div class="tasks__list">
     <div class="tasks-list__todo tasks-list" cdkDropList [cdkDropListData]="(todoTasks$ | async) ?? []"
       [cdkDropListConnectedTo]="['inProgressList', 'completedList']"
-      (cdkDropListDropped)="onTaskDrop($event, status.DRAFT)" id="todoList">
+      (cdkDropListDropped)="onTaskDrop($event, status.TODO)" id="todoList">
       <h3>Нужно выполнить</h3>
-      <app-tasks-list [tasks]="(todoTasks$ | async) ?? []" [status]="status.DRAFT"
+      <app-tasks-list [tasks]="(todoTasks$ | async) ?? []" [status]="status.TODO"
         [projectId]="projectId"></app-tasks-list>
     </div>
 
     <div class="tasks-list__active tasks-list" cdkDropList [cdkDropListData]="(inProgressTasks$ | async) ?? []"
-      [cdkDropListConnectedTo]="['todoList', 'completedList']" (cdkDropListDropped)="onTaskDrop($event, status.ACTIVE)"
-      id="inProgressList">
+      [cdkDropListConnectedTo]="['todoList', 'completedList']"
+      (cdkDropListDropped)="onTaskDrop($event, status.PROGRESS)" id="inProgressList">
       <h3>В процессе</h3>
-      <app-tasks-list [tasks]="(inProgressTasks$ | async) ?? []" [status]="status.ACTIVE"
+      <app-tasks-list [tasks]="(inProgressTasks$ | async) ?? []" [status]="status.PROGRESS"
         [projectId]="projectId"></app-tasks-list>
     </div>
 
     <div class="tasks-list__completed tasks-list" cdkDropList [cdkDropListData]="(doneTasks$ | async) ?? []"
-      [cdkDropListConnectedTo]="['todoList', 'inProgressList']"
-      (cdkDropListDropped)="onTaskDrop($event, status.COMPLETED)" id="completedList">
+      [cdkDropListConnectedTo]="['todoList', 'inProgressList']" (cdkDropListDropped)="onTaskDrop($event, status.DONE)"
+      id="completedList">
       <h3>Выполнено</h3>
-      <app-tasks-list [tasks]="(doneTasks$ | async) ?? []" [status]="status.COMPLETED"
+      <app-tasks-list [tasks]="(doneTasks$ | async) ?? []" [status]="status.DONE"
         [projectId]="projectId"></app-tasks-list>
     </div>
   </div>

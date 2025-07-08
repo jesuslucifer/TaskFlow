@@ -1,13 +1,10 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ProjectService } from '../../../core/services/project.service';
 import { ProfileService } from '../../../core/services/profile.service';
 import { Observable, switchMap, tap } from 'rxjs';
-import {
-  IProject,
-  IProjectUpdate,
-} from '../../../core/interface/project.interface';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { IProject } from '../../../core/interface/project.interface';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CommonModule, Location } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ProjectExecutorDialogComponent } from '../project-executor-dialog/project-executor-dialog.component';
@@ -15,8 +12,6 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { ProjectPageExecutorsComponent } from './project-page-executors/project-page-executors.component';
 import { ProjectPageInfoComponent } from './project-page-info/project-page-info.component';
 import { ToastrService } from 'ngx-toastr';
-import { NotificationPopupComponent } from '../../notifications/notification-popup/notification-popup.component';
-import { TasksListComponent } from '../../tasks/tasks-list/tasks-list.component';
 import { TasksBoardComponent } from '../../tasks/tasks-board/tasks-board.component';
 @Component({
   selector: 'app-project-page',
@@ -38,6 +33,8 @@ export class ProjectPageComponent {
   toastr = inject(ToastrService);
   route = inject(ActivatedRoute);
   fb = inject(FormBuilder);
+  location = inject(Location);
+
   projectId: number = -1;
   profileId: number = -1;
   me = this.profileService.me;
@@ -79,7 +76,9 @@ export class ProjectPageComponent {
         },
       });
   }
-
+  goBack(): void {
+    this.location.back();
+  }
   openCreateDialog() {
     this.dialog.open(ProjectExecutorDialogComponent, {
       width: '500px',

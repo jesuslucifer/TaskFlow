@@ -1,12 +1,9 @@
-import { Component, effect, inject, Input } from '@angular/core';
-import { ProjectCardComponent } from '../project-card/project-card.component';
-import { ProjectService } from '../../../core/services/project.service';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProfileService } from '../../../core/services/profile.service';
 import { FormsModule } from '@angular/forms';
 import { IProject } from '../../../core/interface/project.interface';
 import { Observable } from 'rxjs';
+import { ProjectCardComponent } from './project-card/project-card.component';
 
 @Component({
   selector: 'app-project-list',
