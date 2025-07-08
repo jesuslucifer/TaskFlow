@@ -181,4 +181,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
         return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
     }
+
+    @ExceptionHandler(SubtaskAlreadyExistException.class)
+    public ResponseEntity<ErrorResponse> handleSubtaskAlreadyExist(SubtaskAlreadyExistException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "Данная подзадача уже существует",
+                HttpStatus.BAD_REQUEST
+        );
+        return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
+    }
+    @ExceptionHandler(SubtaskNotExistException.class)
+    public ResponseEntity<ErrorResponse> handleSubtaskNotExist(SubtaskNotExistException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "Данной подзадачи не существует",
+                HttpStatus.BAD_REQUEST
+        );
+        return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
+    }
 }

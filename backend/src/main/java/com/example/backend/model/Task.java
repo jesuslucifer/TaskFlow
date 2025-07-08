@@ -27,7 +27,7 @@ public class Task {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private Status status;
+    private TaskStatus taskStatus;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "priority", nullable = false)
@@ -46,4 +46,18 @@ public class Task {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "create_user_id", nullable = false)
     private User createUser;
+
+    @Column(name = "date_create")
+    public LocalDate dateCreate;
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TaskCategory> categories = new ArrayList<>();
+
+    public void addTaskCategory(TaskCategory category) {
+        categories.add(category);
+    }
+
+    public void removeTaskCategory(TaskCategory category) {
+        categories.remove(category);
+    }
 }

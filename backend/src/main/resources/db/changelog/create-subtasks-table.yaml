@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-subtasks-table
+      author: kisliashka100
+      changes:
+        - createTable:
+            tableName: tasks
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: task_name
+                  type: VARCHAR(100)
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+              - column:
+                  name: is_done
+                  type: boolean
+              - column:
+                  name: create_user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: task_id
+                  type: bigint
+                  constraints:
+                    nullable: false

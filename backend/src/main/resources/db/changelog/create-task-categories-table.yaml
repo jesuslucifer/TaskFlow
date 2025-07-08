@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-task-categories-table.yaml
+      author: kisliashka100
+      changes:
+        - createTable:
+            tableName: task_categories
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                  autoIncrement: true
+              - column:
+                  name: task_id
+                  type: bigint
+              - column:
+                  name: name
+                  type: NVARCHAR(100)

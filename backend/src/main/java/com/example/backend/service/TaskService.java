@@ -2,6 +2,7 @@ package com.example.backend.service;
 
 import com.example.backend.dto.response.TaskDto;
 import com.example.backend.model.Task;
+import com.example.backend.model.TaskCategory;
 
 import java.util.List;
 
@@ -9,9 +10,7 @@ public interface TaskService {
 
     Task save(Task task);
 
-    //Task createTask(Task task);
-
-    public Task createTask(Task task, Long projectId);
+    Task createTask(Task task, Long projectId);
 
     Task getById(Long id, Long projectId);
 
@@ -20,4 +19,8 @@ public interface TaskService {
     List<TaskDto> getAll(Long projectId);
 
     void deleteTaskById(Long projectId, Long id);
+
+    Task addCategory(Long projectId, Long taskId, TaskCategory category);
+
+    public Task deleteCategory(Long projectId, Long taskId, String categoryName);
 }
