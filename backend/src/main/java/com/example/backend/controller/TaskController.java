@@ -119,4 +119,16 @@ public class TaskController {
 
         return ResponseEntity.ok(subtaskDto);
     }
+
+    @PutMapping("{projectId}/tasks/{taskId}/subtasks/{subtaskId}/update")
+    public ResponseEntity<?> updateSubtaskById(
+            @PathVariable Long projectId,
+            @PathVariable Long taskId,
+            @PathVariable Long subtaskId,
+            @RequestBody SubtaskDto updateDto
+    ) {
+        subtaskService.updateSubtask(projectId, taskId, subtaskId, updateDto);
+
+        return ResponseEntity.ok(new SubtaskDto(subtaskService.getById(projectId, taskId, subtaskId)));
+    }
 }

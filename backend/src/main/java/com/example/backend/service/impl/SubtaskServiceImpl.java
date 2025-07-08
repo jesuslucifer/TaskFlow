@@ -2,6 +2,7 @@ package com.example.backend.service.impl;
 
 import com.example.backend.dto.response.SubtaskDto;
 import com.example.backend.exception.SubtaskAlreadyExistException;
+import com.example.backend.exception.SubtaskNotExistException;
 import com.example.backend.exception.TaskNotExistException;
 import com.example.backend.model.Subtask;
 import com.example.backend.repository.SubtaskRepository;
@@ -54,5 +55,29 @@ public class SubtaskServiceImpl implements SubtaskService {
                 .stream()
                 .map(SubtaskDto::new)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Subtask getById(Long projectId, Long taskId, Long subtaskId) {
+        if(!taskListRepository.existsByProjectIdAndTaskId(projectId, taskId)){
+            throw new TaskNotExistException();
+        }
+        return subtaskRepository.findById(subtaskId)
+                .orElseThrow(SubtaskNotExistException::new);
+    }
+
+    @Override
+    public void updateSubtask(Long projectId, Long taskId, Long subtaskId, SubtaskDto subtaskUdpateDto) {
+        if(!taskListRepository.existsByProjectIdAndTaskId(projectId, taskId)) {
+            throw new TaskNotExistException();
+        }
+
+        Subtask subtask = subtaskRepository.findById(subtaskId)
+                .orElseThrow(SubtaskNotExistException::new);
+        subtask.setName(subtaskUdpateDto.getName());
+        subtask.setDescription(subtaskUdpateDto.getDescription());
+        subtask.setIsDone(subtaskUdpateDto.getIsDone());
+        subtaskRepository.save(subtask);
+
     }
 }
