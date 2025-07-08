@@ -49,4 +49,15 @@ public class Task {
 
     @Column(name = "date_create")
     public LocalDate dateCreate;
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TaskCategory> categories = new ArrayList<>();
+
+    public void addTaskCategory(TaskCategory category) {
+        categories.add(category);
+    }
+
+    public void removeTaskCategory(TaskCategory category) {
+        categories.remove(category);
+    }
 }

@@ -4,6 +4,7 @@ import com.example.backend.dto.response.TaskDto;
 import com.example.backend.exception.*;
 import com.example.backend.model.*;
 import com.example.backend.repository.ProjectRepository;
+import com.example.backend.repository.TaskCategoryRepository;
 import com.example.backend.repository.TaskListRepository;
 import com.example.backend.repository.TaskRepository;
 import com.example.backend.service.TaskService;
@@ -21,6 +22,7 @@ public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final TaskListRepository taskListRepository;
     private final ProjectRepository projectRepository;
+    private final TaskCategoryRepository taskCategoryRepository;
 
     @Override
     public Task save(Task task) {
@@ -39,6 +41,7 @@ public class TaskServiceImpl implements TaskService {
         )) {
             throw new TaskAlreadyExistException();
         }
+        task.getCategories().forEach(c -> c.setTask(task));
         Task savedTask = save(task);
 
         TaskList taskList = TaskList.builder()
@@ -97,5 +100,42 @@ public class TaskServiceImpl implements TaskService {
             throw new TaskNotExistException();
         }
         taskRepository.deleteById(id);
+    }
+
+    @Override
+    public Task addCategory(Long projectId, Long taskId, TaskCategory category) {
+        if(!taskListRepository.existsByProjectIdAndTaskId(projectId, taskId)) {
+            throw new TaskNotExistException();
+        }
+
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(TaskNotExistException::new);
+
+        if (taskCategoryRepository.existsByTaskIdAndName(task.getId(), category.getName())) {
+            throw new CategoryAlreadyExistsException();
+        }
+        category.setTask(task);
+
+        task.addTaskCategory(category);
+
+        return taskRepository.save(task);
+    }
+
+    @Override
+    public Task deleteCategory(Long projectId, Long taskId, String categoryName) {
+        if(!taskListRepository.existsByProjectIdAndTaskId(projectId, taskId)) {
+            throw new TaskNotExistException();
+        }
+
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(TaskNotExistException::new);
+
+        TaskCategory category = taskCategoryRepository.findByTaskIdAndName(taskId, categoryName)
+                .orElseThrow(CategoryNotFoundException::new);
+
+        task.removeTaskCategory(category);
+        taskCategoryRepository.delete(category);
+
+        return taskRepository.save(task);
     }
 }

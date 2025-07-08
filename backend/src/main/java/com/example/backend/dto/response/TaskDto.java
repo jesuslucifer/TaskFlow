@@ -8,6 +8,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -24,6 +25,7 @@ public class TaskDto {
     private UserDto createUser;
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate dateCreate;
+    private List<TaskCategoryDto> categories;
 
     public TaskDto() {}
 
@@ -37,5 +39,9 @@ public class TaskDto {
         this.timeLeft = task.getTimeLeft();
         this.createUser = new UserDto(task.getCreateUser());
         this.dateCreate = task.getDateCreate();
+        this.categories = task.getCategories()
+                .stream()
+                .map(TaskCategoryDto::new)
+                .toList();
     }
 }

@@ -40,6 +40,7 @@ public class TaskController {
                 .timeLeft(taskRequest.getTimeLeft())
                 .createUser(user)
                 .dateCreate(LocalDate.now())
+                .categories(taskRequest.getCategories())
                 .build();
 
         taskService.createTask(task, projectId);
@@ -77,6 +78,27 @@ public class TaskController {
         taskService.deleteTaskById(projectId, id);
         return ResponseEntity.ok(new SuccessResponse(
                 "Задача удалена",
+                HttpStatus.OK
+        ));
+    }
+
+    @PutMapping("/{projectId}/tasks/{id}/categories/add")
+    public ResponseEntity<?> addTaskCategory(@PathVariable Long projectId,
+                                             @PathVariable Long id,
+                                         @RequestBody TaskCategory category) {
+        taskService.addCategory(projectId, id, category);
+
+        return ResponseEntity.ok(new TaskDto(taskService.getById(id, projectId)));
+    }
+
+    @DeleteMapping("/{projectId}/tasks/{taskId}/categories/{categoryName}/delete")
+    public ResponseEntity<?> deleteCategory(@PathVariable Long projectId,
+                                            @PathVariable Long taskId,
+                                            @PathVariable String categoryName) {
+        taskService.deleteCategory(projectId, taskId, categoryName);
+
+        return ResponseEntity.ok(new SuccessResponse(
+                "Категория удалена",
                 HttpStatus.OK
         ));
     }
