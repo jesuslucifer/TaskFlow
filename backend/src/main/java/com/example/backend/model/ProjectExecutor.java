@@ -12,7 +12,7 @@ import lombok.*;
 public class ProjectExecutor {
 
     @EmbeddedId
-    private ProjectExecutorId id;
+    private UserProjectId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("projectId")
@@ -28,10 +28,14 @@ public class ProjectExecutor {
     @Column(name = "role")
     private ExecutorRole role;
 
-    public ProjectExecutor(Project project, User user, ExecutorRole executorRole) {
+    @Column(name = "invite_flag")
+    private Boolean inviteFlag;
+
+    public ProjectExecutor(Project project, User user, ExecutorRole executorRole, Boolean inviteFlag) {
         this.project = project;
         this.user = user;
         this.role = executorRole;
-        this.id = new ProjectExecutorId(project.getId(), user.getId());
+        this.id = new UserProjectId(project.getId(), user.getId());
+        this.inviteFlag = inviteFlag;
     }
 }

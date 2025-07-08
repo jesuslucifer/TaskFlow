@@ -4,6 +4,7 @@ import com.example.backend.exception.*;
 import com.example.backend.model.*;
 import com.example.backend.repository.*;
 import com.example.backend.service.ExecutorNotificationService;
+import com.example.backend.service.ProjectNotificationSettingsService;
 import com.example.backend.service.ProjectService;
 import com.example.backend.service.UserService;
 import com.example.backend.specification.ProjectSpecification;
@@ -24,6 +25,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectExecutorRepository projectExecutorRepository;
     private final CategoryRepository categoryRepository;
     private final ExecutorNotificationService executorNotificationService;
+    private final ProjectNotificationSettingsService projectNotificationSettingsService;
 
     @Override
     public Project save(Project project) {
@@ -38,7 +40,21 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         project.getCategories().forEach(c -> c.setProject(project));
-        return save(project);
+
+        save(project);
+
+        projectNotificationSettingsService.createProjectNotificationSettings(
+                project,
+                project.getCreateUser(),
+                DeliveryMethod.EMAIL);
+
+        projectNotificationSettingsService.createProjectNotificationSettings(
+                project,
+                project.getCreateUser(),
+                DeliveryMethod.PUSH
+        );
+
+        return project;
     }
 
     @Override
@@ -54,7 +70,10 @@ public class ProjectServiceImpl implements ProjectService {
 
         project.setName(updateDto.getName());
         project.setDescription(updateDto.getDescription());
-        project.setStatus(updateDto.getStatus());
+        if (!project.getStatus().equals(updateDto.getStatus())) {
+            project.setStatus(updateDto.getStatus());
+            executorNotificationService.sendNotificationToChangeStatusProject(project);
+        }
         project.setPriority(updateDto.getPriority());
         project.setDateTo(updateDto.getDateTo());
         project.setTimeLeft(updateDto.getTimeLeft());
@@ -74,7 +93,18 @@ public class ProjectServiceImpl implements ProjectService {
             throw new ExecutorAlreadyExistsInProjectException();
         }
 
-        project.addExecutor(user, role);
+        project.addExecutor(user, role, false);
+
+        projectNotificationSettingsService.createProjectNotificationSettings(
+                project,
+                user,
+                DeliveryMethod.EMAIL);
+
+        projectNotificationSettingsService.createProjectNotificationSettings(
+                project,
+                user,
+                DeliveryMethod.PUSH
+        );
 
         executorNotificationService.sendNotificationToAddExecutor(user, project);
 
@@ -96,6 +126,44 @@ public class ProjectServiceImpl implements ProjectService {
         executorNotificationService.sendNotificationToDeleteExecutor(user, project);
 
         project.removeExecutor(user);
+
+        return projectRepository.save(project);
+    }
+
+    @Override
+    public Project acceptExecutor(Long projectId, Long executorId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(ProjectNotExist::new);
+
+        User user = userRepository.findById(executorId)
+                .orElseThrow(UserNotFoundException::new);
+
+        if (!projectExecutorRepository.existsByProjectIdAndUserId(project.getId(), user.getId())) {
+            throw new ExecutorNotFoundInProjectException();
+        }
+
+        projectExecutorRepository.findByProjectIdAndUserId(project.getId(), user.getId()).setInviteFlag(true);
+
+        executorNotificationService.sendNotificationToAcceptInviteExecutor(project.getCreateUser(), project, user);
+
+        return projectRepository.save(project);
+    }
+
+    @Override
+    public Project declineExecutor(Long projectId, Long executorId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(ProjectNotExist::new);
+
+        User user = userRepository.findById(executorId)
+                .orElseThrow(UserNotFoundException::new);
+
+        if (!projectExecutorRepository.existsByProjectIdAndUserId(project.getId(), user.getId())) {
+            throw new ExecutorNotFoundInProjectException();
+        }
+
+        project.removeExecutor(user);
+
+        executorNotificationService.sendNotificationToDeclineInviteExecutor(project.getCreateUser(), project, user);
 
         return projectRepository.save(project);
     }

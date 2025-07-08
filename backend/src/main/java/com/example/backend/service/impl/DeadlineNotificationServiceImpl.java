@@ -1,11 +1,11 @@
 package com.example.backend.service.impl;
 
+import com.example.backend.model.DeliveryMethod;
 import com.example.backend.model.NotificationType;
 import com.example.backend.model.Project;
 import com.example.backend.repository.NotificationHistoryRepository;
 import com.example.backend.repository.ProjectRepository;
-import com.example.backend.service.DeadlineNotificationService;
-import com.example.backend.service.NotificationService;
+import com.example.backend.service.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +24,9 @@ public class DeadlineNotificationServiceImpl implements DeadlineNotificationServ
     private final ProjectRepository projectRepository;
     private final NotificationHistoryRepository notificationHistoryRepository;
     private final NotificationService notificationService;
+    private final UserNotificationSettingsService userNotificationSettingsService;
+    private final ProjectNotificationSettingsService projectNotificationSettingsService;
+    private final EmailService emailService;
     private final String destination = "/queue/deadline-notification";
 
     @Scheduled(fixedRate = 30000)
@@ -56,21 +59,18 @@ public class DeadlineNotificationServiceImpl implements DeadlineNotificationServ
 
     private void sendNotification(List<Project> projects, NotificationType typeNotification, String periodNotification) {
         projects.forEach(project -> {
-            if (!notificationHistoryRepository.existsByProjectIdAndTypeNotificationAndPeriodNotification(
-                    project.getId(),
-                    typeNotification,
-                    periodNotification)) {
-                String message = String.format("Скоро дедлайн у проекта %s", project.getName());
-                notificationService.sendNotificationToUser(
-                        project.getCreateUser().getUsername(),
-                        message,
-                        destination);
-                notificationService.saveNotification(project,
+            String message = generateMessage(project.getName(), typeNotification, periodNotification);
+            project.getExecutors().forEach(executor -> {
+                if (userNotificationSettingsService.notificationIsEnabled(executor.getId().getUserId(), DeliveryMethod.PUSH)
+                        && !notificationHistoryRepository.existsByProjectIdAndTypeNotificationAndPeriodNotificationAndUserIdAndDeliveryMethod(
+                        project.getId(),
                         typeNotification,
                         periodNotification,
-                        project.getCreateUser(),
-                        LocalDateTime.now());
-                project.getExecutors().forEach(executor -> {
+                        executor.getId().getUserId(),
+                        DeliveryMethod.PUSH)
+                        && projectNotificationSettingsService
+                        .notificationIsEnabled(project.getId(), executor.getId().getUserId(), DeliveryMethod.PUSH)
+                ) {
                     notificationService.sendNotificationToUser(
                             executor.getUser().getUsername(),
                             message,
@@ -79,9 +79,61 @@ public class DeadlineNotificationServiceImpl implements DeadlineNotificationServ
                             typeNotification,
                             periodNotification,
                             executor.getUser(),
-                            LocalDateTime.now());
-                });
-            }
+                            LocalDateTime.now(),
+                            DeliveryMethod.PUSH);
+                }
+
+                if (userNotificationSettingsService.notificationIsEnabled(executor.getId().getUserId(), DeliveryMethod.EMAIL)
+                        && !notificationHistoryRepository.existsByProjectIdAndTypeNotificationAndPeriodNotificationAndUserIdAndDeliveryMethod(
+                        project.getId(),
+                        typeNotification,
+                        periodNotification,
+                        executor.getId().getUserId(),
+                        DeliveryMethod.EMAIL)
+                        && projectNotificationSettingsService
+                        .notificationIsEnabled(project.getId(), executor.getId().getUserId(), DeliveryMethod.EMAIL)
+                ) {
+                    emailService.send(executor.getUser().getEmail(), "Дедлайн проекта", message);
+
+                    notificationService.saveNotification(project,
+                            typeNotification,
+                            periodNotification,
+                            executor.getUser(),
+                            LocalDateTime.now(),
+                            DeliveryMethod.EMAIL);
+                }
+            });
         });
+    }
+
+    private String generateMessage(String projectName,  NotificationType notificationType, String periodNotification) {
+        String message = String.format("До дедлайна проекта " + projectName + " осталось " + periodNotification + " ");
+
+
+        if (Integer.parseInt(periodNotification) % 100 / 10 == 1) {
+            return switch (notificationType) {
+                case DEADLINE_DAYS -> message + "дней";
+                case DEADLINE_HOURS -> message + "часов";
+                default -> "";
+            };
+        }
+
+        return switch (Integer.parseInt(periodNotification) % 10) {
+            case 1 -> switch (notificationType) {
+                case DEADLINE_DAYS -> message + "день";
+                case DEADLINE_HOURS -> message + "час";
+                default -> "";
+            };
+            case 2, 4, 3 -> switch (notificationType) {
+                case DEADLINE_DAYS -> message + "дня";
+                case DEADLINE_HOURS -> message + "часа";
+                default -> "";
+            };
+            default -> switch (notificationType) {
+                case DEADLINE_DAYS -> message + "дней";
+                case DEADLINE_HOURS -> message + "часов";
+                default -> "";
+            };
+        };
     }
 }

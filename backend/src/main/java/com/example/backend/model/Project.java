@@ -55,8 +55,8 @@ public class Project {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProjectExecutor> executors = new ArrayList<>();
 
-    public void addExecutor(User user, ExecutorRole role) {
-        executors.add(new ProjectExecutor(this, user, role));
+    public void addExecutor(User user, ExecutorRole role, Boolean inviteFlag) {
+        executors.add(new ProjectExecutor(this, user, role, inviteFlag));
     }
 
     public void removeExecutor(User user) {

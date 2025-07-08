@@ -2,9 +2,11 @@ package com.example.backend.service.impl;
 
 import com.example.backend.dto.response.UserDto;
 import com.example.backend.exception.*;
+import com.example.backend.model.DeliveryMethod;
 import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.service.LocalStorageService;
+import com.example.backend.service.UserNotificationSettingsService;
 import com.example.backend.service.UserService;
 import com.example.backend.specification.UserSpecification;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserDetailsService, UserService {
     private final UserRepository userRepository;
     private final LocalStorageService localStorageService;
+    private final UserNotificationSettingsService userNotificationSettingsService;
 
     @Override
     public User save(User user) {
@@ -39,7 +42,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             throw new EmailAlreadyExistsException();
         }
 
-        return save(user);
+        save(user);
+
+        userNotificationSettingsService.createUserSettings(user, DeliveryMethod.EMAIL);
+
+        userNotificationSettingsService.createUserSettings(user, DeliveryMethod.PUSH);
+
+        return user;
     }
 
     @Override
