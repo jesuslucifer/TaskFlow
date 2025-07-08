@@ -8,6 +8,7 @@ import com.example.backend.model.*;
 import com.example.backend.service.ProjectService;
 import com.example.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -65,25 +65,19 @@ public class ProjectController {
         return ResponseEntity.ok(new ProjectDto(project));
     }
 
-    @GetMapping("/")
-    public ResponseEntity<?> getProjects() {
-        List<ProjectDto> projectDto = projectService.getAll();
+    @GetMapping()
+    public ResponseEntity<?> getProjects(
+            @RequestParam(required = false) Status status,
+            @RequestParam(required = false) Priority priority,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false, defaultValue = "creator") String role,
+            Pageable pageable) {
 
-        return ResponseEntity.ok(projectDto);
-    }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
 
-    @GetMapping("/{id}/creator")
-    public ResponseEntity<?> getProjectsUserIsCreator(@PathVariable Long id) {
-        List<ProjectDto> projectDtoList = projectService.getProjectsByUserIdIsCreator(id);
-
-        return ResponseEntity.ok(projectDtoList);
-    }
-
-    @GetMapping("/{id}/executor")
-    public ResponseEntity<?> getProjectsUserIsExecutor(@PathVariable Long id) {
-        List<ProjectDto> projectDtoList = projectService.getProjectsByUserIsExecutor(id);
-
-        return ResponseEntity.ok(projectDtoList);
+        return ResponseEntity.ok(projectService
+                .getAll(status, priority, name, pageable, role, user.getId()));
     }
 
     @PutMapping("/{id}")

@@ -6,7 +6,10 @@ import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.service.LocalStorageService;
 import com.example.backend.service.UserService;
+import com.example.backend.specification.UserSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -63,10 +66,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public List<UserDto> getAll() {
-        return userRepository.findAll()
-                .stream()
-                .map(UserDto::new)
+    public List<UserDto> getAll(String username, Pageable pageable) {
+        Specification<User> spec = Specification.where(UserSpecification.byUsernameLike(username));
+
+        return userRepository.findAll(spec, pageable)
+                .stream().map(UserDto::new)
                 .collect(Collectors.toList());
     }
 
