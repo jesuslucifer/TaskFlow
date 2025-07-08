@@ -1,5 +1,6 @@
 package com.example.backend.service.impl;
 
+import com.example.backend.model.DeliveryMethod;
 import com.example.backend.model.User;
 import com.example.backend.model.UserNotificationSettings;
 import com.example.backend.repository.UserNotificationSettingsRepository;
@@ -13,21 +14,21 @@ public class UserNotificationSettingsServiceImpl implements UserNotificationSett
     private final UserNotificationSettingsRepository userNotificationSettingsRepository;
 
     @Override
-    public void createUserSettings(User user) {
-        userNotificationSettingsRepository.save(new UserNotificationSettings(user.getId()));
+    public void createUserSettings(User user, DeliveryMethod deliveryMethod) {
+        userNotificationSettingsRepository.save(new UserNotificationSettings(user.getId(), deliveryMethod));
     }
 
     @Override
-    public boolean notificationIsEnabled(Long userId) {
+    public boolean notificationIsEnabled(Long userId, DeliveryMethod deliveryMethod) {
         return userNotificationSettingsRepository
-                .findByUserId(userId)
+                .findByUserIdAndDeliveryMethod(userId, deliveryMethod)
                 .isGlobalNotificationEnabled();
     }
 
     @Override
-    public void disableEnableNotification(Long userId) {
+    public void disableEnableNotification(Long userId, DeliveryMethod deliveryMethod) {
         UserNotificationSettings userNotificationSettings = userNotificationSettingsRepository
-                .findByUserId(userId);
+                .findByUserIdAndDeliveryMethod(userId, deliveryMethod);
 
         userNotificationSettings.setGlobalNotificationEnabled(
                 !userNotificationSettings.isGlobalNotificationEnabled());

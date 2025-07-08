@@ -1,13 +1,11 @@
 package com.example.backend.service.impl;
 
+import com.example.backend.model.DeliveryMethod;
 import com.example.backend.model.NotificationType;
 import com.example.backend.model.Project;
 import com.example.backend.repository.NotificationHistoryRepository;
 import com.example.backend.repository.ProjectRepository;
-import com.example.backend.service.DeadlineNotificationService;
-import com.example.backend.service.NotificationService;
-import com.example.backend.service.ProjectNotificationSettingsService;
-import com.example.backend.service.UserNotificationSettingsService;
+import com.example.backend.service.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +26,7 @@ public class DeadlineNotificationServiceImpl implements DeadlineNotificationServ
     private final NotificationService notificationService;
     private final UserNotificationSettingsService userNotificationSettingsService;
     private final ProjectNotificationSettingsService projectNotificationSettingsService;
+    private final EmailService emailService;
     private final String destination = "/queue/deadline-notification";
 
     @Scheduled(fixedRate = 30000)
@@ -62,15 +61,16 @@ public class DeadlineNotificationServiceImpl implements DeadlineNotificationServ
         projects.forEach(project -> {
             String message = generateMessage(project.getName(), typeNotification, periodNotification);
             project.getExecutors().forEach(executor -> {
-                if (userNotificationSettingsService.notificationIsEnabled(executor.getId().getUserId())
-                        && !notificationHistoryRepository.existsByProjectIdAndTypeNotificationAndPeriodNotificationAndUserId(
+                if (userNotificationSettingsService.notificationIsEnabled(executor.getId().getUserId(), DeliveryMethod.PUSH)
+                        && !notificationHistoryRepository.existsByProjectIdAndTypeNotificationAndPeriodNotificationAndUserIdAndDeliveryMethod(
                         project.getId(),
                         typeNotification,
                         periodNotification,
-                        executor.getId().getUserId())
+                        executor.getId().getUserId(),
+                        DeliveryMethod.PUSH)
                         && projectNotificationSettingsService
-                        .notificationIsEnabled(project.getId(), executor.getId().getUserId()
-                )) {
+                        .notificationIsEnabled(project.getId(), executor.getId().getUserId(), DeliveryMethod.PUSH)
+                ) {
                     notificationService.sendNotificationToUser(
                             executor.getUser().getUsername(),
                             message,
@@ -79,7 +79,28 @@ public class DeadlineNotificationServiceImpl implements DeadlineNotificationServ
                             typeNotification,
                             periodNotification,
                             executor.getUser(),
-                            LocalDateTime.now());
+                            LocalDateTime.now(),
+                            DeliveryMethod.PUSH);
+                }
+
+                if (userNotificationSettingsService.notificationIsEnabled(executor.getId().getUserId(), DeliveryMethod.EMAIL)
+                        && !notificationHistoryRepository.existsByProjectIdAndTypeNotificationAndPeriodNotificationAndUserIdAndDeliveryMethod(
+                        project.getId(),
+                        typeNotification,
+                        periodNotification,
+                        executor.getId().getUserId(),
+                        DeliveryMethod.EMAIL)
+                        && projectNotificationSettingsService
+                        .notificationIsEnabled(project.getId(), executor.getId().getUserId(), DeliveryMethod.EMAIL)
+                ) {
+                    emailService.send(executor.getUser().getEmail(), "Дедлайн проекта", message);
+
+                    notificationService.saveNotification(project,
+                            typeNotification,
+                            periodNotification,
+                            executor.getUser(),
+                            LocalDateTime.now(),
+                            DeliveryMethod.EMAIL);
                 }
             });
         });

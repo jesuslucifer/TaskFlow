@@ -7,10 +7,17 @@ databaseChangeLog:
             tableName: user_notification_settings
             columns:
               - column:
-                  name: user_id
+                  name: id
                   type: bigint
                   constraints:
                     primaryKey: true
+                  autoIncrement: true
+              - column:
+                  name: user_id
+                  type: bigint
               - column:
                   name: global_notification_enabled
                   type: boolean
+              - column:
+                  name: delivery_method
+                  type: nvarchar(20)

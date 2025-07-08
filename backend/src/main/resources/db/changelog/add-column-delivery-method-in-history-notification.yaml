@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-column-delivery-method-in-history-notification.yaml
+      author: jesuslucifer
+      changes:
+        - addColumn:
+            tableName: notification_history
+            columns:
+              - column:
+                  name: delivery_method
+                  type: nvarchar(20)

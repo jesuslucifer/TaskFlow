@@ -2,6 +2,7 @@ package com.example.backend.service.impl;
 
 import com.example.backend.dto.response.UserDto;
 import com.example.backend.exception.*;
+import com.example.backend.model.DeliveryMethod;
 import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.service.LocalStorageService;
@@ -40,7 +41,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
         save(user);
 
-        userNotificationSettingsService.createUserSettings(user);
+        userNotificationSettingsService.createUserSettings(user, DeliveryMethod.EMAIL);
+
+        userNotificationSettingsService.createUserSettings(user, DeliveryMethod.PUSH);
 
         return user;
     }

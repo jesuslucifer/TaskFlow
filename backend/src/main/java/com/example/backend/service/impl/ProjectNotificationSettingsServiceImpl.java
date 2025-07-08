@@ -1,5 +1,6 @@
 package com.example.backend.service.impl;
 
+import com.example.backend.model.DeliveryMethod;
 import com.example.backend.model.Project;
 import com.example.backend.model.ProjectNotificationSettings;
 import com.example.backend.model.User;
@@ -14,21 +15,22 @@ public class ProjectNotificationSettingsServiceImpl implements ProjectNotificati
     private final ProjectNotificationSettingsRepository projectNotificationSettingsRepository;
 
     @Override
-    public void createProjectNotificationSettings(Project project, User user) {
-        projectNotificationSettingsRepository.save(new ProjectNotificationSettings(project.getId(), user.getId()));
+    public void createProjectNotificationSettings(Project project, User user, DeliveryMethod deliveryMethod) {
+        projectNotificationSettingsRepository.save(new ProjectNotificationSettings(project.getId(), user.getId(), deliveryMethod));
     }
 
     @Override
-    public boolean notificationIsEnabled(Long projectId, Long userId) {
+    public boolean notificationIsEnabled(Long projectId, Long userId, DeliveryMethod deliveryMethod) {
         return projectNotificationSettingsRepository
-                .findById_ProjectIdAndId_UserId(projectId, userId)
+                .findByUserProjectId_ProjectIdAndUserProjectId_UserIdAndDeliveryMethod(
+                        projectId, userId, deliveryMethod)
                 .isNotificationEnabled();
     }
 
     @Override
-    public void disableEnableNotification(Long projectId, Long userId) {
+    public void disableEnableNotification(Long projectId, Long userId, DeliveryMethod deliveryMethod) {
         ProjectNotificationSettings projectNotificationSettings = projectNotificationSettingsRepository
-                .findById_ProjectIdAndId_UserId(projectId, userId);
+                .findByUserProjectId_ProjectIdAndUserProjectId_UserIdAndDeliveryMethod(projectId, userId, deliveryMethod);
 
         projectNotificationSettings.setNotificationEnabled(
                 !projectNotificationSettings.isNotificationEnabled());
