@@ -15,6 +15,7 @@ import {
 export class ProjectService {
   http = inject(HttpClient);
   baseApiUrl = 'http://localhost:8080/api/projects';
+
   projects = signal<IProject[] | null>(null);
   executorsProject = signal<IProject[] | null>(null);
   createProject(projectForm: IProject) {
@@ -26,21 +27,19 @@ export class ProjectService {
     //   })
     // );
   }
-  getAllProjects() {
-    return this.http.get<IProject[]>(`${this.baseApiUrl}/`).pipe(
-      tap((res: IProject[]) => {
-        this.projects.set(res);
-      })
+
+  getAllUserProjects() {
+    return (
+      this.http
+        // .get<IProject[]>(`${this.baseApiUrl}/${userId}/creator`)
+        .get<IProject[]>(`${this.baseApiUrl}`)
+
+        .pipe(
+          tap((res: IProject[]) => {
+            this.projects.set(res);
+          })
+        )
     );
-  }
-  getAllUserProjects(userId: number) {
-    return this.http
-      .get<IProject[]>(`${this.baseApiUrl}/${userId}/creator`)
-      .pipe(
-        tap((res: IProject[]) => {
-          this.projects.set(res);
-        })
-      );
   }
   getProjectByName(username: string, project_name: string) {
     return this.http.get<IProject>(
@@ -77,19 +76,50 @@ export class ProjectService {
     );
   }
   getProjectExecutors(userId: number) {
-    return this.http
-      .get<IProject[]>(`${this.baseApiUrl}/${userId}/executor`)
-      .pipe(
-        tap((res: IProject[]) => {
-          console.log(res);
+    return this.http.get<IProject[]>(`${this.baseApiUrl}?role=executor`).pipe(
+      tap((res: IProject[]) => {
+        console.log(res);
 
-          this.executorsProject.set(res);
-        })
-      );
+        this.executorsProject.set(res);
+      })
+    );
   }
   deleteExecutor(projectId: number, executorId: number) {
     return this.http.delete<IExecutors>(
       `${this.baseApiUrl}/${projectId}/${executorId}/executors`
     );
+  }
+
+  findProjectsByName(name: string) {
+    return this.http
+      .get<IProject[]>(`${this.baseApiUrl}?name=${name}`)
+
+      .pipe(
+        tap((res: IProject[]) => {
+          this.projects.set(res);
+        })
+      );
+  }
+  filtredProjectsByName(sortOrder: string) {
+    return this.http
+      .get<IProject[]>(`${this.baseApiUrl}?sort=name,${sortOrder}`)
+
+      .pipe(
+        tap((res: IProject[]) => {
+          this.projects.set(res);
+        })
+      );
+  }
+  filtredProjectsByDate(sortOrder: string) {
+    return this.http
+      .get<IProject[]>(
+        `${this.baseApiUrl}?sort=dateTo&sort=timeLeft,${sortOrder}`
+      )
+
+      .pipe(
+        tap((res: IProject[]) => {
+          this.projects.set(res);
+        })
+      );
   }
 }

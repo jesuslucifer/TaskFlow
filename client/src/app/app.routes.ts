@@ -25,7 +25,7 @@ export const routes: Routes = [
       },
 
       {
-        path: 'project/:username/:name',
+        path: 'projects/:username/:name',
         component: ProjectPageComponent,
       },
 

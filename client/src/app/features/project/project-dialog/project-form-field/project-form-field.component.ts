@@ -18,6 +18,7 @@ import {
 } from '../../../../core/interface/project.interface';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TasksService } from '../../../../core/services/tasks.service';
+import { minTodayValidator } from '../../../../shared/validators/min.days.validators';
 
 @Component({
   selector: 'app-project-form-field',
@@ -42,7 +43,12 @@ export class ProjectFormFieldComponent {
     name: new FormControl<string | null>(null, [Validators.required]),
     description: new FormControl<string | null>(''),
     priority: new FormControl<string>(this.priorityEnum.MEDIUM),
-    dateTo: new FormControl<string>('', [Validators.required]),
+    // dateTo: new FormControl<string>('', [Validators.required]),
+    dateTo: new FormControl<string>('', [
+      Validators.required,
+      minTodayValidator(),
+    ]),
+
     timeLeft: new FormControl<string>('', [Validators.required]),
     categories: new FormControl<string[]>([]),
   });

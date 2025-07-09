@@ -1,0 +1,20 @@
+<form class="sort__form" action="" [formGroup]="sortedProjects">
+  <div class="sort__item">
+    <input formControlName="name" class="search-input" placeholder="Поиск по названию проекта" />
+
+  </div>
+  <div class="sort__item">
+    <label for="">Название:</label>
+    <select class="sort-select" (change)="onFilteredProjectsByName($event)">
+      <option value="asc">Название: А-Я</option>
+      <option value="desc">Название: Я-А</option>
+    </select>
+  </div>
+  <div class="sort__item">
+    <label for="">Дата:</label>
+    <select class="sort-select" (change)="onFilteredProjectsByName($event)">
+      <option value="asc">Близко </option>
+      <option value="desc">Далеко</option>
+    </select>
+  </div>
+</form>

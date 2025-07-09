@@ -10,9 +10,10 @@ import { IProject, Priority } from '../../core/interface/project.interface';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ProjectFilterComponent } from '../../features/project/project-list/project-filter/project-filter.component';
 @Component({
   selector: 'app-projects-page',
-  imports: [ProjectListComponent, CommonModule],
+  imports: [ProjectListComponent, CommonModule, ProjectFilterComponent],
   templateUrl: './projects-page.component.html',
   styleUrl: './projects-page.component.scss',
 })
@@ -25,6 +26,7 @@ export class ProjectsPageComponent {
   toastr = inject(ToastrService);
   priorityEnum = Priority;
   me = this.profileService.me;
+
   projectForm: FormGroup = new FormGroup({
     name: new FormControl<string | null>(null, [Validators.required]),
     description: new FormControl<string | null>(''),
@@ -42,7 +44,7 @@ export class ProjectsPageComponent {
         onSave: (formValue: IProject) => {
           this.projectService.createProject(formValue).subscribe({
             next: () => {
-              this.projectService.getAllUserProjects(this.me()!.id).subscribe();
+              this.projectService.getAllUserProjects().subscribe();
               this.toastr.success('Проект успешно создан');
               this.dialog.closeAll();
             },
