@@ -4,9 +4,17 @@ import { CommonModule } from '@angular/common';
 import { ProfileService } from '../../../core/services/profile.service';
 import { ProjectService } from '../../../core/services/project.service';
 import { RouterLink } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { debounceTime, startWith, switchMap } from 'rxjs';
 enum ExecutorRole {
   DEVELOPER = 'DEVELOPER',
   TESTER = 'TESTER',
@@ -15,7 +23,7 @@ enum ExecutorRole {
 }
 @Component({
   selector: 'app-project-executor-dialog',
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, ReactiveFormsModule],
   templateUrl: './project-executor-dialog.component.html',
   styleUrl: './project-executor-dialog.component.scss',
 })
@@ -23,7 +31,17 @@ export class ProjectExecutorDialogComponent {
   constructor(
     @Inject(MAT_DIALOG_DATA)
     public data: { projectId: number }
-  ) {}
+  ) {
+    this.searchForm.valueChanges
+      .pipe(
+        startWith({ name: '' }),
+        debounceTime(300),
+        switchMap((formValue) => {
+          return this.profileService.getUserByName(formValue.name);
+        })
+      )
+      .subscribe();
+  }
   ngOnInit() {
     this.profileService.getUsers().subscribe();
   }
@@ -32,6 +50,7 @@ export class ProjectExecutorDialogComponent {
   readonly dialogRef = inject(MatDialogRef<ProjectExecutorDialogComponent>);
   toastr = inject(ToastrService);
   users$ = this.profileService.users;
+  filteredUsers = this.profileService.users;
   searchQuery = signal<string>('');
   selectedUserId = signal<number | null>(null);
   selectedRoles = signal<Record<number, ExecutorRole>>({});
@@ -42,18 +61,24 @@ export class ProjectExecutorDialogComponent {
     ExecutorRole.ANALYZER,
   ];
 
-  filteredUsers = computed(() => {
-    const query = this.searchQuery().toLowerCase().trim();
-    const users = this.users$();
-    if (!users) return [];
-    return users.filter((user) => user.username?.toLowerCase().includes(query));
+  fb = inject(FormBuilder);
+  searchForm: FormGroup = this.fb.group({
+    name: '',
   });
+  // filteredUsers = computed(() => {
+  //   const query = this.searchQuery().toLowerCase().trim();
+  //   const users = this.users$();
+  //   if (!users) return [];
+  //   return users.filter((user) => user.username?.toLowerCase().includes(query));
+  // });
 
   toggleSelect(userId: number) {
     const current = this.selectedUserId();
     this.selectedUserId.set(current === userId ? null : userId);
   }
-
+  onGetUserByName(username: string) {
+    this.profileService.getUserByName(username).subscribe();
+  }
   setRoleForUser(userId: number, role: ExecutorRole) {
     const roles = { ...this.selectedRoles() };
     roles[userId] = role;

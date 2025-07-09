@@ -1,6 +1,8 @@
 <div class="executor-search">
-  <div class="search__block">
-    <input type="text" placeholder="Поиск" class="search" (input)="searchQuery.set($any($event.target).value)" />
+  <div class="search__block" [formGroup]="searchForm">
+    <!-- <input type="text" placeholder="Поиск" class="search"  (input)="searchQuery.set($any($event.target).value)" /> -->
+    <input type="text" placeholder="Поиск" class="search" formControlName="name" />
+
   </div>
 
   <ul>

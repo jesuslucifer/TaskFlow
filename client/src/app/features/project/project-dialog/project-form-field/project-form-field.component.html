@@ -35,6 +35,10 @@
         @if(projectForm.get('dateTo')?.errors?.['required']){
         <div class="error">Дата обязательна</div>
         }
+        @if(projectForm.get('dateTo')?.errors?.['pastDate']) {
+        <div class="error">Нельзя выбрать дату в прошлом</div>
+        }
+
       </div>
 
       }
