@@ -10,7 +10,7 @@ import {
 import { debounceTime, startWith, switchMap } from 'rxjs';
 import { ProjectService } from '../../../../core/services/project.service';
 import { MatIcon } from '@angular/material/icon';
-
+import { ProjectFilter } from '../../../../core/interface/project.interface';
 @Component({
   selector: 'app-project-filter',
   standalone: true,
@@ -19,31 +19,21 @@ import { MatIcon } from '@angular/material/icon';
   styleUrls: ['./project-filter.component.scss'],
 })
 export class ProjectFilterComponent {
-  profileService = inject(ProjectService);
-  projectService = inject(ProjectService);
+  @Output() filterChange = new EventEmitter<ProjectFilter>();
+
+  sortedProjects = new FormGroup({
+    name: new FormControl<string | null>(null),
+    sortBy: new FormControl<'name' | 'dateTo' | 'priority' | 'status'>('name'),
+    sortOrder: new FormControl<'asc' | 'desc'>('asc'),
+    status: new FormControl<string>(''),
+    priority: new FormControl<string>(''),
+  });
 
   constructor() {
     this.sortedProjects.valueChanges
-      .pipe(
-        startWith({ name: '' }),
-        debounceTime(300),
-        switchMap((formValue) => {
-          return this.profileService.findProjectsByName(formValue.name);
-        })
-      )
-      .subscribe();
-  }
-  sortedProjects: FormGroup = new FormGroup({
-    name: new FormControl<string | null>(null),
-    dateTo: new FormControl<string>(''),
-    timeLeft: new FormControl<string>(''),
-  });
-  onFilteredProjectsByName(event: any) {
-    const sortOrder = event.target.value;
-    this.projectService.filtredProjectsByName(sortOrder).subscribe();
-  }
-  onFilteredProjectsByDate(event: any) {
-    const sortOrder = event.target.value;
-    this.projectService.filtredProjectsByDate(sortOrder).subscribe();
+      .pipe(debounceTime(300))
+      .subscribe((value) => {
+        this.filterChange.emit(value as ProjectFilter);
+      });
   }
 }

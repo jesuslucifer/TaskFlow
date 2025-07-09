@@ -1,16 +1,20 @@
 import { Component, inject } from '@angular/core';
 import { ProjectListComponent } from '../../features/project/project-list/project-list.component';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ProjectDialogComponent } from '../../features/project/project-dialog/project-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 import { ProjectService } from '../../core/services/project.service';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ProfileService } from '../../core/services/profile.service';
-import { IProject, Priority } from '../../core/interface/project.interface';
+import {
+  IProject,
+  Priority,
+  ProjectFilter,
+} from '../../core/interface/project.interface';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ProjectFilterComponent } from '../../features/project/project-list/project-filter/project-filter.component';
+import { CreateDialogComponent } from '../../shared/create-dialog/create-dialog.component';
 @Component({
   selector: 'app-projects-page',
   imports: [ProjectListComponent, CommonModule, ProjectFilterComponent],
@@ -26,7 +30,10 @@ export class ProjectsPageComponent {
   toastr = inject(ToastrService);
   priorityEnum = Priority;
   me = this.profileService.me;
-
+  onFilterChange(filter: ProjectFilter) {
+    this.projectService.filterProjects(filter).subscribe();
+    this.projectService.filterProjects(filter, true).subscribe();
+  }
   projectForm: FormGroup = new FormGroup({
     name: new FormControl<string | null>(null, [Validators.required]),
     description: new FormControl<string | null>(''),
@@ -37,7 +44,7 @@ export class ProjectsPageComponent {
   });
 
   openCreateDialog() {
-    this.dialog.open(ProjectDialogComponent, {
+    this.dialog.open(CreateDialogComponent, {
       width: '500px',
       data: {
         form: this.projectForm,

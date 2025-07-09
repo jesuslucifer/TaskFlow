@@ -12,7 +12,6 @@ export class ProfileService {
   baseApiUrl = 'http://localhost:8080/api/';
   me = signal<IProfile | null>(null);
   users = signal<IProfile[] | null>([]);
-  // filteredUsers = signal<IProfile[] | null>([]);
   router = inject(Router);
   getMe() {
     return this.http.get<IProfile>(`${this.baseApiUrl}users/me`).pipe(

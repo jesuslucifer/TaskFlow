@@ -33,6 +33,15 @@ export interface IProject {
   categories: ICategory[];
   executors: IExecutors[];
 }
+
+export interface ProjectFilter {
+  name?: string;
+  sortBy?: 'name' | 'dateTo' | 'priority' | 'status';
+  sortOrder?: 'asc' | 'desc';
+  status?: string;
+  priority?: string;
+}
+
 export interface IProjectUpdate {
   name?: string;
   description?: string;

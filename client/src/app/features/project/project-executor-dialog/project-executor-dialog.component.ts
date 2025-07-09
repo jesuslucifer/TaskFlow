@@ -49,7 +49,7 @@ export class ProjectExecutorDialogComponent {
   projectService = inject(ProjectService);
   readonly dialogRef = inject(MatDialogRef<ProjectExecutorDialogComponent>);
   toastr = inject(ToastrService);
-  users$ = this.profileService.users;
+  users = this.profileService.users;
   filteredUsers = this.profileService.users;
   searchQuery = signal<string>('');
   selectedUserId = signal<number | null>(null);
@@ -65,12 +65,6 @@ export class ProjectExecutorDialogComponent {
   searchForm: FormGroup = this.fb.group({
     name: '',
   });
-  // filteredUsers = computed(() => {
-  //   const query = this.searchQuery().toLowerCase().trim();
-  //   const users = this.users$();
-  //   if (!users) return [];
-  //   return users.filter((user) => user.username?.toLowerCase().includes(query));
-  // });
 
   toggleSelect(userId: number) {
     const current = this.selectedUserId();

@@ -7,6 +7,7 @@ import {
   IExecutorsResponse,
   IProject,
   IProjectUpdate,
+  ProjectFilter,
 } from '../interface/project.interface';
 
 @Injectable({
@@ -20,26 +21,18 @@ export class ProjectService {
   executorsProject = signal<IProject[] | null>(null);
   createProject(projectForm: IProject) {
     return this.http.post<IProject>(`${this.baseApiUrl}/create`, projectForm);
-    // .pipe(
-    //   tap((newProject: IProject) => {
-    //     const current = this.projects();
-    //     this.projects.set(current ? [...current, newProject] : [newProject]);
-    //   })
-    // );
   }
 
   getAllUserProjects() {
-    return (
-      this.http
-        // .get<IProject[]>(`${this.baseApiUrl}/${userId}/creator`)
-        .get<IProject[]>(`${this.baseApiUrl}`)
+    return this.http
+      .get<IProject[]>(`${this.baseApiUrl}`)
 
-        .pipe(
-          tap((res: IProject[]) => {
-            this.projects.set(res);
-          })
-        )
-    );
+      .pipe(
+        tap((res: IProject[]) => {
+          this.projects.set(res);
+          console.log(res);
+        })
+      );
   }
   getProjectByName(username: string, project_name: string) {
     return this.http.get<IProject>(
@@ -100,25 +93,30 @@ export class ProjectService {
         })
       );
   }
-  filtredProjectsByName(sortOrder: string) {
-    return this.http
-      .get<IProject[]>(`${this.baseApiUrl}?sort=name,${sortOrder}`)
 
-      .pipe(
-        tap((res: IProject[]) => {
-          this.projects.set(res);
-        })
-      );
-  }
-  filtredProjectsByDate(sortOrder: string) {
-    return this.http
-      .get<IProject[]>(
-        `${this.baseApiUrl}?sort=dateTo&sort=timeLeft,${sortOrder}`
-      )
+  filterProjects(filter: ProjectFilter, forExecutors: boolean = false) {
+    const params = new URLSearchParams();
 
+    if (filter.name) params.append('name', filter.name);
+    if (filter.status) params.append('status', filter.status);
+    if (filter.priority) params.append('priority', filter.priority);
+    if (filter.sortBy && filter.sortOrder) {
+      params.append('sort', `${filter.sortBy},${filter.sortOrder}`);
+    }
+
+    if (forExecutors) {
+      params.append('role', 'executor');
+    }
+
+    return this.http
+      .get<IProject[]>(`${this.baseApiUrl}?${params.toString()}`)
       .pipe(
-        tap((res: IProject[]) => {
-          this.projects.set(res);
+        tap((res) => {
+          if (forExecutors) {
+            this.executorsProject.set(res);
+          } else {
+            this.projects.set(res);
+          }
         })
       );
   }

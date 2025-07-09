@@ -7,7 +7,6 @@ import {
 import { TasksListComponent } from './tasks-list/tasks-list.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Priority } from '../../../core/interface/project.interface';
-import { ProjectDialogComponent } from '../../project/project-dialog/project-dialog.component';
 import { TasksService } from '../../../core/services/tasks.service';
 import { ToastrService } from 'ngx-toastr';
 import { toObservable } from '@angular/core/rxjs-interop';
@@ -17,7 +16,7 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { map } from 'rxjs';
 import {
   ITasks,
@@ -25,6 +24,7 @@ import {
   ITaskUpdate,
   TaskStatus,
 } from '../../../core/interface/tasks.interface';
+import { CreateDialogComponent } from '../../../shared/create-dialog/create-dialog.component';
 
 @Component({
   selector: 'app-tasks-board',
@@ -59,7 +59,7 @@ export class TasksBoardComponent {
   priority = Priority;
 
   openCreateDialog() {
-    this.dialog.open(ProjectDialogComponent, {
+    this.dialog.open(CreateDialogComponent, {
       width: '500px',
       data: {
         onSave: (formValue: ITasksResponse) => {

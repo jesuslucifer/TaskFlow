@@ -1,10 +1,10 @@
-<form action="" [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="form">
+<form action="" [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
   <label for="">
     Название
-    <input class="form__input" type="text" formControlName="name" placeholder="Проект 1">
-    @if(projectForm.controls["name"].invalid && projectForm.controls["name"].touched){
+    <input class="form__input" type="text" formControlName="name" placeholder="Название">
+    @if(form.controls["name"].invalid && form.controls["name"].touched){
     <div class="error">
-      @if(projectForm.get('name')?.errors?.['required']){
+      @if(form.get('name')?.errors?.['required']){
       <div class="error">Название обязательно</div>
       }
     </div>
@@ -30,12 +30,12 @@
     <label>
       Дата
       <input type="date" class="form__input" formControlName="dateTo" placeholder="Проект 1">
-      @if(projectForm.controls["dateTo"].invalid && projectForm.controls["dateTo"].touched){
+      @if(form.controls["dateTo"].invalid && form.controls["dateTo"].touched){
       <div class="error">
-        @if(projectForm.get('dateTo')?.errors?.['required']){
+        @if(form.get('dateTo')?.errors?.['required']){
         <div class="error">Дата обязательна</div>
         }
-        @if(projectForm.get('dateTo')?.errors?.['pastDate']) {
+        @if(form.get('dateTo')?.errors?.['pastDate']) {
         <div class="error">Нельзя выбрать дату в прошлом</div>
         }
 
@@ -46,9 +46,9 @@
     <label>
       Время
       <input type="time" class="form__input" formControlName="timeLeft" placeholder="Проект 1">
-      @if(projectForm.controls["timeLeft"].invalid && projectForm.controls["timeLeft"].touched){
+      @if(form.controls["timeLeft"].invalid && form.controls["timeLeft"].touched){
       <div class="error">
-        @if(projectForm.get('timeLeft')?.errors?.['required']){
+        @if(form.get('timeLeft')?.errors?.['required']){
         <div class="error">Время обязательно</div>
         }
       </div>
@@ -70,5 +70,5 @@
     </div>
   </label>
 
-  <button class="form__btn" type="submit" [disabled]="projectForm.invalid">Создать</button>
+  <button class="form__btn" type="submit" [disabled]="form.invalid">Создать</button>
 </form>

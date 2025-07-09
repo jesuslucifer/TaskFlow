@@ -10,26 +10,22 @@ import {
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ProjectDialogComponent } from '../project-dialog.component';
-import { ProjectService } from '../../../../core/services/project.service';
-import {
-  IProject,
-  Priority,
-} from '../../../../core/interface/project.interface';
-import { HttpErrorResponse } from '@angular/common/http';
-import { TasksService } from '../../../../core/services/tasks.service';
-import { minTodayValidator } from '../../../../shared/validators/min.days.validators';
+import { Priority } from '../../../core/interface/project.interface';
+import { ProjectService } from '../../../core/services/project.service';
+import { TasksService } from '../../../core/services/tasks.service';
+import { minTodayValidator } from '../../validators/min.days.validators';
+import { CreateDialogComponent } from '../create-dialog.component';
 
 @Component({
-  selector: 'app-project-form-field',
+  selector: 'app-create-form-field',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, FormsModule],
-  templateUrl: './project-form-field.component.html',
-  styleUrl: './project-form-field.component.scss',
+  templateUrl: './create-form-field.component.html',
+  styleUrl: './create-form-field.component.scss',
 })
-export class ProjectFormFieldComponent {
+export class CreateFormFieldComponent {
   constructor(@Inject(MAT_DIALOG_DATA) public data: { onSave: any }) {}
-  readonly dialogRef = inject(MatDialogRef<ProjectDialogComponent>);
+  readonly dialogRef = inject(MatDialogRef<CreateDialogComponent>);
   priorityEnum = Priority;
   projectService = inject(ProjectService);
   tasksService = inject(TasksService);
@@ -39,11 +35,10 @@ export class ProjectFormFieldComponent {
 
   category: string[] = [];
 
-  projectForm: FormGroup = new FormGroup({
+  form: FormGroup = new FormGroup({
     name: new FormControl<string | null>(null, [Validators.required]),
     description: new FormControl<string | null>(''),
     priority: new FormControl<string>(this.priorityEnum.MEDIUM),
-    // dateTo: new FormControl<string>('', [Validators.required]),
     dateTo: new FormControl<string>('', [
       Validators.required,
       minTodayValidator(),
@@ -62,18 +57,18 @@ export class ProjectFormFieldComponent {
     if (inputValue && !this.category.includes(inputValue)) {
       this.category.push(inputValue);
       this.categoryInput.setValue('');
-      this.projectForm.patchValue({ categories: this.category });
+      this.form.patchValue({ categories: this.category });
     }
   }
 
   removeCategory(name: string) {
     this.category = this.category.filter((c) => c !== name);
-    this.projectForm.patchValue({ categories: this.category });
+    this.form.patchValue({ categories: this.category });
   }
 
   onSubmit = () => {
-    if (this.projectForm.valid) {
-      const formValue = { ...this.projectForm.value };
+    if (this.form.valid) {
+      const formValue = { ...this.form.value };
 
       formValue.categories = this.category.map((name) => ({ name }));
       if (formValue.dateTo) {

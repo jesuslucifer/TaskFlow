@@ -6,8 +6,8 @@
   </div>
 
   <ul>
-    @if (filteredUsers()) {
-    @for (user of filteredUsers(); track user.id) {
+    @if (users()) {
+    @for (user of users(); track user.id) {
     <li class="executor__item">
       <div class="executor__info">
         <img class="executor__image" [src]="user.avatarUrl" alt="" />

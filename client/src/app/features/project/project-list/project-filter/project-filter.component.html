@@ -1,20 +1,36 @@
-<form class="sort__form" action="" [formGroup]="sortedProjects">
+<form class="sort__form" [formGroup]="sortedProjects">
   <div class="sort__item">
     <input formControlName="name" class="search-input" placeholder="Поиск по названию проекта" />
 
   </div>
   <div class="sort__item">
-    <label for="">Название:</label>
-    <select class="sort-select" (change)="onFilteredProjectsByName($event)">
-      <option value="asc">Название: А-Я</option>
-      <option value="desc">Название: Я-А</option>
+    <select class="sort-select" formControlName="sortBy">
+      <option value="name">Название</option>
+      <option value="dateTo">Дата</option>
     </select>
   </div>
   <div class="sort__item">
-    <label for="">Дата:</label>
-    <select class="sort-select" (change)="onFilteredProjectsByName($event)">
-      <option value="asc">Близко </option>
-      <option value="desc">Далеко</option>
+    <select formControlName="sortOrder" class="sort-select">
+      <option value="asc">По возрастанию</option>
+      <option value="desc">По убыванию</option>
+    </select>
+  </div>
+  <div class="sort__item">
+    <select formControlName="status" class="sort-select">
+      <option value="">Все</option>
+      <option value="ACTIVE">Разрабатывается</option>
+      <option value="COMPLETED">Выполнено</option>
+      <option value="STOPPED">Приостановлено</option>
+      <option value="DRAFT">Черновик</option>
+    </select>
+  </div>
+  <div class="sort__item">
+    <select formControlName="priority" class="sort-select">
+      <option value="">Все</option>
+      <option value="CRITICAL">Критический</option>
+      <option value="HIGH">Высокий</option>
+      <option value="MEDIUM">Средний</option>
+      <option value="LOW">Низкий</option>
     </select>
   </div>
 </form>
