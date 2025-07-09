@@ -16,7 +16,7 @@ public class ProjectSpecification {
     public static Specification<Project> nameLike(String name) {
         return (root, query, cb) ->
                 name == null ? null :
-                        cb.like(root.get("name"), "%" + name.toLowerCase() + "%");
+                        cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%");
     }
 
     public static Specification<Project> priorityEquals(Priority priority) {
