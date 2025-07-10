@@ -73,13 +73,13 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest request) throws Exception {
-        String requestRefreshTokenRefreshToken = request.getRefreshToken();
+        String requestRefreshToken = request.getRefreshToken();
 
-        String username = jwtService.extractUsername(requestRefreshTokenRefreshToken);
+        String username = jwtService.extractUsername(requestRefreshToken);
 
         User user = userService.getByUsername(username);
 
-        if (!jwtService.validateRefreshToken(requestRefreshTokenRefreshToken, user)) {
+        if (!jwtService.validateRefreshToken(requestRefreshToken, user)) {
             return ResponseEntity.badRequest().body("Invalid refresh token");
         }
 

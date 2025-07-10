@@ -5,6 +5,7 @@ import com.example.backend.dto.request.ProjectExecutorRequest;
 import com.example.backend.dto.response.ProjectDto;
 import com.example.backend.dto.response.SuccessResponse;
 import com.example.backend.model.*;
+import com.example.backend.security.SecurityUtil;
 import com.example.backend.service.ProjectService;
 import com.example.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +29,7 @@ public class ProjectController {
 
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody CreateProjectRequest projectRequest) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
+        User user = SecurityUtil.getCurrentUser();
 
         var project = Project.builder()
                 .name(projectRequest.getName())
@@ -54,6 +54,7 @@ public class ProjectController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getProjectByID(@PathVariable Long id) {
         Project project = projectService.getById(id);
+
         return ResponseEntity.ok(new ProjectDto(project));
     }
 
@@ -73,18 +74,14 @@ public class ProjectController {
             @RequestParam(required = false, defaultValue = "creator") String role,
             Pageable pageable) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-
         return ResponseEntity.ok(projectService
-                .getAll(status, priority, name, pageable, role, user.getId()));
+                .getAll(status, priority, name, pageable, role, SecurityUtil.getCurrentUser().getId()));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ProjectDto> updateProjectById(
             @PathVariable Long id,
             @RequestBody ProjectDto updateDto) {
-
         projectService.updateById(id, updateDto);
 
         return ResponseEntity.ok(new ProjectDto(projectService.getById(id)));
@@ -110,20 +107,14 @@ public class ProjectController {
 
     @PutMapping("/{projectId}/executors/accept/")
     public ResponseEntity<?> acceptExecutor(@PathVariable Long projectId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-
-        projectService.acceptExecutor(projectId, user.getId());
+        projectService.acceptExecutor(projectId, SecurityUtil.getCurrentUser().getId());
 
         return ResponseEntity.ok(new ProjectDto(projectService.getById(projectId)));
     }
 
     @PutMapping("/{projectId}/executors/decline/")
     public ResponseEntity<?> declineExecutor(@PathVariable Long projectId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-
-        projectService.acceptExecutor(projectId, user.getId());
+        projectService.declineExecutor(projectId, SecurityUtil.getCurrentUser().getId());
 
         return ResponseEntity.ok(new ProjectDto(projectService.getById(projectId)));
     }

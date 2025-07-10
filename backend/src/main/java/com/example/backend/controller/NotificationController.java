@@ -2,6 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.model.DeliveryMethod;
 import com.example.backend.model.User;
+import com.example.backend.security.SecurityUtil;
 import com.example.backend.service.NotificationHistoryService;
 import com.example.backend.service.ProjectNotificationSettingsService;
 import com.example.backend.service.UserNotificationSettingsService;
@@ -34,9 +35,7 @@ public class NotificationController {
 
     @PutMapping("/global_push")
     public ResponseEntity<?> disableEnableGlobalPushNotification() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        User user = (User) authentication.getPrincipal();
+        User user = SecurityUtil.getCurrentUser();
 
         userNotificationSettingsService.disableEnableNotification(user.getId(), DeliveryMethod.PUSH);
 
@@ -47,9 +46,7 @@ public class NotificationController {
 
     @PutMapping("/global_email")
     public ResponseEntity<?> disableEnableGlobalEmailNotification() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        User user = (User) authentication.getPrincipal();
+        User user = SecurityUtil.getCurrentUser();
 
         userNotificationSettingsService.disableEnableNotification(user.getId(), DeliveryMethod.EMAIL);
 
@@ -60,9 +57,7 @@ public class NotificationController {
 
     @PutMapping("/{projectId}/push")
     public ResponseEntity<?> disableEnableProjectPushNotification(@PathVariable Long projectId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        User user = (User) authentication.getPrincipal();
+        User user = SecurityUtil.getCurrentUser();
 
         projectNotificationSettingsService.disableEnableNotification(projectId, user.getId(), DeliveryMethod.PUSH);
 
@@ -73,9 +68,7 @@ public class NotificationController {
 
     @PutMapping("/{projectId}/email")
     public ResponseEntity<?> disableEnableProjectEmailNotification(@PathVariable Long projectId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        User user = (User) authentication.getPrincipal();
+         User user = SecurityUtil.getCurrentUser();
 
         projectNotificationSettingsService.disableEnableNotification(projectId, user.getId(), DeliveryMethod.EMAIL);
 
