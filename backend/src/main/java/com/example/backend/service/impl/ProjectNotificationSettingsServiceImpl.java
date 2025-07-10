@@ -37,4 +37,12 @@ public class ProjectNotificationSettingsServiceImpl implements ProjectNotificati
 
         projectNotificationSettingsRepository.save(projectNotificationSettings);
     }
+
+    @Override
+    public void deleteProjectNotificationSettings(Long projectId, Long userId, DeliveryMethod deliveryMethod) {
+        ProjectNotificationSettings projectNotificationSettings = projectNotificationSettingsRepository
+                .findByUserProjectId_ProjectIdAndUserProjectId_UserIdAndDeliveryMethod(projectId, userId, deliveryMethod);
+
+        projectNotificationSettingsRepository.delete(projectNotificationSettings);
+    }
 }

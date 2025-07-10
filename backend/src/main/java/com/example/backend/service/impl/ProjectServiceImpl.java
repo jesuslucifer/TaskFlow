@@ -125,6 +125,9 @@ public class ProjectServiceImpl implements ProjectService {
 
         executorNotificationService.sendNotificationToDeleteExecutor(user, project);
 
+        projectNotificationSettingsService.deleteProjectNotificationSettings(projectId, executorId, DeliveryMethod.EMAIL);
+        projectNotificationSettingsService.deleteProjectNotificationSettings(projectId, executorId, DeliveryMethod.PUSH);
+
         project.removeExecutor(user);
 
         return projectRepository.save(project);
@@ -164,6 +167,9 @@ public class ProjectServiceImpl implements ProjectService {
         project.removeExecutor(user);
 
         executorNotificationService.sendNotificationToDeclineInviteExecutor(project.getCreateUser(), project, user);
+
+        projectNotificationSettingsService.deleteProjectNotificationSettings(projectId, executorId, DeliveryMethod.EMAIL);
+        projectNotificationSettingsService.deleteProjectNotificationSettings(projectId, executorId, DeliveryMethod.PUSH);
 
         return projectRepository.save(project);
     }
