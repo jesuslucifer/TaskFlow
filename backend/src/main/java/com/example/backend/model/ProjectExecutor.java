@@ -3,6 +3,9 @@ package com.example.backend.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @Builder
 @Entity
@@ -30,6 +33,9 @@ public class ProjectExecutor {
 
     @Column(name = "invite_flag")
     private Boolean inviteFlag;
+
+    @OneToMany(mappedBy = "projectExecutor", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProjectNotificationSettings> notificationSettings = new ArrayList<>();
 
     public ProjectExecutor(Project project, User user, ExecutorRole executorRole, Boolean inviteFlag) {
         this.project = project;

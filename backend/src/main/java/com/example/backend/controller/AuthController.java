@@ -32,7 +32,7 @@ public class AuthController {
     private final TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity<JwtResponse> login(@RequestBody SignInRequest signInRequest) throws Exception {
+    public ResponseEntity<JwtResponse> login(@RequestBody SignInRequest signInRequest) {
         try {
             User user = userService.getByUsernameOrEmail(signInRequest.getUsernameOrEmail());
 
@@ -54,7 +54,7 @@ public class AuthController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<?> signUp(@RequestBody SignUpRequest signUpRequest) throws Exception {
+    public ResponseEntity<?> signUp(@RequestBody SignUpRequest signUpRequest) {
         var user = User.builder()
                 .username(signUpRequest.getUsername())
                 .email(signUpRequest.getEmail())
@@ -72,14 +72,14 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest request) throws Exception {
-        String requestRefreshTokenRefreshToken = request.getRefreshToken();
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest request) {
+        String requestRefreshToken = request.getRefreshToken();
 
-        String username = jwtService.extractUsername(requestRefreshTokenRefreshToken);
+        String username = jwtService.extractUsername(requestRefreshToken);
 
         User user = userService.getByUsername(username);
 
-        if (!jwtService.validateRefreshToken(requestRefreshTokenRefreshToken, user)) {
+        if (!jwtService.validateRefreshToken(requestRefreshToken, user)) {
             return ResponseEntity.badRequest().body("Invalid refresh token");
         }
 

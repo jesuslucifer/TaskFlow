@@ -3,6 +3,7 @@ package com.example.backend.service.impl;
 import com.example.backend.model.DeliveryMethod;
 import com.example.backend.model.NotificationType;
 import com.example.backend.model.Project;
+import com.example.backend.model.ProjectExecutor;
 import com.example.backend.repository.NotificationHistoryRepository;
 import com.example.backend.repository.ProjectRepository;
 import com.example.backend.service.*;
@@ -27,6 +28,7 @@ public class DeadlineNotificationServiceImpl implements DeadlineNotificationServ
     private final UserNotificationSettingsService userNotificationSettingsService;
     private final ProjectNotificationSettingsService projectNotificationSettingsService;
     private final EmailService emailService;
+
     private final String destination = "/queue/deadline-notification";
 
     @Scheduled(fixedRate = 30000)
@@ -40,11 +42,9 @@ public class DeadlineNotificationServiceImpl implements DeadlineNotificationServ
 
     private void checkDeadlinesOfDays(int days) {
         LocalDate dateNow = LocalDate.now();
-
         LocalDate targetDate = dateNow.plusDays(days);
 
         List<Project> projects = projectRepository.findAllByDateToIs(targetDate);
-
         sendNotification(projects, NotificationType.DEADLINE_DAYS,  String.valueOf(days));
     }
 
@@ -53,7 +53,6 @@ public class DeadlineNotificationServiceImpl implements DeadlineNotificationServ
         LocalTime now = LocalTime.now();
 
         List<Project> projects = projectRepository.findAllByDateToAndTimeLeftBetween(dateNow, now, now.plusHours(hours));
-
         sendNotification(projects, NotificationType.DEADLINE_HOURS,  String.valueOf(hours));
     }
 
@@ -61,49 +60,33 @@ public class DeadlineNotificationServiceImpl implements DeadlineNotificationServ
         projects.forEach(project -> {
             String message = generateMessage(project.getName(), typeNotification, periodNotification);
             project.getExecutors().forEach(executor -> {
-                if (userNotificationSettingsService.notificationIsEnabled(executor.getId().getUserId(), DeliveryMethod.PUSH)
-                        && !notificationHistoryRepository.existsByProjectIdAndTypeNotificationAndPeriodNotificationAndUserIdAndDeliveryMethod(
-                        project.getId(),
-                        typeNotification,
-                        periodNotification,
-                        executor.getId().getUserId(),
-                        DeliveryMethod.PUSH)
-                        && projectNotificationSettingsService
-                        .notificationIsEnabled(project.getId(), executor.getId().getUserId(), DeliveryMethod.PUSH)
-                ) {
-                    notificationService.sendNotificationToUser(
-                            executor.getUser().getUsername(),
-                            message,
-                            destination);
-                    notificationService.saveNotification(project,
-                            typeNotification,
-                            periodNotification,
-                            executor.getUser(),
-                            LocalDateTime.now(),
-                            DeliveryMethod.PUSH);
-                }
-
-                if (userNotificationSettingsService.notificationIsEnabled(executor.getId().getUserId(), DeliveryMethod.EMAIL)
-                        && !notificationHistoryRepository.existsByProjectIdAndTypeNotificationAndPeriodNotificationAndUserIdAndDeliveryMethod(
-                        project.getId(),
-                        typeNotification,
-                        periodNotification,
-                        executor.getId().getUserId(),
-                        DeliveryMethod.EMAIL)
-                        && projectNotificationSettingsService
-                        .notificationIsEnabled(project.getId(), executor.getId().getUserId(), DeliveryMethod.EMAIL)
-                ) {
-                    emailService.send(executor.getUser().getEmail(), "Дедлайн проекта", message);
-
-                    notificationService.saveNotification(project,
-                            typeNotification,
-                            periodNotification,
-                            executor.getUser(),
-                            LocalDateTime.now(),
-                            DeliveryMethod.EMAIL);
-                }
+                processNotification(project, executor, typeNotification, periodNotification, message, DeliveryMethod.PUSH);
+                processNotification(project, executor, typeNotification, periodNotification, message, DeliveryMethod.EMAIL);
             });
         });
+    }
+
+    private void processNotification(Project project,
+                                     ProjectExecutor executor,
+                                     NotificationType typeNotification,
+                                     String periodNotification,
+                                     String message,
+                                     DeliveryMethod deliveryMethod) {
+        Long userId = executor.getUser().getId();
+        Long projectId = project.getId();
+
+        if (!userNotificationSettingsService.notificationIsEnabled(userId, deliveryMethod)) return;
+        if (!projectNotificationSettingsService.notificationIsEnabled(projectId, userId, deliveryMethod)) return;
+        if (notificationHistoryRepository.existsByProjectIdAndTypeNotificationAndPeriodNotificationAndUserIdAndDeliveryMethod(
+                projectId, typeNotification, periodNotification, userId, deliveryMethod)) return;
+
+        switch (deliveryMethod) {
+            case PUSH: notificationService.sendNotificationToUser(executor.getUser().getUsername(), message, destination); break;
+            case EMAIL: emailService.send(executor.getUser().getEmail(), "Дедлайн проекта", message); break;
+        }
+
+        notificationService.saveNotification(project,
+                typeNotification, periodNotification, executor.getUser(), LocalDateTime.now(), deliveryMethod);
     }
 
     private String generateMessage(String projectName,  NotificationType notificationType, String periodNotification) {

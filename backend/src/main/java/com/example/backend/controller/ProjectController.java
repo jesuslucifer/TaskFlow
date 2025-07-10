@@ -5,14 +5,13 @@ import com.example.backend.dto.request.ProjectExecutorRequest;
 import com.example.backend.dto.response.ProjectDto;
 import com.example.backend.dto.response.SuccessResponse;
 import com.example.backend.model.*;
+import com.example.backend.security.SecurityUtil;
 import com.example.backend.service.ProjectService;
 import com.example.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -28,8 +27,7 @@ public class ProjectController {
 
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody CreateProjectRequest projectRequest) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
+        User user = SecurityUtil.getCurrentUser();
 
         var project = Project.builder()
                 .name(projectRequest.getName())
@@ -54,6 +52,7 @@ public class ProjectController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getProjectByID(@PathVariable Long id) {
         Project project = projectService.getById(id);
+
         return ResponseEntity.ok(new ProjectDto(project));
     }
 
@@ -73,21 +72,17 @@ public class ProjectController {
             @RequestParam(required = false, defaultValue = "creator") String role,
             Pageable pageable) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-
         return ResponseEntity.ok(projectService
-                .getAll(status, priority, name, pageable, role, user.getId()));
+                .getAll(status, priority, name, pageable, role, SecurityUtil.getCurrentUser().getId()));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ProjectDto> updateProjectById(
             @PathVariable Long id,
             @RequestBody ProjectDto updateDto) {
-
         projectService.updateById(id, updateDto);
 
-        return ResponseEntity.ok(new ProjectDto(projectService.getById(id)));
+        return okDto(id);
     }
 
     @PutMapping("/{projectId}/executors/")
@@ -97,7 +92,7 @@ public class ProjectController {
                 executorRequest.getExecutorId(),
                 executorRequest.getExecutorRole());
 
-        return ResponseEntity.ok(new ProjectDto(projectService.getById(projectId)));
+        return okDto(projectId);
     }
 
     @PutMapping("/{projectId}/category/")
@@ -105,27 +100,21 @@ public class ProjectController {
                                          @RequestBody Category category) {
         projectService.addCategory(projectId, category);
 
-        return ResponseEntity.ok(new ProjectDto(projectService.getById(projectId)));
+        return okDto(projectId);
     }
 
     @PutMapping("/{projectId}/executors/accept/")
     public ResponseEntity<?> acceptExecutor(@PathVariable Long projectId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
+        projectService.acceptExecutor(projectId, SecurityUtil.getCurrentUser().getId());
 
-        projectService.acceptExecutor(projectId, user.getId());
-
-        return ResponseEntity.ok(new ProjectDto(projectService.getById(projectId)));
+        return okDto(projectId);
     }
 
     @PutMapping("/{projectId}/executors/decline/")
     public ResponseEntity<?> declineExecutor(@PathVariable Long projectId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
+        projectService.declineExecutor(projectId, SecurityUtil.getCurrentUser().getId());
 
-        projectService.acceptExecutor(projectId, user.getId());
-
-        return ResponseEntity.ok(new ProjectDto(projectService.getById(projectId)));
+        return okDto(projectId);
     }
 
     @DeleteMapping("/{id}")
@@ -158,5 +147,9 @@ public class ProjectController {
                 "Категория удалена",
                 HttpStatus.OK
         ));
+    }
+
+    private ResponseEntity<ProjectDto> okDto(Long projectId) {
+        return ResponseEntity.ok(new ProjectDto(projectService.getById(projectId)));
     }
 }

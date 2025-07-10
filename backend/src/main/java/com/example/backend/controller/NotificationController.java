@@ -2,13 +2,12 @@ package com.example.backend.controller;
 
 import com.example.backend.model.DeliveryMethod;
 import com.example.backend.model.User;
+import com.example.backend.security.SecurityUtil;
 import com.example.backend.service.NotificationHistoryService;
 import com.example.backend.service.ProjectNotificationSettingsService;
 import com.example.backend.service.UserNotificationSettingsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -34,52 +33,38 @@ public class NotificationController {
 
     @PutMapping("/global_push")
     public ResponseEntity<?> disableEnableGlobalPushNotification() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        User user = (User) authentication.getPrincipal();
-
-        userNotificationSettingsService.disableEnableNotification(user.getId(), DeliveryMethod.PUSH);
-
-        return userNotificationSettingsService.notificationIsEnabled(user.getId(), DeliveryMethod.PUSH) ?
-                ResponseEntity.ok("Уведомления включены") :
-                ResponseEntity.ok("Уведомления отключены");
+        return disableEnableGlobalNotification(DeliveryMethod.PUSH);
     }
 
     @PutMapping("/global_email")
     public ResponseEntity<?> disableEnableGlobalEmailNotification() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        User user = (User) authentication.getPrincipal();
-
-        userNotificationSettingsService.disableEnableNotification(user.getId(), DeliveryMethod.EMAIL);
-
-        return userNotificationSettingsService.notificationIsEnabled(user.getId(), DeliveryMethod.EMAIL) ?
-                ResponseEntity.ok("Уведомления включены") :
-                ResponseEntity.ok("Уведомления отключены");
+        return disableEnableGlobalNotification(DeliveryMethod.EMAIL);
     }
 
     @PutMapping("/{projectId}/push")
     public ResponseEntity<?> disableEnableProjectPushNotification(@PathVariable Long projectId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        User user = (User) authentication.getPrincipal();
-
-        projectNotificationSettingsService.disableEnableNotification(projectId, user.getId(), DeliveryMethod.PUSH);
-
-        return projectNotificationSettingsService.notificationIsEnabled(projectId, user.getId(), DeliveryMethod.PUSH) ?
-                ResponseEntity.ok("Уведомления включены") :
-                ResponseEntity.ok("Уведомления отключены");
+        return disableEnableProjectNotification(projectId, DeliveryMethod.PUSH);
     }
 
     @PutMapping("/{projectId}/email")
     public ResponseEntity<?> disableEnableProjectEmailNotification(@PathVariable Long projectId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+         return disableEnableProjectNotification(projectId, DeliveryMethod.EMAIL);
+    }
 
-        User user = (User) authentication.getPrincipal();
+    private ResponseEntity<String> disableEnableProjectNotification(Long projectId, DeliveryMethod deliveryMethod) {
+        User user = SecurityUtil.getCurrentUser();
+        projectNotificationSettingsService.disableEnableNotification(projectId, user.getId(), deliveryMethod);
 
-        projectNotificationSettingsService.disableEnableNotification(projectId, user.getId(), DeliveryMethod.EMAIL);
+        return projectNotificationSettingsService.notificationIsEnabled(projectId, user.getId(), deliveryMethod) ?
+                ResponseEntity.ok("Уведомления включены") :
+                ResponseEntity.ok("Уведомления отключены");
+    }
 
-        return projectNotificationSettingsService.notificationIsEnabled(projectId, user.getId(), DeliveryMethod.EMAIL) ?
+    private ResponseEntity<String> disableEnableGlobalNotification(DeliveryMethod deliveryMethod) {
+        User user = SecurityUtil.getCurrentUser();
+        userNotificationSettingsService.disableEnableNotification(user.getId(), deliveryMethod);
+
+        return userNotificationSettingsService.notificationIsEnabled(user.getId(), deliveryMethod) ?
                 ResponseEntity.ok("Уведомления включены") :
                 ResponseEntity.ok("Уведомления отключены");
     }
