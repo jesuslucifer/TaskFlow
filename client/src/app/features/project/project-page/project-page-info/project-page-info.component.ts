@@ -1,58 +1,142 @@
-import { Component, inject, Input } from '@angular/core';
+import {
+  Component,
+  inject,
+  Input,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import {
   ICategory,
   IProject,
   Priority,
   Status,
 } from '../../../../core/interface/project.interface';
-import { CommonModule, DatePipe } from '@angular/common';
 import { ProjectService } from '../../../../core/services/project.service';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TasksService } from '../../../../core/services/tasks.service';
-import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-project-page-info',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './project-page-info.component.html',
   styleUrl: './project-page-info.component.scss',
 })
-export class ProjectPageInfoComponent {
+export class ProjectPageInfoComponent implements OnChanges {
   @Input() project!: IProject;
-  @Input() form: any;
   @Input() profileId!: number;
 
+  fb = inject(FormBuilder);
   projectService = inject(ProjectService);
   toastr = inject(ToastrService);
+
   priorityEnum = Priority;
   statusEnum = Status;
-  editDateTo: string = '';
-  correctDate: string | null = '';
-  editTimeLeft: string = '';
+
+  form: FormGroup = this.fb.group({
+    name: [''],
+    description: [''],
+    status: [''],
+    priority: [''],
+    dateTo: [''],
+    timeLeft: [''],
+  });
+
+  newCategoryInput = new FormControl<string>('');
   showEditDate = false;
   showEditTime = false;
   showCategoryInput = false;
 
-  newCategoryInput = new FormControl<string>(''); // поле ввода
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['project'] && this.project) {
+      this.form.patchValue({
+        name: this.project.name || '',
+        description: this.project.description || '',
+        status: this.project.status || '',
+        priority: this.project.priority || '',
+        dateTo: this.project.dateTo || '',
+        timeLeft: this.project.timeLeft || '',
+      });
 
-  patch(data: Partial<IProject>) {
-    this.projectService.patchProject(this.project.id, data).subscribe({
-      next: () => {
-        Object.assign(this.project, data);
-        this.toastr.success('Данные изменены');
-      },
-      error: (err: HttpErrorResponse) => {
-        this.toastr.error(err.error.message);
-      },
+      this.subscribeToFormChanges();
+    }
+  }
+
+  private subscribeToFormChanges() {
+    this.form.get('priority')?.valueChanges.subscribe((value) => {
+      this.patch();
+    });
+
+    this.form.get('status')?.valueChanges.subscribe((value) => {
+      this.patch();
     });
   }
+
+  patch() {
+    if (this.form.invalid) return;
+    this.projectService
+      .patchProject(this.project.id, this.form.value)
+      .subscribe({
+        next: () => {
+          Object.assign(this.project, this.form.value);
+          this.toastr.success('Данные обновлены');
+        },
+        error: (err: HttpErrorResponse) => {
+          this.toastr.error(err.error.message || 'Ошибка при обновлении');
+        },
+      });
+  }
+
+  onPriorityChange(priority: Priority) {
+    this.form.get('priority')?.setValue(priority);
+    this.patch();
+  }
+
+  onStatusChange(status: Status) {
+    this.form.get('status')?.setValue(status);
+    this.patch();
+  }
+
+  saveDateTo() {
+    const dateTo = this.form.get('dateTo')?.value;
+    if (!dateTo) return;
+
+    const formatted = new DatePipe('en-US').transform(dateTo, 'dd-MM-yyyy');
+    this.form.get('dateTo')?.setValue(formatted);
+    this.patch();
+    this.showEditDate = false;
+  }
+
+  saveTimeLeft() {
+    const timeLeft = this.form.get('timeLeft')?.value;
+    if (!timeLeft) return;
+
+    this.patch();
+    this.showEditTime = false;
+  }
+
+  cancelEditDate() {
+    this.form.get('dateTo')?.setValue(this.project.dateTo);
+    this.showEditDate = false;
+  }
+
+  cancelEditTime() {
+    this.form.get('timeLeft')?.setValue(this.project.timeLeft);
+    this.showEditTime = false;
+  }
+
   addCategory() {
     const name = this.newCategoryInput.value?.trim();
     if (!name) return;
 
-    const newCategory: ICategory = { name: name };
-
+    const newCategory: ICategory = { name };
     this.projectService.addCategory(this.project.id, newCategory).subscribe({
       next: () => {
         this.project.categories.push(newCategory);
@@ -65,46 +149,5 @@ export class ProjectPageInfoComponent {
         );
       },
     });
-  }
-
-  ngOnChanges() {
-    this.editDateTo = this.project?.dateTo || '';
-    this.editTimeLeft = this.project?.timeLeft || '';
-  }
-  onPriorityChange(newPriority: Priority) {
-    this.form.value.priority = newPriority;
-    this.patch({ ...this.form.value });
-  }
-  onStatusChange(newStatus: Status) {
-    this.form.value.status = newStatus;
-    this.patch({ ...this.form.value });
-  }
-  cancelEditDate() {
-    this.editDateTo = this.project.dateTo || '';
-    this.showEditDate = false;
-  }
-  cancelEditTime() {
-    this.editTimeLeft = this.project.timeLeft || '';
-    this.showEditTime = false;
-  }
-
-  saveDateTo() {
-    if (!this.editDateTo) return;
-    this.correctDate = new DatePipe('en-US').transform(
-      this.editDateTo,
-      'dd-MM-yyyy'
-    );
-    this.form.value.dateTo = this.correctDate;
-    this.patch({ ...this.form.value });
-    this.project.dateTo = this.editDateTo;
-    this.showEditDate = false;
-  }
-
-  saveTimeLeft() {
-    if (!this.editTimeLeft) return;
-    this.form.value.timeLeft = this.editTimeLeft;
-    this.patch({ ...this.form.value });
-    this.project.timeLeft = this.editTimeLeft;
-    this.showEditTime = false;
   }
 }

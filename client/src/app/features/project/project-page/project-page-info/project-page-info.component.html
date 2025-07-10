@@ -1,36 +1,32 @@
-<div class="side-bar__info">
-  <div class="info__item">Создан: {{project.dateCreate}}</div>
+<div class="side-bar__info" [formGroup]="form">
+  <div class="info__item">Создан: {{ project.dateCreate }}</div>
   <div class="info__item">Создатель: {{ project.createUser.username }}</div>
 
   <div class="info__item">
     Приоритет:
     @if(project.createUser.id == profileId){
-    <select [ngModel]=" project.priority" (ngModelChange)="onPriorityChange($event)">
+    <select formControlName="priority">
       <option [value]="priorityEnum.CRITICAL">Критический</option>
       <option [value]="priorityEnum.HIGH">Высокий</option>
       <option [value]="priorityEnum.MEDIUM">Средний</option>
       <option [value]="priorityEnum.LOW">Низкий</option>
     </select>
-    }@else{
-    <div>
-      {{project.priority}}
-    </div>
+    } @else {
+    <div>{{ project.priority }}</div>
     }
-
   </div>
 
   <div class="info__item">
     Статус:
     @if(project.createUser.id == profileId){
-    <select [ngModel]="project.status" (ngModelChange)="onStatusChange($event)">
+    <select formControlName="status">
       <option [value]="statusEnum.ACTIVE">Разрабатывается</option>
       <option [value]="statusEnum.STOPPED">Приостановлено</option>
       <option [value]="statusEnum.COMPLETED">Выполнено</option>
       <option [value]="statusEnum.DRAFT">Черновик</option>
-    </select>}@else{
-    <div>
-      {{project.status}}
-    </div>
+    </select>
+    } @else {
+    <div>{{ project.status }}</div>
     }
   </div>
 
@@ -43,8 +39,8 @@
         }
       </div>
 
-      @if(project.createUser.id == profileId) {
-      @if(!showCategoryInput) {
+      @if(project.createUser.id == profileId){
+      @if(!showCategoryInput){
       <button class="category__plus-button" (click)="showCategoryInput = true">+</button>
       } @else {
       <div class="category__add">
@@ -57,43 +53,39 @@
     </div>
   </div>
 
-
   <div class="info__item">
     Срок:
     @if(!showEditDate){
     <ng-container>
-      {{ project.dateTo }}
+      {{ form.get('dateTo')?.value }}
       @if(project.createUser.id == profileId){
       <button (click)="showEditDate = true">Изменить</button>
-
       }
     </ng-container>
-    }
-    @if(showEditDate){
+    } @else {
     <ng-container>
-      <input type="date" [(ngModel)]="editDateTo" />
+      <input type="date" formControlName="dateTo" />
       <button (click)="saveDateTo()">Сохранить</button>
       <button (click)="cancelEditDate()">Отмена</button>
-    </ng-container>}
+    </ng-container>
+    }
   </div>
+
   <div class="info__item">
     Время:
     @if(!showEditTime){
     <ng-container>
-      {{ project.timeLeft }}
+      {{ form.get('timeLeft')?.value }}
       @if(project.createUser.id == profileId){
       <button (click)="showEditTime = true">Изменить</button>
-
       }
     </ng-container>
-    }
-    @if(showEditTime){
+    } @else {
     <ng-container>
-      <input type="time" [(ngModel)]="editTimeLeft" />
+      <input type="time" formControlName="timeLeft" />
       <button (click)="saveTimeLeft()">Сохранить</button>
       <button (click)="cancelEditTime()">Отмена</button>
     </ng-container>
     }
   </div>
-
 </div>
