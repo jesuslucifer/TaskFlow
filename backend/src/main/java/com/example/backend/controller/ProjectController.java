@@ -84,7 +84,7 @@ public class ProjectController {
             @RequestBody ProjectDto updateDto) {
         projectService.updateById(id, updateDto);
 
-        return ResponseEntity.ok(new ProjectDto(projectService.getById(id)));
+        return okDto(id);
     }
 
     @PutMapping("/{projectId}/executors/")
@@ -94,7 +94,7 @@ public class ProjectController {
                 executorRequest.getExecutorId(),
                 executorRequest.getExecutorRole());
 
-        return ResponseEntity.ok(new ProjectDto(projectService.getById(projectId)));
+        return okDto(projectId);
     }
 
     @PutMapping("/{projectId}/category/")
@@ -102,21 +102,21 @@ public class ProjectController {
                                          @RequestBody Category category) {
         projectService.addCategory(projectId, category);
 
-        return ResponseEntity.ok(new ProjectDto(projectService.getById(projectId)));
+        return okDto(projectId);
     }
 
     @PutMapping("/{projectId}/executors/accept/")
     public ResponseEntity<?> acceptExecutor(@PathVariable Long projectId) {
         projectService.acceptExecutor(projectId, SecurityUtil.getCurrentUser().getId());
 
-        return ResponseEntity.ok(new ProjectDto(projectService.getById(projectId)));
+        return okDto(projectId);
     }
 
     @PutMapping("/{projectId}/executors/decline/")
     public ResponseEntity<?> declineExecutor(@PathVariable Long projectId) {
         projectService.declineExecutor(projectId, SecurityUtil.getCurrentUser().getId());
 
-        return ResponseEntity.ok(new ProjectDto(projectService.getById(projectId)));
+        return okDto(projectId);
     }
 
     @DeleteMapping("/{id}")
@@ -149,5 +149,9 @@ public class ProjectController {
                 "Категория удалена",
                 HttpStatus.OK
         ));
+    }
+
+    private ResponseEntity<ProjectDto> okDto(Long projectId) {
+        return ResponseEntity.ok(new ProjectDto(projectService.getById(projectId)));
     }
 }
