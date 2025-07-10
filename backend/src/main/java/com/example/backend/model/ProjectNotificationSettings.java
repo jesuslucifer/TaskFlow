@@ -24,6 +24,13 @@ public class ProjectNotificationSettings {
     @Column(name = "delivery_method")
     private DeliveryMethod deliveryMethod;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumns({
+            @JoinColumn(name = "project_id", referencedColumnName = "project_id", insertable = false, updatable = false),
+            @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+    })
+    private ProjectExecutor projectExecutor;
+
     public ProjectNotificationSettings(Long projectId, Long userId, DeliveryMethod deliveryMethod) {
         userProjectId = new UserProjectId(projectId, userId);
         notificationEnabled = true;
