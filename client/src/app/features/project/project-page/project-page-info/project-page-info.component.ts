@@ -1,16 +1,20 @@
 import { Component, inject, Input } from '@angular/core';
 import {
+  ICategory,
   IProject,
   Priority,
   Status,
 } from '../../../../core/interface/project.interface';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ProjectService } from '../../../../core/services/project.service';
-import { FormControl, FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TasksService } from '../../../../core/services/tasks.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-project-page-info',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './project-page-info.component.html',
   styleUrl: './project-page-info.component.scss',
 })
@@ -20,6 +24,7 @@ export class ProjectPageInfoComponent {
   @Input() profileId!: number;
 
   projectService = inject(ProjectService);
+  toastr = inject(ToastrService);
   priorityEnum = Priority;
   statusEnum = Status;
   editDateTo: string = '';
@@ -28,13 +33,40 @@ export class ProjectPageInfoComponent {
   showEditDate = false;
   showEditTime = false;
   showCategoryInput = false;
-  categoryInput = new FormControl<string | null>('');
+
+  newCategoryInput = new FormControl<string>(''); // поле ввода
+
   patch(data: Partial<IProject>) {
     this.projectService.patchProject(this.project.id, data).subscribe({
-      next: () => Object.assign(this.project, data),
-      error: () => {},
+      next: () => {
+        Object.assign(this.project, data);
+        this.toastr.success('Данные изменены');
+      },
+      error: (err: HttpErrorResponse) => {
+        this.toastr.error(err.error.message);
+      },
     });
   }
+  addCategory() {
+    const name = this.newCategoryInput.value?.trim();
+    if (!name) return;
+
+    const newCategory: ICategory = { name: name };
+
+    this.projectService.addCategory(this.project.id, newCategory).subscribe({
+      next: () => {
+        this.project.categories.push(newCategory);
+        this.newCategoryInput.setValue('');
+        this.toastr.success('Категория добавлена');
+      },
+      error: (err: HttpErrorResponse) => {
+        this.toastr.error(
+          err.error.message || 'Ошибка при добавлении категории'
+        );
+      },
+    });
+  }
+
   ngOnChanges() {
     this.editDateTo = this.project?.dateTo || '';
     this.editTimeLeft = this.project?.timeLeft || '';

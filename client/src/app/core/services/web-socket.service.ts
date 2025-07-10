@@ -24,7 +24,7 @@ export class WebSocketService {
         Authorization: `Bearer ${this.token}`,
       },
       reconnectDelay: 5000,
-      debug: (str) => console.log('STOMP: ' + str),
+      debug: () => {},
       onConnect: () => {
         this.topics.forEach((topic) => this.subscribeToTopic(topic));
       },

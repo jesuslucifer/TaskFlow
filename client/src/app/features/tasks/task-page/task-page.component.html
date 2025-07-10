@@ -8,22 +8,22 @@
         </div>
         <div class="project__info">
           <span class="project__name">{{task.name}}</span>
-          <form>
+          <form [formGroup]="form">
             <div class="project__description">
               <h4>Описание</h4>
               @if(!isEditingNameDesc){
               <div>
                 <div class="description__text">{{ task.description }}</div>
                 @if(task.createUser.id){
-                <button class="edit-btn" (click)="toggleEditNameDesc()">Редактировать</button>
+                <button type="button" class="edit-btn" (click)="toggleEditNameDesc()">Редактировать</button>
                 }
               </div>
               }@else{
               <div>
                 <input type="text" formControlName="name" placeholder="Название задачи" />
                 <textarea formControlName="description" placeholder="Описание задачи"></textarea>
-                <button class="edit-btn" (click)="saveNameDesc()">Сохранить</button>
-                <button class="cancel-btn" (click)="toggleEditNameDesc()">Отмена</button>
+                <button class="edit-btn" type="button" (click)="saveNameDesc(task)">Сохранить</button>
+                <button class="cancel-btn" type="button" (click)="toggleEditNameDesc()">Отмена</button>
               </div>
               }
             </div>
@@ -42,7 +42,7 @@
     <div class="project__side-bar">
       <div class="side-bar__item">
         <h3>Информация о задаче</h3>
-        <app-task-page-info [task]="task" [form]="form"></app-task-page-info>
+        <app-task-page-info [task]="task" [form]="form" [projectId]="projectId"></app-task-page-info>
         <div class="project__executors info__item">
           <div class="executors__add">
             <h5>Исполнители</h5>

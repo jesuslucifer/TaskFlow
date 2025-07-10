@@ -1,17 +1,31 @@
-<div class="task-info">
-  <h2 class="task-title">{{ task.name }}</h2>
+<div class="side-bar__info">
+  <h2 class="info__title">{{ task.name }}</h2>
+  <div class="info__item">
+    Категория:
+    <div class="category__wrapper">
+      <div class="category__list">
+        @for(category of task.categories; track category.name) {
+        <div class="category__tag">{{ category.name }}</div>
+        }
+      </div>
+      <div class="category__list">
 
-  <div class="info-block">
-    <label>Описание:</label>
-    <p class="description">{{ task.description }}</p>
+        <button class="category__plus-button" (click)="showAddCategory = !showAddCategory">+</button>
+      </div>
+
+      <div class="category__add" [ngClass]="{ 'active': showAddCategory }">
+        <input type="text" [formControl]="newCategoryInput" placeholder="Новая категория" />
+        <button (click)="addCategory()">Добавить</button>
+        <button (click)="showAddCategory = false">×</button>
+
+      </div>
+    </div>
+
   </div>
-  <div class="info-block">
-    <label>Дата создания:</label>
-    {{task.dateCreate}}
-  </div>
-  <div class="info-block">
-    <label>Приоритет:</label>
-    <select [ngModel]="task.priority" (ngModelChange)="onPriorityChange($event)">
+
+  <div class="info__item">
+    <label>Приоритет</label>
+    <select [ngModel]=" task.priority" (ngModelChange)="onPriorityChange($event)">
       <option [value]="priorityEnum.CRITICAL">Критический</option>
       <option [value]="priorityEnum.HIGH">Высокий</option>
       <option [value]="priorityEnum.MEDIUM">Средний</option>
@@ -19,40 +33,38 @@
     </select>
   </div>
 
-  <div class="info-block">
-    <label>Статус:</label>
+  <div class="info__item">
+    <label>Статус</label>
     <select [ngModel]="task.status" (ngModelChange)="onStatusChange($event)">
+      <option [value]="statusEnum.TODO">Нужно разработать</option>
       <option [value]="statusEnum.PROGRESS">Разрабатывается</option>
       <option [value]="statusEnum.DONE">Выполнено</option>
-      <option [value]="statusEnum.TODO">В очереди</option>
     </select>
   </div>
 
-  <div class="info-block">
-    <label>Срок завершения:</label>
-    <div class="deadline">
-      <span *ngIf="!showEditDate">{{ task.dateTo || 'Не указан' }}</span>
-      <input *ngIf="showEditDate" type="date" [(ngModel)]="editDateTo" />
-
-      <div class="actions">
-        <button *ngIf="!showEditDate" (click)="showEditDate = true">Изменить</button>
-        <button *ngIf="showEditDate" (click)="saveDateTo()">Сохранить</button>
-        <button *ngIf="showEditDate" (click)="cancelEditDate()">Отмена</button>
-      </div>
-    </div>
+  <div class="info__item">
+    <label>Дедлайн</label>
+    <ng-container *ngIf="!showEditDate; else editDate">
+      {{ task.dateTo }}
+      <button (click)="showEditDate = true">✏️</button>
+    </ng-container>
+    <ng-template #editDate>
+      <input type="date" [(ngModel)]="editDateTo" />
+      <button (click)="saveDateTo()">Сохранить</button>
+      <button (click)="cancelEditDate()">Отмена</button>
+    </ng-template>
   </div>
-  <div class="info-block">
-    Категории
 
-    <div class="category__list">
-      @for(category of task.categories; track task.name)
-      {
-      <div class="category__tag">
-        {{ category.name}}
-
-      </div>
-      }
-    </div>
-
+  <div class="info__item">
+    <label>Время на выполнение</label>
+    <ng-container *ngIf="!showEditTime; else editTime">
+      {{ task.timeLeft }}
+      <button (click)="showEditTime = true">Редактировать</button>
+    </ng-container>
+    <ng-template #editTime>
+      <input type="time" [(ngModel)]="editTimeLeft" />
+      <button (click)="saveTimeLeft()">Сохранить</button>
+      <button (click)="cancelEditTime()">Отмена</button>
+    </ng-template>
   </div>
 </div>

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ProfileService } from '../../../core/services/profile.service';
 import { ToastrService } from 'ngx-toastr';
 import { IProfile } from '../../../core/interface/user.interface';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-user-card',
@@ -34,7 +35,13 @@ export class UserCardComponent {
         this.preview.set(fileUrl);
         this.toastr.success('Аватарка успешно загружена!');
       },
-      error: (err) => this.toastr.error(err.error.message),
+      error: (err: HttpErrorResponse) => {
+        if (err.status == 0) {
+          this.toastr.error('Размер файла превышен');
+        } else {
+          this.toastr.error(err.error.message);
+        }
+      },
     });
   }
 

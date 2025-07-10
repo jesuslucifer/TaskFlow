@@ -8,6 +8,7 @@ import {
   ITasksResponse,
   ITaskUpdate,
 } from '../interface/tasks.interface';
+import { ICategory } from '../interface/project.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -58,6 +59,12 @@ export class TasksService {
     return this.http.put<ITasks>(
       `${this.baseApiUrl}/${projectId}/tasks/${taskId}/update`,
       data
+    );
+  }
+  addCategory(projectId: number, taskId: number, category: ICategory) {
+    return this.http.put<ICategory>(
+      `${this.baseApiUrl}/${projectId}/tasks/${taskId}/categories/add`,
+      category
     );
   }
   createSubtask(projectId: number, taskId: number, subtask: ISubtasks) {

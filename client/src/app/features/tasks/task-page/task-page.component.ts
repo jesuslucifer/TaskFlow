@@ -7,7 +7,12 @@ import { ProjectService } from '../../../core/services/project.service';
 import { ProfileService } from '../../../core/services/profile.service';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { ToastrService } from 'ngx-toastr';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { TaskPageInfoComponent } from './task-page-info/task-page-info.component';
 import { ITasks } from '../../../core/interface/tasks.interface';
@@ -16,7 +21,13 @@ import { SubtasksListComponent } from '../../subtasks/subtasks-list/subtasks-lis
 
 @Component({
   selector: 'app-task-page',
-  imports: [CommonModule, TaskPageInfoComponent, SubtasksListComponent],
+  imports: [
+    CommonModule,
+    TaskPageInfoComponent,
+    SubtasksListComponent,
+    ReactiveFormsModule,
+    FormsModule,
+  ],
   templateUrl: './task-page.component.html',
   styleUrl: './task-page.component.scss',
 })
@@ -41,13 +52,8 @@ export class TaskPageComponent {
   fb = inject(FormBuilder);
   me = this.profileService.me;
   form: FormGroup = this.fb.group({
-    name: [{ value: '' }],
-    description: [{ value: '' }],
-    status: [{ value: '' }],
-    priority: [{ value: '' }],
-    dateTo: [{ value: '' }],
-    timeLeft: [{ value: '' }],
-    categories: [{ value: '' }],
+    name: '',
+    description: '',
   });
 
   dialog: MatDialog = inject(MatDialog);
@@ -60,12 +66,15 @@ export class TaskPageComponent {
     this.isEditingNameDesc = !this.isEditingNameDesc;
   }
 
-  saveNameDesc() {
+  saveNameDesc(task: ITasks) {
     const { name, description } = this.form.value;
     this.tasksService
       .updateTask(
         {
-          ...this.form.value,
+          dateTo: task.dateTo,
+          timeLeft: task.timeLeft,
+          status: task.status,
+          priority: task.priority,
           name,
           description,
         },

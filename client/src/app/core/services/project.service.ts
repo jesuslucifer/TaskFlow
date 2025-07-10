@@ -1,5 +1,5 @@
 import { tap } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import {
   ICategory,
@@ -30,7 +30,6 @@ export class ProjectService {
       .pipe(
         tap((res: IProject[]) => {
           this.projects.set(res);
-          console.log(res);
         })
       );
   }
@@ -62,17 +61,15 @@ export class ProjectService {
       executor
     );
   }
-  addCategory(projectId: number, category: ICategory[]) {
+  addCategory(projectId: number, category: ICategory) {
     return this.http.put<ICategory>(
       `${this.baseApiUrl}/${projectId}/category/`,
       category
     );
   }
-  getProjectExecutors(userId: number) {
+  getProjectExecutors() {
     return this.http.get<IProject[]>(`${this.baseApiUrl}?role=executor`).pipe(
       tap((res: IProject[]) => {
-        console.log(res);
-
         this.executorsProject.set(res);
       })
     );

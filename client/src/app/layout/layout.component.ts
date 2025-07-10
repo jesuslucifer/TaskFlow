@@ -16,10 +16,7 @@ export class LayoutComponent {
   profileService = inject(ProfileService);
   projectsService = inject(ProjectService);
   constructor() {
-    this.profileService.getMe().subscribe((res) => {
-      this.projectsService.getAllUserProjects().subscribe();
-      this.projectsService.getProjectExecutors(res.id).subscribe();
-    });
+    this.profileService.getMe().subscribe();
   }
   ngOnInit() {}
 }

@@ -42,7 +42,10 @@ export class ProjectsPageComponent {
     timeLeft: new FormControl<string>('', [Validators.required]),
     categories: new FormControl<string[]>([]),
   });
-
+  ngOnInit() {
+    this.projectService.getAllUserProjects().subscribe();
+    this.projectService.getProjectExecutors().subscribe();
+  }
   openCreateDialog() {
     this.dialog.open(CreateDialogComponent, {
       width: '500px',

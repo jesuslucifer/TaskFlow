@@ -36,16 +36,27 @@
 
   <div class="info__item">
     Категория:
-    <div class="category__list">
-      @for(category of project.categories; track category.name)
-      {
-      <div class="category__tag">
-        {{ category.name}}
-
+    <div class="category__wrapper">
+      <div class="category__list">
+        @for(category of project.categories; track category.name) {
+        <div class="category__tag">{{ category.name }}</div>
+        }
       </div>
+
+      @if(project.createUser.id == profileId) {
+      @if(!showCategoryInput) {
+      <button class="category__plus-button" (click)="showCategoryInput = true">+</button>
+      } @else {
+      <div class="category__add">
+        <input type="text" [formControl]="newCategoryInput" placeholder="Добавить категорию" />
+        <button (click)="addCategory()">Добавить</button>
+        <button (click)="showCategoryInput = false">×</button>
+      </div>
+      }
       }
     </div>
   </div>
+
 
   <div class="info__item">
     Срок:
