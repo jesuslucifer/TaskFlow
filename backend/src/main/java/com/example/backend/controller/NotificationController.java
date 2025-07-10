@@ -1,7 +1,6 @@
 package com.example.backend.controller;
 
 import com.example.backend.model.DeliveryMethod;
-import com.example.backend.model.Project;
 import com.example.backend.model.User;
 import com.example.backend.security.SecurityUtil;
 import com.example.backend.service.NotificationHistoryService;
